@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import { 
   Clock, 
   Users, 
@@ -39,7 +40,7 @@ const CourseDetail = ({ course }) => {
   ];
 
   const [openSections, setOpenSections] = useState({});
-
+  const navigate = useNavigate();
   const toggleSection = (id) => {
     setOpenSections(prev => ({ ...prev, [id]: !prev[id] }));
   };
@@ -76,7 +77,7 @@ const CourseDetail = ({ course }) => {
               </div>
               <div className="flex gap-4">
                 <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300">
-                  Đăng ký ngay
+                  Nhận tư vấn
                 </button>
                 <button className="bg-blue-500/20 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-500/30 transition duration-300 flex items-center">
                   <PlayCircle className="w-5 h-5 mr-2" />
@@ -246,7 +247,9 @@ const CourseDetail = ({ course }) => {
                 <div className="text-3xl font-bold mb-4 text-blue-600">
                   {formatPrice(course.price)}
                 </div>
-                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 mb-6">
+                <button
+                onClick={() => navigate(`/checkout/${course.id}`)} 
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 mb-6">
                   Đăng ký ngay
                 </button>
                 <div className="space-y-6">

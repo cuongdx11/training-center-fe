@@ -68,7 +68,7 @@ const ProfilePage = () => {
             <div className="hidden md:block">
                 <Sidebar 
                     userName={userInfo.fullName} 
-                    userImage={userInfo.profilePicture || '/default-avatar.png'} 
+                    userImage={userInfo.profilePicture} 
                 />
             </div>
             <div className="flex-1 p-4 md:p-8">

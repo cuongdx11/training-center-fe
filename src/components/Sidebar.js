@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { UserCircle2, PlayCircle, ShoppingBag, Gift, LogOut } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ userName, userImage }) => {
   const [image, setImage] = useState(userImage);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -14,6 +17,8 @@ const Sidebar = ({ userName, userImage }) => {
       reader.readAsDataURL(file);
     }
   };
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <div className="w-72 bg-white min-h-screen shadow-sm sticky top-0">
@@ -45,15 +50,24 @@ const Sidebar = ({ userName, userImage }) => {
 
       <div className="px-6 space-y-1">
         <h3 className="font-medium mb-4">Tài khoản của tôi</h3>
-        <button className="w-full flex items-center space-x-3 py-3 px-4 bg-blue-500 text-white rounded-md">
+        <button 
+          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/profile') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+          onClick={() => navigate('/profile')}
+        >
           <UserCircle2 size={20} />
           <span>Thông tin cá nhân</span>
         </button>
-        <button className="w-full flex items-center space-x-3 py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-md">
+        <button 
+          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/my-courses') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+          onClick={() => navigate('/my-courses')}
+        >
           <PlayCircle size={20} />
           <span>Khóa học đã mua</span>
         </button>
-        <button className="w-full flex items-center space-x-3 py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-md">
+        <button 
+          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/orders') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+          onClick={() => navigate('/orders')}
+        >
           <ShoppingBag size={20} />
           <span>Đơn hàng</span>
         </button>
@@ -61,14 +75,20 @@ const Sidebar = ({ userName, userImage }) => {
 
       <div className="px-6 mt-8 space-y-1">
         <h3 className="font-medium mb-4">Quà tặng</h3>
-        <button className="w-full flex items-center space-x-3 py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-md">
+        <button 
+          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/coupons') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+          onClick={() => navigate('/coupons')}
+        >
           <Gift size={20} />
           <span>Phiếu giảm giá</span>
         </button>
       </div>
 
       <div className="px-6 mt-8">
-        <button className="w-full flex items-center justify-center space-x-2 py-3 bg-blue-600 text-white rounded-md">
+        <button 
+          className="w-full flex items-center justify-center space-x-2 py-3 bg-blue-600 text-white rounded-md"
+          onClick={() => navigate('/logout')}
+        >
           <LogOut size={20} />
           <span>Đăng xuất</span>
         </button>

@@ -1,7 +1,15 @@
+import AdminLogin from '../components/admin/AdminLogin';
 import Login from '../components/Login';
 import Register from '../components/Register';
+import AdminAuthLayout from '../layouts/AdminAuthLayout';
+import AdminLayout from '../layouts/AdminLayout';
 import MainLayout from '../layouts/MainLayout';
+import CourseManagementPage from '../pages/admin/CourseManagementPage';
+import CourseRoadmapPage from '../pages/admin/CourseRoadmapPage';
+import DashboardPage from '../pages/admin/DashboardPage';
+import ScheduleManagementPage from '../pages/admin/ScheduleManagementPage';
 import CartPage from '../pages/CartPage';
+import CheckoutFlashPage from '../pages/CheckoutFlashPage';
 import CheckoutPage from '../pages/CheckoutPage';
 import CourseDetailPage from '../pages/CourseDetailPage';
 import CourseSchedulePage from '../pages/CourseSchedulePage';
@@ -85,6 +93,34 @@ const publicRoutes = [
         layout: MainLayout,
         protected: true,
     },
+    {
+        path: '/checkout/:id',
+        component: CheckoutFlashPage,
+        layout: MainLayout,
+    },
+    // {
+    //     path: '/admin/dashboard',
+    //     component: DashboardPage,
+    //     layout: AdminLayout,
+    //     protected: true,
+    // },
+    {
+        path: '/admin/login',
+        component: AdminLogin,
+        layout: AdminAuthLayout,
+    },
+    {
+        path: "/admin",
+        layout: AdminLayout, // Chỉ định layout là AdminLayout
+        protected: true,
+        children: [
+          { path: "courses", component: CourseManagementPage },
+          { path: "dashboard", component: DashboardPage},
+          { path: "courses/schedules", component: ScheduleManagementPage},
+          { path: "courses/roadmap", component: CourseRoadmapPage}
+        ]
+          
+      },
 ];
 
 export { publicRoutes };
