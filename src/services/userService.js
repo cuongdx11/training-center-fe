@@ -1,25 +1,42 @@
-// src/services/userService.js
-import api from './api'; // Import cấu hình api từ file api.js
+import api from "./api";
 
 const userService = {
-  // Hàm lấy thông tin người dùng dựa trên userId
   getUserById: async (userId) => {
     try {
       const response = await api.get(`/users/${userId}`);
-      return response.data; // Trả về dữ liệu người dùng
+      return response.data;
     } catch (error) {
-      console.error('Error fetching user info:', error);
-      throw error; // Ném lỗi để có thể bắt lỗi ở component gọi API
+      console.error("Error fetching user info:", error);
+      throw error;
     }
   },
 
-  // Bạn có thể thêm nhiều hàm khác để thao tác với user, ví dụ: cập nhật thông tin, thay đổi mật khẩu...
-  // Trong userService
-  getMyCourses  : async (userId) => {
-  // API call để lấy danh sách khóa học đã mua
-  const response = await api.get(`/enrollments/user/${userId}`);
-  return response.data;
-}
+  getMyCourses: async (userId) => {
+    const response = await api.get(`/enrollments/user/${userId}`);
+    return response.data;
+  },
+
+  getInstructors: async () => {
+    const response = await api.get(`/users/instructors`);
+    return response.data;
+  },
+  getAllUsers: async () => {
+    try {
+      const response = await api.get(`/users`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getUserRoles: async (userId) => {
+    try {
+      const response = await api.get(`/users/${userId}`);
+      return response.data.roles;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default userService;

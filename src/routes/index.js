@@ -1,4 +1,5 @@
 import AdminLogin from '../components/admin/AdminLogin';
+import RecurringScheduleForm from '../components/admin/courses/RecurringScheduleForm';
 import Login from '../components/Login';
 import Register from '../components/Register';
 import AdminAuthLayout from '../layouts/AdminAuthLayout';
@@ -7,7 +8,9 @@ import MainLayout from '../layouts/MainLayout';
 import CourseManagementPage from '../pages/admin/CourseManagementPage';
 import CourseRoadmapPage from '../pages/admin/CourseRoadmapPage';
 import DashboardPage from '../pages/admin/DashboardPage';
+import RoleManagementPage from '../pages/admin/RoleManagementPage';
 import ScheduleManagementPage from '../pages/admin/ScheduleManagementPage';
+import UserRoleManagementPage from '../pages/admin/UserRoleManagementPage';
 import CartPage from '../pages/CartPage';
 import CheckoutFlashPage from '../pages/CheckoutFlashPage';
 import CheckoutPage from '../pages/CheckoutPage';
@@ -117,7 +120,10 @@ const publicRoutes = [
           { path: "courses", component: CourseManagementPage },
           { path: "dashboard", component: DashboardPage},
           { path: "courses/schedules", component: ScheduleManagementPage},
-          { path: "courses/roadmap", component: CourseRoadmapPage}
+          { path: "courses/roadmap", component: CourseRoadmapPage},
+          { path: "courses/recurring", component: RecurringScheduleForm},
+          {path : "roles", component: RoleManagementPage },
+          { path : "user-role", component: UserRoleManagementPage}
         ]
           
       },

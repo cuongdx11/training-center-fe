@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Clock,
   Users,
@@ -8,31 +8,86 @@ import {
   ChevronRight,
   X
 } from 'lucide-react';
+import { getAllSchedule } from '../../services/scheduleService';
+import userService from '../../services/userService';
+import { getCourses } from '../../services/coursesService';
+import api from "../../services/api"; 
 
 const ScheduleManagementPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [schedules, setSchedules] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [instructors, setInstructors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    courseId: '',
+    instructorId: '',
+    date: '',
+    time: '',
+    room: '',
+    maxStudents: '',
+    notes: ''
+  });
 
-  // Mock data - thay thế bằng data thật từ API
-  const mockSchedules = [
-    {
-      id: 1,
-      courseName: "Khóa học React JS",
-      teacher: "Nguyễn Văn A",
-      time: "18:00 - 21:00",
-      room: "P301",
-      students: 15
-    },
-    {
-      id: 2,
-      courseName: "Khóa học Java Spring Boot",
-      teacher: "Trần Thị B",
-      time: "14:00 - 17:00",
-      room: "P302",
-      students: 12
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Fetch all required data in parallel
+        const [scheduleResponse, coursesResponse, instructorsResponse] = await Promise.all([
+          getAllSchedule(),
+          getCourses(),
+          userService.getInstructors()
+        ]);
+
+        setSchedules(scheduleResponse.data);
+        console.log(scheduleResponse.data);
+        setCourses(coursesResponse.data);
+        setInstructors(instructorsResponse);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post('/schedule', formData);
+      setSchedules(prev => [...prev, response.data]);
+      setIsModalOpen(false);
+      // Reset form
+      setFormData({
+        courseId: '',
+        instructorId: '',
+        date: '',
+        time: '',
+        room: '',
+        maxStudents: '',
+        notes: ''
+      });
+    } catch (err) {
+      console.error('Error creating schedule:', err);
+      setError('Có lỗi xảy ra khi tạo lịch học. Vui lòng thử lại.');
     }
-  ];
+  };
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -48,7 +103,6 @@ const ScheduleManagementPage = () => {
     const calendar = [];
     const daysInWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
     
-    // Render header
     calendar.push(
       <div key="header" className="grid grid-cols-7 gap-1 mb-2">
         {daysInWeek.map(day => (
@@ -59,7 +113,6 @@ const ScheduleManagementPage = () => {
       </div>
     );
 
-    // Render days
     let cells = [];
     for (let i = 0; i < firstDay; i++) {
       cells.push(<div key={`empty-${i}`} className="p-4"></div>);
@@ -68,7 +121,9 @@ const ScheduleManagementPage = () => {
     for (let day = 1; day <= days; day++) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const isToday = new Date().toDateString() === date.toDateString();
-      const hasSchedule = mockSchedules.some(schedule => true); // Logic kiểm tra lịch học
+      const hasSchedule = schedules.some(schedule => 
+        new Date(schedule.startTime).toDateString() === date.toDateString()
+      );
 
       cells.push(
         <div
@@ -99,22 +154,40 @@ const ScheduleManagementPage = () => {
   };
 
   const CreateScheduleForm = () => (
-    <div className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Khóa học</label>
-          <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select 
+            name="courseId"
+            value={formData.courseId}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
             <option value="">Chọn khóa học</option>
-            <option value="react">Khóa học React JS</option>
-            <option value="java">Khóa học Java Spring Boot</option>
+            {courses.map(course => (
+              <option key={course.id} value={course.id}>
+                {course.name}
+              </option>
+            ))}
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Giảng viên</label>
-          <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select 
+            name="instructorId"
+            value={formData.instructorId}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
             <option value="">Chọn giảng viên</option>
-            <option value="teacher1">Nguyễn Văn A</option>
-            <option value="teacher2">Trần Thị B</option>
+            {instructors.map(instructor => (
+              <option key={instructor.id} value={instructor.id}>
+                {instructor.name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -124,14 +197,22 @@ const ScheduleManagementPage = () => {
           <label className="block text-sm font-medium text-gray-700 mb-1">Ngày học</label>
           <input 
             type="date" 
+            name="date"
+            value={formData.date}
+            onChange={handleInputChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Thời gian</label>
           <input 
             type="time" 
+            name="time"
+            value={formData.time}
+            onChange={handleInputChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
         </div>
       </div>
@@ -139,19 +220,26 @@ const ScheduleManagementPage = () => {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Phòng học</label>
-          <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="">Chọn phòng học</option>
-            <option value="p301">P301</option>
-            <option value="p302">P302</option>
-            <option value="p303">P303</option>
-          </select>
+          <input 
+            type="text"
+            name="room"
+            value={formData.room}
+            onChange={handleInputChange}
+            placeholder="Nhập phòng học"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Sĩ số tối đa</label>
           <input 
             type="number" 
+            name="maxStudents"
+            value={formData.maxStudents}
+            onChange={handleInputChange}
             placeholder="Nhập sĩ số" 
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
         </div>
       </div>
@@ -160,6 +248,9 @@ const ScheduleManagementPage = () => {
         <label className="block text-sm font-medium text-gray-700 mb-1">Ghi chú</label>
         <input 
           type="text" 
+          name="notes"
+          value={formData.notes}
+          onChange={handleInputChange}
           placeholder="Nhập ghi chú nếu có" 
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -167,17 +258,36 @@ const ScheduleManagementPage = () => {
 
       <div className="flex justify-end space-x-3">
         <button 
+          type="button"
           onClick={() => setIsModalOpen(false)}
           className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
         >
           Hủy
         </button>
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+        <button 
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
           Tạo lịch học
         </button>
       </div>
-    </div>
+    </form>
   );
+
+  if (loading) {
+    return <div className="p-6 text-center">Đang tải dữ liệu...</div>;
+  }
+
+  if (error) {
+    return <div className="p-6 text-center text-red-500">{error}</div>;
+  }
+
+  const getSelectedDateSchedules = () => {
+    if (!selectedDate) return [];
+    return schedules.filter(schedule => 
+      new Date(schedule.startTime).toDateString() === selectedDate.toDateString()
+    );
+  };
 
   return (
     <div className="p-6">
@@ -193,7 +303,6 @@ const ScheduleManagementPage = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-6">
-        {/* Calendar */}
         <div className="col-span-2 bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-gray-900">
@@ -225,33 +334,40 @@ const ScheduleManagementPage = () => {
           {renderCalendar()}
         </div>
 
-        {/* Schedule List */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Lịch học trong ngày</h2>
           <div className="space-y-4">
             {selectedDate ? (
-              mockSchedules.map(schedule => (
-                <div
-                  key={schedule.id}
-                  className="p-4 border border-gray-200 rounded-lg space-y-2 hover:shadow-md transition-shadow"
-                >
-                  <div className="font-medium text-gray-900">{schedule.courseName}</div>
-                  <div className="text-sm text-gray-500 space-y-1">
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2" />
-                      {schedule.time}
+              getSelectedDateSchedules().length > 0 ? (
+                getSelectedDateSchedules().map(schedule => (
+                  <div
+                    key={schedule.id}
+                    className="p-4 border border-gray-200 rounded-lg space-y-2 hover:shadow-md transition-shadow"
+                  >
+                    <div className="font-medium text-gray-900">
+                      {courses.find(c => c.id === schedule.course.id)?.title}
                     </div>
-                    <div className="flex items-center">
-                      <GraduationCap className="w-4 h-4 mr-2" />
-                      {schedule.teacher}
-                    </div>
-                    <div className="flex items-center">
-                      <Users className="w-4 h-4 mr-2" />
-                      {schedule.students} học viên
+                    <div className="text-sm text-gray-500 space-y-1">
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-2" />
+                        {schedule.startTime}
+                      </div>
+                      <div className="flex items-center">
+                        <GraduationCap className="w-4 h-4 mr-2" />
+                        {instructors.find(i => i.id === schedule.instructor.id)?.fullName}
+                      </div>
+                      <div className="flex items-center">
+                        <Users className="w-4 h-4 mr-2" />
+                        {schedule.maxStudents} học viên
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-500 py-8">
+                  Không có lịch học nào trong ngày này
                 </div>
-              ))
+              )
             ) : (
               <div className="text-center text-gray-500 py-8">
                 Chọn một ngày để xem lịch học
@@ -261,12 +377,11 @@ const ScheduleManagementPage = () => {
         </div>
       </div>
 
-      {/* Modal Create Schedule */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg w-full max-w-2xl p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Tạo lịch học mới</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Tạo lịch học mới</h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-lg"
@@ -281,5 +396,7 @@ const ScheduleManagementPage = () => {
     </div>
   );
 };
+
+
 
 export default ScheduleManagementPage;

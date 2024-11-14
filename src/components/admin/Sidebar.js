@@ -40,6 +40,11 @@ const menuItems = [
         title: 'Lịch Học',
         icon: <FileText className="w-5 h-5" />,
         path: '/admin/courses/schedules'
+      },
+      {
+        title: 'Tạo Lịch Học',
+        icon: <FileText className="w-5 h-5" />,
+        path: '/admin/courses/recurring'
       }
     ]
   },
@@ -59,9 +64,20 @@ const menuItems = [
     path: '/admin/schedule'
   },
   {
-    title: 'Cài Đặt',
+    title: 'Phân Quyền',
     icon: <Settings className="w-5 h-5" />,
-    path: '/admin/settings'
+    submenu: [
+      {
+        title: 'Quyền',
+        icon: <List className="w-5 h-5" />,
+        path: '/admin/roles'
+      },
+      {
+        title: 'Phân Quyền',
+        icon: <Clock className="w-5 h-5" />,
+        path: '/admin/user-role'
+      },
+    ]
   }
 ];
 
