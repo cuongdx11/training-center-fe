@@ -1,26 +1,4 @@
-// import axios from 'axios';
 
-// const api = axios.create({
-//   baseURL: 'http://localhost:8080/api/', // Thay thế bằng URL của API bạn sử dụng
-//   withCredentials: true
-// });
-
-
-
-// api.interceptors.request.use(
-//   (config) => {
-//     const accessToken = localStorage.getItem('accessToken'); // Lấy token từ localStorage
-//     if (accessToken) {
-//       config.headers.Authorization = `Bearer ${accessToken}`; // Thêm token vào header
-//       console.log(accessToken);
-//     }
-//     return config; // Trả về config đã cập nhật
-//   },
-//   (error) => {
-//     return Promise.reject(error); // Xử lý lỗi trong request nếu có
-//   }
-// );
-// export default api;
 
 import axios from 'axios';
 // import { useAuth } from '../context/AuthContext';
@@ -63,9 +41,11 @@ const createAPIInstance = () => {
           
           if (userData?.refreshToken) {
             // Gọi API refresh token
-            const response = await axios.post('http://localhost:8080/api/auth/refresh-token', {
-              refreshToken: userData.refreshToken
-            });
+            const response = await axios.post('http://localhost:8080/api/auth/refresh', null, {
+            headers: {
+                'x-token': userData.refreshToken
+            }
+        });
 
             // Cập nhật token mới vào userData
             const newUserData = {

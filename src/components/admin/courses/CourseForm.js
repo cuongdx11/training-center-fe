@@ -1,7 +1,30 @@
-import React from 'react';
-import { Camera } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Camera, X, ChevronDown } from 'lucide-react';
 
-const CourseForm = ({ data, setData, onSubmit, onCancel, submitText }) => {
+const CourseForm = ({ data, setData, onSubmit, onCancel, submitText, categories, instructors }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    // Set initial preview if thumbnail exists
+    if (data.thumbnail && typeof data.thumbnail === 'string') {
+      setPreviewUrl(data.thumbnail);
+    }
+  }, [data.thumbnail]);
+
   const handleChange = (field, value) => {
     setData(prev => ({
       ...prev,
@@ -9,9 +32,56 @@ const CourseForm = ({ data, setData, onSubmit, onCancel, submitText }) => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleChange('thumbnail', file);
+      // Create preview URL
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit();
+    // Convert data to FormData for multipart/form-data submission
+    const formData = new FormData();
+    
+    // Append all form fields
+    Object.keys(data).forEach(key => {
+      if (key === 'instructorIds' && Array.isArray(data[key])) {
+        data[key].forEach(id => formData.append('instructorIds', id));
+      } else if (key !== 'thumbnail' || (key === 'thumbnail' && data[key] instanceof File)) {
+        formData.append(key, data[key]);
+      }
+    });
+
+    onSubmit(formData);
+  };
+
+  const handleRemoveImage = () => {
+    handleChange('thumbnail', null);
+    setPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const selectedInstructors = instructors?.filter(instructor => 
+    data.instructorIds?.includes(instructor.id)
+  ) || [];
+
+  const toggleInstructor = (instructorId) => {
+    const currentIds = data.instructorIds || [];
+    const newIds = currentIds.includes(instructorId)
+      ? currentIds.filter(id => id !== instructorId)
+      : [...currentIds, instructorId];
+    handleChange('instructorIds', newIds);
+  };
+
+  const removeInstructor = (instructorId) => {
+    const newIds = (data.instructorIds || []).filter(id => id !== instructorId);
+    handleChange('instructorIds', newIds);
   };
 
   return (
@@ -41,6 +111,83 @@ const CourseForm = ({ data, setData, onSubmit, onCancel, submitText }) => {
               placeholder="Nhập mô tả chi tiết về khóa học..."
               required
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-700">Danh mục</label>
+            <select
+              value={data.categoryId}
+              onChange={(e) => handleChange('categoryId', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              required
+            >
+              <option value="">Chọn danh mục</option>
+              {categories?.map(category => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="relative" ref={dropdownRef}>
+            <label className="block text-sm font-medium mb-1 text-gray-700">Giảng viên</label>
+            <div className="min-h-[42px] p-1.5 border rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+              <div className="flex flex-wrap gap-1">
+                {selectedInstructors.map(instructor => (
+                  <span 
+                    key={instructor.id}
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm"
+                  >
+                    {instructor.fullName}
+                    <button
+                      type="button"
+                      onClick={() => removeInstructor(instructor.id)}
+                      className="hover:text-blue-600"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="inline-flex items-center gap-1 text-gray-600 hover:text-gray-800"
+                >
+                  <span className="sr-only">Toggle instructor selection</span>
+                  <ChevronDown size={20} className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
+            </div>
+
+            {/* Dropdown Menu */}
+            {isOpen && (
+              <div className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <div className="p-2">
+                  {instructors?.map(instructor => (
+                    <div
+                      key={instructor.id}
+                      onClick={() => toggleInstructor(instructor.id)}
+                      className={`
+                        flex items-center gap-2 p-2 rounded cursor-pointer
+                        ${data.instructorIds?.includes(instructor.id) 
+                          ? 'bg-blue-50 text-blue-800' 
+                          : 'hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={data.instructorIds?.includes(instructor.id)}
+                        onChange={() => {}}
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300"
+                      />
+                      <span>{instructor.fullName}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -91,24 +238,47 @@ const CourseForm = ({ data, setData, onSubmit, onCancel, submitText }) => {
         </div>
       </div>
 
-      {/* Thumbnail */}
+      {/* Thumbnail Section */}
       <div className="space-y-6">
         <h3 className="text-lg font-semibold text-gray-700">Ảnh khóa học</h3>
-        <div className="flex items-center space-x-4">
-          <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-1">
-              <Camera className="w-4 h-4 text-gray-500" />
-              <label className="block text-sm font-medium text-gray-700">Ảnh thumbnail</label>
-            </div>
-            <input
-              type="text"
-              value={data.thumbnail}
-              onChange={(e) => handleChange('thumbnail', e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              placeholder="Nhập URL ảnh thumbnail"
-              required
-            />
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2 mb-1">
+            <Camera className="w-4 h-4 text-gray-500" />
+            <label className="block text-sm font-medium text-gray-700">Ảnh thumbnail</label>
           </div>
+          
+          {previewUrl ? (
+            <div className="relative w-48 h-32">
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full h-full object-cover rounded-lg"
+              />
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="absolute -top-2 -right-2 p-1 bg-red-100 rounded-full hover:bg-red-200"
+              >
+                <X className="w-4 h-4 text-red-600" />
+              </button>
+            </div>
+          ) : (
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="w-48 h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500"
+            >
+              <Camera className="w-8 h-8 text-gray-400" />
+              <span className="mt-2 text-sm text-gray-500">Click to upload</span>
+            </div>
+          )}
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
         </div>
       </div>
 

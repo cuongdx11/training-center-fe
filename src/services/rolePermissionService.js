@@ -5,7 +5,7 @@ import axios from './api';
 export const rolePermissionService = {
     addPermissionToRole: async (roleId, permissionId) => {
         try {
-            const response = await axios.post(`/role-permissions`, {
+            const response = await axios.post(`/roles/permission`, {
                 roleId,
                 permissionId
             });
@@ -15,9 +15,9 @@ export const rolePermissionService = {
         }
     },
 
-    removePermissionFromRole: async (rolePermissionId) => {
+    removePermissionFromRole: async (roleId,permissionId) => {
         try {
-            const response = await axios.delete(`/role-permissions/${rolePermissionId}`);
+            const response = await axios.delete(`/roles/${roleId}/permission/${permissionId}`);
             return response.data;
         } catch (error) {
             throw error;

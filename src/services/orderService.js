@@ -9,6 +9,14 @@ export const orderService = {
       throw error;
     }
   },
+  async checkoutNow(paymentMethodId, courseId) {
+    try {
+      const response = await api.post('orders/check-now', { paymentMethodId ,courseId});
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 
   async getOrderById(orderId) {
     try {

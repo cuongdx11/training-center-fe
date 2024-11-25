@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, ChevronDown, ChevronRight, Clock, Plus, X } from 'lucide-react';
-
+import {  ChevronDown, ChevronRight, Clock, Plus, X } from 'lucide-react';
+import { getCourses } from '../../services/coursesService';
+import {getSectionsByCourseId ,addSection} from '../../services/sectionService';
+import {addLesson} from '../../services/lessonService';
 const CourseRoadmap = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -37,8 +39,7 @@ const CourseRoadmap = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/courses');
-      const data = await response.json();
+      const data = await getCourses();
       setCourses(data);
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -47,8 +48,8 @@ const CourseRoadmap = () => {
 
   const fetchSections = async (courseId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/sections/courses/${courseId}`);
-      const data = await response.json();
+      
+      const data = await getSectionsByCourseId(courseId);
       setSections(data);
     } catch (error) {
       console.error('Error fetching sections:', error);
@@ -58,17 +59,7 @@ const CourseRoadmap = () => {
   const handleAddSection = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/api/sections', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...newSection,
-          courseId: selectedCourse.id
-        }),
-      });
-      const data = await response.json();
+      const data = await addSection(newSection,selectedCourse.id)
       setSections([...sections, data]);
       setNewSection({ title: '', description: '' });
       setShowAddSection(false);
@@ -79,17 +70,7 @@ const CourseRoadmap = () => {
 
   const handleAddLesson = async (sectionId) => {
     try {
-      const response = await fetch('http://localhost:8080/api/lessons', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...newLesson,
-          sectionId
-        }),
-      });
-      const data = await response.json();
+      const data = await addLesson(newLesson,sectionId)
       
       const updatedSections = sections.map(section => {
         if (section.id === sectionId) {

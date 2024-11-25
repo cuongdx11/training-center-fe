@@ -5,11 +5,14 @@ import Register from '../components/Register';
 import AdminAuthLayout from '../layouts/AdminAuthLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import MainLayout from '../layouts/MainLayout';
+import AccountActivation from '../pages/AccountActivationPage';
 import CourseManagementPage from '../pages/admin/CourseManagementPage';
 import CourseRoadmapPage from '../pages/admin/CourseRoadmapPage';
 import DashboardPage from '../pages/admin/DashboardPage';
 import RoleManagementPage from '../pages/admin/RoleManagementPage';
 import ScheduleManagementPage from '../pages/admin/ScheduleManagementPage';
+import StudentProgressManagementPage from '../pages/admin/StudentProgressManagementPage';
+import UserManagementPage from '../pages/admin/UserManagementPage';
 import UserRoleManagementPage from '../pages/admin/UserRoleManagementPage';
 import CartPage from '../pages/CartPage';
 import CheckoutFlashPage from '../pages/CheckoutFlashPage';
@@ -22,6 +25,7 @@ import LearningPage from '../pages/LearningPage';
 import MyCoursesPage from '../pages/MyCoursesPage';
 import OrderDetailPage from '../pages/OrderDetailPage';
 import OrdersPage from '../pages/OrdersPage';
+import PaymentResult from '../pages/PaymentResultPage';
 import ProfilePage from '../pages/ProfilePage';
 
 const publicRoutes = [
@@ -33,12 +37,12 @@ const publicRoutes = [
     {
         path: '/login',
         component: Login,
-        layout: null,
+        layout: (props) => <MainLayout showHeaderFooter={false} {...props} />,
     },
     {
         path: '/register', 
         component: Register,
-        layout: null, 
+        layout: (props) => <MainLayout showHeaderFooter={false} {...props} />, 
     },
     {
         path: '/courses',
@@ -101,6 +105,16 @@ const publicRoutes = [
         component: CheckoutFlashPage,
         layout: MainLayout,
     },
+    {
+        path: '/activate-account',
+        component: AccountActivation,
+        layout: MainLayout,
+    },
+    {
+        path: '/payments',
+        component: PaymentResult,
+        layout: MainLayout,
+    },
     // {
     //     path: '/admin/dashboard',
     //     component: DashboardPage,
@@ -123,7 +137,9 @@ const publicRoutes = [
           { path: "courses/roadmap", component: CourseRoadmapPage},
           { path: "courses/recurring", component: RecurringScheduleForm},
           {path : "roles", component: RoleManagementPage },
-          { path : "user-role", component: UserRoleManagementPage}
+          { path : "user-role", component: UserRoleManagementPage},
+          { path : "users", component: UserManagementPage},
+          { path :"student-process" , component: StudentProgressManagementPage}
         ]
           
       },

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 const PersonalInfo = ({ userInfo }) => {
-  const [isEditing, setIsEditing] = useState(false); // State để theo dõi xem người dùng có đang sửa thông tin hay không
-  const [formData, setFormData] = useState({ ...userInfo }); // State để lưu dữ liệu form khi sửa thông tin
-
+  const [isEditing, setIsEditing] = useState(false); 
+  const [formData, setFormData] = useState({ ...userInfo }); 
+  
   // Hàm xử lý khi người dùng thay đổi dữ liệu trong form
   const handleInputChange = (e) => {
     const { name, value } = e.target;

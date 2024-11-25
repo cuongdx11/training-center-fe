@@ -17,7 +17,8 @@ const ProfilePage = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await userService.getUserById(user.id);
+                // const data = await userService.getUserById(user.id);
+                const data = await userService.getProfileUser();
                 setUserInfo(data);
             } catch (error) {
                 setError(error.message || 'Có lỗi xảy ra khi tải thông tin người dùng');

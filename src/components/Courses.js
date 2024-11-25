@@ -13,7 +13,7 @@ const Courses = () => {
         const fetchCourses = async () => {
             try {
                 const response = await getCourses();
-                setCoursesData(response.data);
+                setCoursesData(response.data.content);
             } catch (err) {
                 setError(err.response?.data?.message || 'Không thể tải danh sách khóa học');
             } finally {

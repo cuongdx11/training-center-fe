@@ -13,7 +13,10 @@ import {
   LogOut,
   List,
   Clock,
-  FileText
+  FileText,
+  User ,
+  ClipboardCheck,
+  ListChecks
 } from 'lucide-react';
 
 const menuItems = [
@@ -49,9 +52,36 @@ const menuItems = [
     ]
   },
   {
-    title: 'Học Viên',
+    title: 'Người Dùng',
     icon: <Users className="w-5 h-5" />,
-    path: '/admin/students'
+    submenu: [
+      {
+        title: 'Thông Tin',
+        icon: <List className="w-5 h-5" />,
+        path: '/admin/users'
+      },
+      {
+        title: 'Phân Quyền,Vai Trò',
+        icon: <Clock className="w-5 h-5" />,
+        path: '/admin/roles'
+      },
+    ]
+  },
+  {
+    title: 'Học Viên',
+    icon: <User className="w-5 h-5" />,
+    submenu: [
+      {
+        title: 'Tiến Độ Học Tập',
+        icon: <ListChecks className="w-5 h-5" />,
+        path: '/admin/student-process'
+      },
+      {
+        title: 'Điểm Danh',
+        icon: <ClipboardCheck className="w-5 h-5" />,
+        path: '/admin/roles'
+      },
+    ]
   },
   {
     title: 'Giảng Viên',
@@ -64,29 +94,34 @@ const menuItems = [
     path: '/admin/schedule'
   },
   {
-    title: 'Phân Quyền',
+    title: 'Hệ Thống',
     icon: <Settings className="w-5 h-5" />,
     submenu: [
       {
-        title: 'Quyền',
-        icon: <List className="w-5 h-5" />,
-        path: '/admin/roles'
-      },
-      {
         title: 'Phân Quyền',
-        icon: <Clock className="w-5 h-5" />,
+        icon: <List className="w-5 h-5" />,
         path: '/admin/user-role'
       },
+      {
+        title: 'Quyền Và Vai Trò',
+        icon: <Clock className="w-5 h-5" />,
+        path: '/admin/roles'
+      },
+      
     ]
   }
 ];
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
-  const [openSubmenu, setOpenSubmenu] = useState(false);
+  // Thay đổi state để theo dõi nhiều submenu
+  const [openSubmenus, setOpenSubmenus] = useState({});
 
-  const toggleSubmenu = () => {
-    setOpenSubmenu(!openSubmenu);
+  const toggleSubmenu = (title) => {
+    setOpenSubmenus(prev => ({
+      ...prev,
+      [title]: !prev[title]
+    }));
   };
 
   return (
@@ -117,9 +152,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             {item.submenu ? (
               <div>
                 <button
-                  onClick={toggleSubmenu}
+                  onClick={() => toggleSubmenu(item.title)}
                   className={`flex items-center justify-between w-full px-4 py-3 ${
-                    location.pathname.includes('/admin/courses')
+                    location.pathname.includes(item.path)
                       ? 'bg-slate-700 text-white'
                       : 'text-slate-300 hover:bg-slate-700'
                   } transition-colors duration-200`}
@@ -133,14 +168,14 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   {isSidebarOpen && (
                     <ChevronRight
                       className={`w-4 h-4 transition-transform duration-200 ${
-                        openSubmenu ? 'rotate-90' : ''
+                        openSubmenus[item.title] ? 'rotate-90' : ''
                       }`}
                     />
                   )}
                 </button>
                 <div
                   className={`${
-                    openSubmenu && isSidebarOpen ? 'max-h-64' : 'max-h-0'
+                    openSubmenus[item.title] && isSidebarOpen ? 'max-h-64' : 'max-h-0'
                   } overflow-hidden transition-all duration-300 ease-in-out`}
                 >
                   {item.submenu.map((subItem) => (

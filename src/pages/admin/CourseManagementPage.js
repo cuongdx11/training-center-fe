@@ -1,41 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, Search } from 'lucide-react';
+// import { PlusCircle } from 'lucide-react';
 import CourseForm from '../../components/admin/courses/CourseForm';
 import CourseTable from '../../components/admin/courses/CourseTable';
 import Modal from '../../components/admin/courses/Modal';
+import SearchBar from '../../components/admin/courses/SearchBar';
+import Header from '../../components/admin/courses/Header';
 import { getCourses, addCourse, updateCourse, deleteCourse } from '../../services/coursesService';
+import { getCategories } from '../../services/categoryService';
+import  userService  from '../../services/userService';
 
 const CourseManagementPage = () => {
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+
   const emptyCourseForm = {
+    categoryId: "",
     title: "",
     description: "",
     duration: "",
     level: "BEGINNER",
     price: "",
-    thumbnail: ""
+    thumbnail: null,
+    instructorIds: []
   };
+
   const [newCourse, setNewCourse] = useState(emptyCourseForm);
   const [editingCourse, setEditingCourse] = useState(emptyCourseForm);
 
   useEffect(() => {
-    fetchCourses();
+    fetchInitialData();
   }, []);
 
-  const fetchCourses = async () => {
+  const fetchInitialData = async () => {
     try {
       setLoading(true);
-      const response = await getCourses();
-      setCourses(response.data);
+      const [coursesResponse, categoriesResponse, instructorsResponse] = await Promise.all([
+        getCourses(),
+        getCategories(),
+        userService.getInstructors()
+      ]);
+      
+      setCourses(coursesResponse);
+      setCategories(categoriesResponse.data);
+      setInstructors(instructorsResponse);
     } catch (err) {
-      setError('Không thể tải danh sách khóa học');
-      console.error('Error fetching courses:', err);
+      setError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+      console.error('Error fetching data:', err);
     } finally {
       setLoading(false);
     }
@@ -49,23 +66,19 @@ const CourseManagementPage = () => {
     setSelectedCourse(course);
     setEditingCourse({
       ...course,
+      categoryId: course.category.id,
       duration: course.duration.toString(),
-      price: course.price.toString()
+      price: course.price.toString(),
+      instructorIds: course.instructors.map(instructor => instructor.id)
     });
     setShowEditModal(true);
   };
 
-  const handleEditCourse = async () => {
+  const handleEditCourse = async (formData) => {
     try {
-      const courseData = {
-        ...editingCourse,
-        duration: parseInt(editingCourse.duration),
-        price: parseFloat(editingCourse.price)
-      };
-
-      await updateCourse(selectedCourse.id, courseData);
+      await updateCourse(selectedCourse.id, formData);
       setShowEditModal(false);
-      fetchCourses();
+      fetchInitialData();
     } catch (err) {
       console.error('Error updating course:', err);
       alert('Không thể cập nhật khóa học. Vui lòng thử lại!');
@@ -76,7 +89,7 @@ const CourseManagementPage = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa khóa học này?')) {
       try {
         await deleteCourse(courseId);
-        fetchCourses();
+        fetchInitialData();
       } catch (err) {
         console.error('Error deleting course:', err);
         alert('Không thể xóa khóa học. Vui lòng thử lại!');
@@ -84,24 +97,11 @@ const CourseManagementPage = () => {
     }
   };
 
-  const handleAddCourse = async () => {
+  const handleAddCourse = async (formData) => {
     try {
-      // Kiểm tra dữ liệu trước khi gửi
-      if (!newCourse.title || !newCourse.description || !newCourse.duration || !newCourse.price) {
-        alert('Vui lòng điền đầy đủ thông tin khóa học');
-        return;
-      }
-
-      const courseData = {
-        ...newCourse,
-        duration: parseInt(newCourse.duration),
-        price: parseFloat(newCourse.price)
-      };
-
-      console.log('Sending course data:', courseData); // Thêm log để debug
-      await addCourse(courseData);
+      await addCourse(formData);
       setShowAddModal(false);
-      fetchCourses();
+      fetchInitialData();
       setNewCourse(emptyCourseForm);
     } catch (err) {
       console.error('Error adding course:', err);
@@ -131,33 +131,8 @@ const CourseManagementPage = () => {
 
   return (
     <div className="bg-white rounded-lg shadow">
-      {/* Header */}
-      <div className="flex justify-between items-center p-6 border-b">
-        <h1 className="text-2xl font-bold text-gray-800">Quản lý Khóa học</h1>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <PlusCircle className="w-4 h-4" />
-          Thêm khóa học
-        </button>
-      </div>
-
-      {/* Search Bar */}
-      <div className="p-6 border-b">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Tìm kiếm khóa học..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-          />
-        </div>
-      </div>
-
-      {/* Course Table */}
+      <Header onAddClick={() => setShowAddModal(true)} />
+      <SearchBar value={searchTerm} onChange={handleSearch} />
       <CourseTable
         courses={filteredCourses}
         onEdit={handleEditClick}
@@ -173,6 +148,8 @@ const CourseManagementPage = () => {
           onSubmit={handleAddCourse}
           onCancel={() => setShowAddModal(false)}
           submitText="Thêm khóa học"
+          categories={categories}
+          instructors={instructors}
         />
       </Modal>
 
@@ -185,6 +162,8 @@ const CourseManagementPage = () => {
           onSubmit={handleEditCourse}
           onCancel={() => setShowEditModal(false)}
           submitText="Lưu thay đổi"
+          categories={categories}
+          instructors={instructors}
         />
       </Modal>
     </div>
