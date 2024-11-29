@@ -44,8 +44,7 @@ const ScheduleManagementPage = () => {
         ]);
 
         setSchedules(scheduleResponse.data);
-        console.log(scheduleResponse.data);
-        setCourses(coursesResponse.data);
+        setCourses(coursesResponse);
         setInstructors(instructorsResponse);
         setError(null);
       } catch (err) {

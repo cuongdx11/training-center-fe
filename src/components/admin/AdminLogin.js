@@ -28,7 +28,8 @@ const AdminLogin = () => {
         email: email,
         profilePicture: response.data.profilePicture,
         accessToken: response.data.accessToken,
-        refreshToken: response.data.refreshToken
+        refreshToken: response.data.refreshToken,
+        roles : response.data.roles
       };
 
       // Sử dụng context login thay vì lưu trực tiếp vào localStorage

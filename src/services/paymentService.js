@@ -8,5 +8,13 @@ export const paymentService = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+  async getPayments() {
+    try {
+      const response = await api.get('payments');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

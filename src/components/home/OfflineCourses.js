@@ -19,8 +19,8 @@ const OfflineCourses = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await getCourseByType('offline')
-                setCoursesData(response.data);
+                const data = await getCourseByType('offline')
+                setCoursesData(data);
                 setLoading(false);
             } catch (err) {
                 setError('Không thể tải khóa học. Vui lòng thử lại sau.');

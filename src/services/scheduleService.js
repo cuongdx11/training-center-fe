@@ -7,3 +7,27 @@ export const getCourseSchedule = (courseId) => {
 export const getAllSchedule = () => {
     return axios.get(`/schedule`);
 }
+
+
+
+export const addRecurringSchedule = async(data) => {
+    try {
+        const response = await axios.post(`/schedule/recurring`, data);
+        return response;
+    }
+    catch (error){
+        throw error;
+    }
+}
+
+export const getScheduleByUser = async() => {
+    try {
+        const response = await axios.get(`/schedule/user`);
+        return response.data;
+    }
+    catch(error){ 
+        throw error;
+    }
+}
+
+

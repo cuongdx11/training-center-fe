@@ -65,6 +65,13 @@ const Sidebar = ({ userName, userImage }) => {
           <span>Khóa học đã mua</span>
         </button>
         <button 
+          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/calendar') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+          onClick={() => navigate('/calendar')}
+        >
+          <ShoppingBag size={20} />
+          <span>Lịch học</span>
+        </button>
+        <button 
           className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/orders') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
           onClick={() => navigate('/orders')}
         >

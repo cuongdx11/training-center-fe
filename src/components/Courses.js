@@ -13,7 +13,7 @@ const Courses = () => {
         const fetchCourses = async () => {
             try {
                 const response = await getCourses();
-                setCoursesData(response.data.content);
+                setCoursesData(response);
             } catch (err) {
                 setError(err.response?.data?.message || 'Không thể tải danh sách khóa học');
             } finally {
@@ -61,7 +61,7 @@ const Courses = () => {
         <div className="container mx-auto px-4 py-12 bg-gray-50">
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold text-center mb-4 text-gray-800">
-                    Khóa Học Nổi Bật
+                    Danh Sách Khóa Học
                 </h1>
                 <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
                     Khám phá các khóa học chất lượng cao được thiết kế để giúp bạn phát triển kỹ năng và đạt được mục tiêu của mình.

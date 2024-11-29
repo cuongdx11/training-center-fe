@@ -4,8 +4,6 @@ import {
   LayoutDashboard,
   BookOpen,
   Users,
-  GraduationCap,
-  Calendar,
   Settings,
   ChevronDown,
   ChevronRight,
@@ -14,107 +12,100 @@ import {
   List,
   Clock,
   FileText,
-  User ,
+  User,
   ClipboardCheck,
-  ListChecks
+  ListChecks,
+  ShoppingBag,
+  CirclePlus 
 } from 'lucide-react';
-
-const menuItems = [
-  {
-    title: 'Dashboard',
-    icon: <LayoutDashboard className="w-5 h-5" />,
-    path: '/admin/dashboard'
-  },
-  {
-    title: 'Khóa Học',
-    icon: <BookOpen className="w-5 h-5" />,
-    submenu: [
-      {
-        title: 'Danh Sách Khóa Học',
-        icon: <List className="w-5 h-5" />,
-        path: '/admin/courses'
-      },
-      {
-        title: 'Lộ Trình Học',
-        icon: <Clock className="w-5 h-5" />,
-        path: '/admin/courses/roadmap'
-      },
-      {
-        title: 'Lịch Học',
-        icon: <FileText className="w-5 h-5" />,
-        path: '/admin/courses/schedules'
-      },
-      {
-        title: 'Tạo Lịch Học',
-        icon: <FileText className="w-5 h-5" />,
-        path: '/admin/courses/recurring'
-      }
-    ]
-  },
-  {
-    title: 'Người Dùng',
-    icon: <Users className="w-5 h-5" />,
-    submenu: [
-      {
-        title: 'Thông Tin',
-        icon: <List className="w-5 h-5" />,
-        path: '/admin/users'
-      },
-      {
-        title: 'Phân Quyền,Vai Trò',
-        icon: <Clock className="w-5 h-5" />,
-        path: '/admin/roles'
-      },
-    ]
-  },
-  {
-    title: 'Học Viên',
-    icon: <User className="w-5 h-5" />,
-    submenu: [
-      {
-        title: 'Tiến Độ Học Tập',
-        icon: <ListChecks className="w-5 h-5" />,
-        path: '/admin/student-process'
-      },
-      {
-        title: 'Điểm Danh',
-        icon: <ClipboardCheck className="w-5 h-5" />,
-        path: '/admin/roles'
-      },
-    ]
-  },
-  {
-    title: 'Giảng Viên',
-    icon: <GraduationCap className="w-5 h-5" />,
-    path: '/admin/teachers'
-  },
-  {
-    title: 'Lịch Học',
-    icon: <Calendar className="w-5 h-5" />,
-    path: '/admin/schedule'
-  },
-  {
-    title: 'Hệ Thống',
-    icon: <Settings className="w-5 h-5" />,
-    submenu: [
-      {
-        title: 'Phân Quyền',
-        icon: <List className="w-5 h-5" />,
-        path: '/admin/user-role'
-      },
-      {
-        title: 'Quyền Và Vai Trò',
-        icon: <Clock className="w-5 h-5" />,
-        path: '/admin/roles'
-      },
-      
-    ]
-  }
-];
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
-  // Thay đổi state để theo dõi nhiều submenu
+
+  // Lấy đối tượng user từ localStorage (hoặc từ state)
+  const user = JSON.parse(localStorage.getItem('user'));  // Ví dụ lấy đối tượng user từ localStorage
+  const roles = user?.roles || [];
+
+  // Menu items cho Admin
+  const adminMenuItems = [
+    {
+      title: 'Dashboard',
+      icon: <LayoutDashboard className="w-5 h-5" />,
+      path: '/admin/dashboard'
+    },
+    {
+      title: 'Khóa Học',
+      icon: <BookOpen className="w-5 h-5" />,
+      submenu: [
+        { title: 'Danh Sách Khóa Học', icon: <List className="w-5 h-5" />, path: '/admin/courses' },
+        { title: 'Lộ Trình Học', icon: <Clock className="w-5 h-5" />, path: '/admin/courses/roadmap' },
+        { title: 'Lịch Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/schedules' },
+        { title: 'Tạo Lịch Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/recurring' },
+        { title: 'Tạo Lớp Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/create-class' }
+      ]
+    },
+    {
+      title: 'Người Dùng',
+      icon: <Users className="w-5 h-5" />,
+      submenu: [
+        { title: 'Thông Tin', icon: <List className="w-5 h-5" />, path: '/admin/users' },
+        { title: 'Phân Quyền, Vai Trò', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }
+      ]
+    },
+    {
+      title: 'Đơn Hàng',
+      icon: <ShoppingBag className="w-5 h-5" />,
+      submenu: [
+        { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/orders' },
+        { title: 'Tạo Đơn Hàng', icon: <CirclePlus  className="w-5 h-5" />, path: '/admin/roles' }
+      ]
+    },
+    {
+      title: 'Thanh Toán',
+      icon: <Users className="w-5 h-5" />,
+      submenu: [
+        { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/payments' },
+        { title: 'Tạo Thanh Toán', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }
+      ]
+    },
+    {
+      title: 'Hệ Thống',
+      icon: <Settings className="w-5 h-5" />,
+      submenu: [
+        { title: 'Phân Quyền', icon: <List className="w-5 h-5" />, path: '/admin/user-role' },
+        { title: 'Quyền Và Vai Trò', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }
+      ]
+    }
+  ];
+
+  // Menu items cho Instructor
+  const instructorMenuItems = [
+    {
+      title: 'Dashboard',
+      icon: <LayoutDashboard className="w-5 h-5" />,
+      path: '/instructor/dashboard'
+    },
+    {
+      title: 'Khóa Học',
+      icon: <BookOpen className="w-5 h-5" />,
+      submenu: [
+        { title: 'Danh Sách Khóa Học', icon: <List className="w-5 h-5" />, path: '/instructor/courses' },
+        { title: 'Lịch Dạy', icon: <FileText className="w-5 h-5" />, path: '/instructor/schedules' }
+      ]
+    },
+    {
+      title: 'Học Viên',
+      icon: <User className="w-5 h-5" />,
+      submenu: [
+        { title: 'Tiến Độ Học Tập', icon: <ListChecks className="w-5 h-5" />, path: '/instructor/student-process' },
+        { title: 'Điểm Danh', icon: <ClipboardCheck className="w-5 h-5" />, path: '/instructor/create-attendance' }
+      ]
+    }
+  ];
+
+  // Chọn menu items dựa trên vai trò người dùng
+  const menuItems = roles.includes('ROLE_INSTRUCTOR') ? instructorMenuItems : adminMenuItems;
+
   const [openSubmenus, setOpenSubmenus] = useState({});
 
   const toggleSubmenu = (title) => {

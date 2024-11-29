@@ -27,6 +27,15 @@ import OrderDetailPage from '../pages/OrderDetailPage';
 import OrdersPage from '../pages/OrdersPage';
 import PaymentResult from '../pages/PaymentResultPage';
 import ProfilePage from '../pages/ProfilePage';
+import CreateCourseClass from '../components/admin/courses/CreateCourseClass'
+import UserCalendarPage from '../pages/UserCalendarPage';
+import RegisteredCoursesClassPage from '../pages/RegisteredCoursesClassPage';
+import AttendanceManagement from '../components/AttendanceManagement';
+import OrderManagementPage from '../pages/admin/OrderManagementPage';
+import PaymentManagementPage from '../pages/admin/PaymentManagementPage';
+import CreateAttendanceSession from '../pages/instructor/CreateAttendanceSession';
+import AttendanceQRPage from '../pages/instructor/AttendanceQRPage ';
+import CheckinPage from '../pages/instructor/CheckinPage';
 
 const publicRoutes = [
     {
@@ -52,6 +61,12 @@ const publicRoutes = [
     {
         path: '/profile',
         component: ProfilePage,
+        layout: MainLayout,
+        protected: true, // Thêm thuộc tính protected
+    },
+    {
+        path: '/calendar',
+        component: UserCalendarPage,
         layout: MainLayout,
         protected: true, // Thêm thuộc tính protected
     },
@@ -89,6 +104,11 @@ const publicRoutes = [
         layout: MainLayout,
     },
     {
+        path: '/register-class',
+        component: RegisteredCoursesClassPage,
+        layout: MainLayout,
+    },
+    {
         path: '/orders',
         component: OrdersPage,
         layout: MainLayout,
@@ -115,17 +135,14 @@ const publicRoutes = [
         component: PaymentResult,
         layout: MainLayout,
     },
-    // {
-    //     path: '/admin/dashboard',
-    //     component: DashboardPage,
-    //     layout: AdminLayout,
-    //     protected: true,
-    // },
+
     {
         path: '/admin/login',
         component: AdminLogin,
         layout: AdminAuthLayout,
     },
+    { path: "attendance-qr", component: AttendanceQRPage,layout: (props) => <MainLayout showHeaderFooter={false} {...props} />, },
+    { path: "checkin", component: CheckinPage,layout: (props) => <MainLayout showHeaderFooter={false} {...props} />, },
     {
         path: "/admin",
         layout: AdminLayout, // Chỉ định layout là AdminLayout
@@ -139,7 +156,33 @@ const publicRoutes = [
           {path : "roles", component: RoleManagementPage },
           { path : "user-role", component: UserRoleManagementPage},
           { path : "users", component: UserManagementPage},
-          { path :"student-process" , component: StudentProgressManagementPage}
+          { path :"student-process" , component: StudentProgressManagementPage},
+          { path: "courses/create-class", component: CreateCourseClass},
+          { path: "attendances", component: AttendanceManagement},
+          { path: "orders", component: OrderManagementPage},
+          { path: "payments", component: PaymentManagementPage},
+          
+        ]
+          
+      },
+      {
+        path: "/instructor",
+        layout: AdminLayout, 
+        protected: true,
+        children: [
+          { path: "courses", component: CourseManagementPage },
+          { path: "dashboard", component: DashboardPage},
+          { path: "courses/schedules", component: ScheduleManagementPage},
+          { path: "courses/roadmap", component: CourseRoadmapPage},
+          { path: "courses/recurring", component: RecurringScheduleForm},
+          {path : "roles", component: RoleManagementPage },
+          { path : "user-role", component: UserRoleManagementPage},
+          { path : "users", component: UserManagementPage},
+          { path :"student-process" , component: StudentProgressManagementPage},
+          { path: "courses/create-class", component: CreateCourseClass},
+          { path: "attendances", component: AttendanceManagement},
+          { path: "create-attendance", component: CreateAttendanceSession},
+          
         ]
           
       },

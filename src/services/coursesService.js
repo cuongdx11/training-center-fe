@@ -3,15 +3,20 @@ import axios from "./api";
 export const getCourses = async () => {
   try {
     const response = await axios.get(`/courses`);
-    return response.data.content;
+    return response.data.data.content;
   } catch (error) {
     throw error;
   }
 };
 
 // Lấy chi tiết một khóa học
-export const getCourseById = (courseId) => {
-  return axios.get(`/courses/${courseId}`);
+export const getCourseById = async (courseId) => {
+  try {
+    const response = await axios.get(`/courses/${courseId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getCourseSchedule = (courseId) => {
@@ -36,6 +41,22 @@ export const deleteCourse = (courseId) => {
   return axios.delete(`/courses/${courseId}`);
 };
 
-export const getCourseByType = (type) => {
-  return axios.get(`/courses?key=category.type&operation==&value=${type}`);
+export const getCourseByType = async (type) => {
+  try {
+    const response = await axios.get(
+      `/courses?key=category.type&operation==&value=${type}`
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCourseByUserRegister = async () => {
+  try {
+    const response = await axios.get("/courses/user");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };

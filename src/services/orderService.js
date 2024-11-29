@@ -34,5 +34,13 @@ export const orderService = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+  async getOrders() {
+    try {
+      const response = await api.get('orders');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
