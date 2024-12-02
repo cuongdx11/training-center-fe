@@ -56,10 +56,8 @@ const CheckoutFlashPage = () => {
       const response = await orderService.checkoutNow(selectedPaymentMethod, course.id);
       if (response?.paymentUrl) {
         window.location.href = response.paymentUrl;
-      } else {
-        throw new Error('Không nhận được URL thanh toán');
       }
-      alert(`Bạn đã thanh toán khóa học: ${course.title}`);
+      alert(`Bạn đã đăng ký khóa học: ${course.title}`);
       navigate('/');
     } catch (error) {
       setError('Lỗi khi xử lý thanh toán. Vui lòng thử lại.');

@@ -60,3 +60,13 @@ export const getCourseByUserRegister = async () => {
     throw error;
   }
 };
+
+
+export const searchCourse = async (searchQuery) => {
+  try {
+    const response = await axios.get(`/courses/search?q=${encodeURIComponent(searchQuery)}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

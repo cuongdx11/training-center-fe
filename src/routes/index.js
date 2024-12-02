@@ -36,6 +36,9 @@ import PaymentManagementPage from '../pages/admin/PaymentManagementPage';
 import CreateAttendanceSession from '../pages/instructor/CreateAttendanceSession';
 import AttendanceQRPage from '../pages/instructor/AttendanceQRPage ';
 import CheckinPage from '../pages/instructor/CheckinPage';
+import CourseClassesPage from '../pages/CourseClassesPage';
+import SearchResults from '../components/SearchResults';
+import AdminProfile from '../components/admin/AdminProfile';
 
 const publicRoutes = [
     {
@@ -109,6 +112,11 @@ const publicRoutes = [
         layout: MainLayout,
     },
     {
+        path: '/courses/:courseId/classes',
+        component: CourseClassesPage,
+        layout: MainLayout,
+    },
+    {
         path: '/orders',
         component: OrdersPage,
         layout: MainLayout,
@@ -133,6 +141,11 @@ const publicRoutes = [
     {
         path: '/payments',
         component: PaymentResult,
+        layout: MainLayout,
+    },
+    {
+        path: '/search',
+        component: SearchResults,
         layout: MainLayout,
     },
 
@@ -161,6 +174,7 @@ const publicRoutes = [
           { path: "attendances", component: AttendanceManagement},
           { path: "orders", component: OrderManagementPage},
           { path: "payments", component: PaymentManagementPage},
+          { path: "profile", component: AdminProfile },
           
         ]
           

@@ -1,12 +1,12 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
 
-const CourseCard = ({ image, title, description, link }) => {
+const CourseCard = ({id, thumbnail, title, description }) => {
     return (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden transition duration-300 hover:shadow-xl group">
             <div className="relative overflow-hidden">
                 <img
-                    src={image}
+                    src={thumbnail}
                     alt={title}
                     className="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500"
                 />
@@ -16,7 +16,7 @@ const CourseCard = ({ image, title, description, link }) => {
                 <h3 className="text-xl font-bold mb-2">{title}</h3>
                 <p className="text-gray-600 mb-4">{description}</p>
                 <a
-                    href={link}
+                    href={`/courses/${id}`}
                     className="text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center group"
                 >
                     <span>Tìm Hiểu Thêm</span>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { 
   Clock, 
@@ -11,9 +11,16 @@ import {
   Calendar,
   BookOpen,
   Users,
-  AlertCircle
+  AlertCircle,
+  ChevronLeft
 } from 'lucide-react';
 import { orderService } from '../services/orderService';
+
+const StatusBadge = memo(({ status, getColorClass }) => (
+  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getColorClass(status)}`}>
+    {status || 'N/A'}
+  </span>
+));
 
 const OrderDetail = () => {
   const [order, setOrder] = useState(null);
@@ -30,8 +37,7 @@ const OrderDetail = () => {
         const data = await orderService.getOrderById(id);
         setOrder(data);
       } catch (error) {
-        setError(error.message || 'Failed to fetch order details');
-        console.error('Error fetching order details:', error);
+        setError(error.message || 'Không thể tải chi tiết đơn hàng');
       } finally {
         setLoading(false);
       }
@@ -59,7 +65,7 @@ const OrderDetail = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return 'Không có thông tin';
     return new Date(dateString).toLocaleString('vi-VN', {
       year: 'numeric',
       month: 'long',
@@ -69,121 +75,109 @@ const OrderDetail = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        </div>
+  const renderLoadingState = () => (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="flex flex-col items-center">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-600">Đang tải thông tin đơn hàng...</p>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-50 border-l-4 border-red-400 p-4">
-          <div className="flex items-center">
-            <AlertCircle className="h-5 w-5 text-red-400" />
-            <p className="ml-3 text-red-700">{error}</p>
+  const renderErrorState = (message) => (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-red-50 border-l-4 border-red-400 p-6 rounded-lg max-w-md w-full">
+        <div className="flex items-center">
+          <AlertCircle className="h-8 w-8 text-red-400 mr-4" />
+          <div>
+            <h3 className="text-red-800 font-semibold text-lg">Lỗi</h3>
+            <p className="text-red-700">{message}</p>
           </div>
         </div>
+        <button 
+          onClick={() => navigate('/orders')} 
+          className="mt-4 w-full bg-red-100 text-red-800 py-2 rounded hover:bg-red-200 transition"
+        >
+          Quay về danh sách đơn hàng
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (!order) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-          <div className="flex items-center">
-            <AlertCircle className="h-5 w-5 text-blue-400" />
-            <p className="ml-3 text-blue-700">Không tìm thấy thông tin đơn hàng</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return renderLoadingState();
+  if (error) return renderErrorState(error);
+  if (!order) return renderErrorState('Không tìm thấy thông tin đơn hàng');
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
       <button
         onClick={() => navigate('/orders')}
-        className="mb-6 flex items-center text-blue-600 hover:text-blue-800"
+        className="mb-6 flex items-center text-blue-600 hover:text-blue-800 transition-colors"
       >
-        ← Quay lại danh sách đơn hàng
+        <ChevronLeft className="mr-2" /> Quay lại danh sách đơn hàng
       </button>
 
       <div className="space-y-6">
         {/* Order Information Card */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="border-b px-6 py-4">
-            <h2 className="text-xl font-semibold">Chi tiết đơn hàng #{order.id?.substring(0, 8) || 'N/A'}</h2>
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gray-50 border-b px-6 py-4">
+            <h2 className="text-2xl font-bold text-gray-800">Chi tiết đơn hàng #{order.id?.substring(0, 8) || 'N/A'}</h2>
           </div>
           
           <div className="p-6">
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-8">
               {/* Customer Information */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-gray-800">Thông tin khách hàng</h3>
+              <div className="space-y-4 bg-gray-100 p-5 rounded-lg">
+                <h3 className="font-semibold text-lg text-gray-800 border-b pb-2">Thông tin khách hàng</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-500" />
-                    <span>{order.user?.fullName || 'N/A'}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-500" />
-                    <span>{order.user?.email || 'N/A'}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-500" />
-                    <span>{order.user?.phoneNumber || 'N/A'}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-500" />
-                    <span>{order.user?.address || 'N/A'}</span>
-                  </div>
+                  {[
+                    { icon: User, text: order.user?.fullName },
+                    { icon: Mail, text: order.user?.email },
+                    { icon: Phone, text: order.user?.phoneNumber },
+                    { icon: MapPin, text: order.user?.address }
+                  ].map(({ icon: Icon, text }, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <Icon className="w-5 h-5 text-blue-500" />
+                      <span className="text-gray-700">{text || 'Không có thông tin'}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* Order Information */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-gray-800">Thông tin đơn hàng</h3>
+              <div className="space-y-4 bg-gray-100 p-5 rounded-lg">
+                <h3 className="font-semibold text-lg text-gray-800 border-b pb-2">Thông tin đơn hàng</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-gray-500" />
-                    <span>Trạng thái đơn hàng: </span>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                      {order.status || 'N/A'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-gray-500" />
-                    <span>Trạng thái thanh toán: </span>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPaymentStatusColor(order.paymentStatus)}`}>
-                      {order.paymentStatus || 'N/A'}
-                    </span>
-                  </div>
-                  {order.paymentMethod && (
-                    <div className="flex items-center gap-2">
-                      {order.paymentMethod.logoUrl && (
-                        <img 
-                          src={order.paymentMethod.logoUrl} 
-                          alt={order.paymentMethod.name || 'Payment method'}
-                          className="w-4 h-4"
-                        />
-                      )}
-                      <span>{order.paymentMethod.name || 'N/A'}</span>
+                  {[
+                    { 
+                      icon: Clock, 
+                      label: 'Trạng thái đơn hàng', 
+                      value: <StatusBadge status={order.status} getColorClass={getStatusColor} /> 
+                    },
+                    { 
+                      icon: CreditCard, 
+                      label: 'Trạng thái thanh toán', 
+                      value: <StatusBadge status={order.paymentStatus} getColorClass={getPaymentStatusColor} /> 
+                    },
+                    { 
+                      icon: DollarSign, 
+                      label: 'Tổng tiền', 
+                      value: `${(order.totalAmount || 0).toLocaleString()} VND` 
+                    },
+                    { 
+                      icon: Calendar, 
+                      label: 'Ngày đặt', 
+                      value: formatDate(order.createdAt) 
+                    }
+                  ].map(({ icon: Icon, label, value }, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <Icon className="w-5 h-5 text-blue-500" />
+                      <div>
+                        <span className="text-gray-600 mr-2">{label}:</span>
+                        <span className="font-medium">{value}</span>
+                      </div>
                     </div>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-gray-500" />
-                    <span>Tổng tiền: ${(order.totalAmount || 0).toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-500" />
-                    <span>Ngày đặt: {formatDate(order.createdAt)}</span>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -191,30 +185,33 @@ const OrderDetail = () => {
         </div>
 
         {/* Ordered Courses */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="border-b px-6 py-4">
-            <h2 className="text-xl font-semibold">Danh sách khóa học</h2>
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-gray-50 border-b px-6 py-4">
+            <h2 className="text-2xl font-bold text-gray-800">Danh sách khóa học</h2>
           </div>
           <div className="p-6">
             <div className="space-y-4">
               {order.orderItems?.map((item) => (
-                <div key={item.id} className="border rounded-lg p-4">
-                  <div className="grid md:grid-cols-3 gap-4">
+                <div 
+                  key={item.id} 
+                  className="border-2 border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                >
+                  <div className="grid md:grid-cols-3 gap-4 items-center">
                     <div className="md:col-span-2">
-                      <h4 className="font-medium text-lg">{item.course?.title || 'N/A'}</h4>
-                      <div className="mt-2 space-y-2">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <BookOpen className="w-4 h-4" />
-                          <span>Thời lượng: {item.course?.duration || 0} giờ</span>
+                      <h4 className="font-semibold text-xl text-gray-800 mb-2">{item.course?.title || 'N/A'}</h4>
+                      <div className="flex space-x-4 text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="w-5 h-5" />
+                          <span>{item.course?.duration || 0} giờ</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Users className="w-4 h-4" />
-                          <span>Số học viên: {item.course?.studentCount || 0}</span>
+                        <div className="flex items-center gap-2">
+                          <Users className="w-5 h-5" />
+                          <span>{item.course?.studentCount || 0} học viên</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col justify-center items-end">
-                      <span className="text-xl font-semibold">${(item.price || 0).toLocaleString()}</span>
+                    <div className="flex flex-col items-end">
+                      <span className="text-2xl font-bold text-blue-600">{(item.price || 0).toLocaleString()} VND</span>
                       <span className="text-sm text-gray-500">{item.course?.category?.name || 'N/A'}</span>
                     </div>
                   </div>
@@ -226,12 +223,12 @@ const OrderDetail = () => {
 
         {/* Notes Section */}
         {order.notes && (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="border-b px-6 py-4">
-              <h2 className="text-xl font-semibold">Ghi chú</h2>
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div className="bg-gray-50 border-b px-6 py-4">
+              <h2 className="text-2xl font-bold text-gray-800">Ghi chú</h2>
             </div>
             <div className="p-6">
-              <p className="text-gray-700">{order.notes}</p>
+              <p className="text-gray-700 italic">{order.notes}</p>
             </div>
           </div>
         )}
@@ -240,4 +237,4 @@ const OrderDetail = () => {
   );
 };
 
-export default OrderDetail;
+export default React.memo(OrderDetail);

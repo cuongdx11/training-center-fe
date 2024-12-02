@@ -1,27 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CourseCard from './CourseCard';
+import {getCourses} from '../../services/coursesService';
 
 const FeaturedCourses = () => {
-    const courses = [
-        {
-            image: "/course-web.jpg",
-            title: "Lập Trình Web",
-            description: "Học cách xây dựng website chuyên nghiệp từ A đến Z.",
-            link: "/courses/web-development"
-        },
-        {
-            image: "/course-python.jpg",
-            title: "Lập Trình Python",
-            description: "Tìm hiểu lập trình Python từ cơ bản đến nâng cao.",
-            link: "/courses/python"
-        },
-        {
-            image: "/course-react.jpg",
-            title: "Lập Trình ReactJS",
-            description: "Khám phá lập trình ReactJS và phát triển ứng dụng động.",
-            link: "/courses/react"
-        }
-    ];
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await getCourses();
+                setCourses(response.slice(0, 3));
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
+
+    if (loading) {
+        return <div className="text-center py-16">Đang tải...</div>;
+    }
+
+    if (error) {
+        return <div className="text-center py-16 text-red-500">Có lỗi xảy ra: {error}</div>;
+    }
 
     return (
         <section className="container mx-auto py-16 px-4">

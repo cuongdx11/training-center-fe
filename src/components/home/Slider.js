@@ -7,25 +7,25 @@ const Slider = () => {
 
     const sliderData = [
         {
-            image: "/slider1.jpg",
+            image: "https://res.cloudinary.com/dgenj3hn9/image/upload/v1733089541/baner_sm3er6.jpg",
             title: "Khởi Đầu Hành Trình Lập Trình",
             description: "Từ người mới bắt đầu đến chuyên gia với lộ trình đào tạo chuyên nghiệp",
             buttonText: "Khám Phá Ngay",
             buttonLink: "/courses"
         },
         {
-            image: "/slider2.jpg",
+            image: "https://res.cloudinary.com/dgenj3hn9/image/upload/v1733089543/giangvien_aptide.jpg",
             title: "Học Từ Chuyên Gia",
             description: "Đội ngũ giảng viên với hơn 10 năm kinh nghiệm trong ngành công nghệ",
             buttonText: "Gặp Gỡ Giảng Viên",
             buttonLink: "/instructors"
         },
         {
-            image: "/slider3.jpg",
+            image: "https://res.cloudinary.com/dgenj3hn9/image/upload/v1733089828/Hoc-lap-trinh-co-kho-khong-3_li7sep.png",
             title: "Phương Pháp Học Hiện Đại",
             description: "Kết hợp lý thuyết và thực hành với các dự án thực tế",
             buttonText: "Xem Khóa Học",
-            buttonLink: "/programs"
+            buttonLink: "/courses"
         }
     ];
 
@@ -56,7 +56,7 @@ const Slider = () => {
     );
 
     return (
-        <section className="relative h-[450px] overflow-hidden">
+        <section className="relative h-[500px] overflow-hidden">
             <div className="relative w-full h-full">
                 {sliderData.map((slide, index) => (
                     <div

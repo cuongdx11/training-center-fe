@@ -18,7 +18,6 @@ const MyCoursesPage = () => {
         ]);
         setUserInfo(userData);
         setCourses(coursesData);
-        console.log(coursesData)
       } catch (error) {
         console.error('Error fetching data', error);
       }
