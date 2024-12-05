@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QrCode, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getClass } from '../../services/courseClassService'; 
+import { getClassOfInstructor } from '../../services/courseClassService'; 
 import { createAttendanceSession } from '../../services/attendanceSessionService'
 
 const CreateAttendanceSession = () => {
@@ -17,7 +17,7 @@ const CreateAttendanceSession = () => {
     const fetchClasses = async () => {
       setClassLoading(true);
       try {
-        const classes = await getClass();
+        const classes = await getClassOfInstructor();
         setClassList(classes);
       } catch (err) {
         setError('Không thể tải danh sách lớp học');

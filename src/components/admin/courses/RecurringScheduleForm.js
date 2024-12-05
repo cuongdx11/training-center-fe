@@ -3,20 +3,17 @@ import { Calendar, Clock, Search, X } from "lucide-react";
 import { format, eachDayOfInterval, getDay } from "date-fns";
 import { vi } from "date-fns/locale";
 import { getCourses } from "../../../services/coursesService";
-import userService from "../../../services/userService";
 import { getClassByCourseId } from "../../../services/courseClassService";
 import { addRecurringSchedule } from "../../../services/scheduleService";
 
 const RecurringScheduleForm = () => {
   const [courses, setCourses] = useState([]);
   const [courseClasses, setCourseClasses] = useState([]);
-  const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [scheduleData, setScheduleData] = useState({
     courseClassId: "",
-    instructorId: "",
     description: "",
     duration: 90,
     startDate: "",
@@ -29,12 +26,9 @@ const RecurringScheduleForm = () => {
   });
 
   const [courseSearch, setCourseSearch] = useState("");
-  const [instructorSearch, setInstructorSearch] = useState("");
   const [showCourseDropdown, setShowCourseDropdown] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedClass, setSelectedClass] = useState(null);
-  const [selectedInstructor, setSelectedInstructor] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const daysOfWeek = [
     { id: 2, name: "Thứ 3" },
@@ -55,12 +49,8 @@ const RecurringScheduleForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [coursesResponse, instructorsResponse] = await Promise.all([
-          getCourses(),
-          userService.getInstructors(),
-        ]);
+        const coursesResponse = await getCourses();
         setCourses(coursesResponse);
-        setInstructors(instructorsResponse);
       } catch (err) {
         setError("Error loading data");
         console.error(err);
@@ -91,16 +81,6 @@ const RecurringScheduleForm = () => {
         course.title.toLowerCase().includes(courseSearch.toLowerCase())
       ),
     [courseSearch, courses]
-  );
-
-  const filteredInstructors = useMemo(
-    () =>
-      instructors.filter((instructor) =>
-        instructor.fullName
-          .toLowerCase()
-          .includes(instructorSearch.toLowerCase())
-      ),
-    [instructorSearch, instructors]
   );
 
   const calculateEndTime = (startTime, duration) => {
@@ -164,12 +144,6 @@ const RecurringScheduleForm = () => {
   const handleClassSelect = (courseClass) => {
     setSelectedClass(courseClass);
     setScheduleData((prev) => ({ ...prev, courseClassId: courseClass.id }));
-  };
-
-  const handleInstructorSelect = (instructor) => {
-    setSelectedInstructor(instructor);
-    setScheduleData((prev) => ({ ...prev, instructorId: instructor.id }));
-    setInstructorSearch("");
   };
 
   const handleDaySelect = (dayId) => {
@@ -314,39 +288,6 @@ const RecurringScheduleForm = () => {
               </div>
             )}
 
-            {/* Instructor Selection */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Giảng viên
-              </label>
-              <input
-                type="text"
-                value={instructorSearch}
-                onChange={(e) => setInstructorSearch(e.target.value)}
-                onFocus={() => setIsDropdownOpen(true)}
-                onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)} // Delay để chọn được item trước khi đóng
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Tìm giảng viên..."
-              />
-              {isDropdownOpen && filteredInstructors.length > 0 && (
-                <div className="absolute z-10 w-60 mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {filteredInstructors.map((instructor) => (
-                    <div
-                      key={instructor.id}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        handleInstructorSelect(instructor);
-                        setInstructorSearch(instructor.fullName); // Cập nhật input khi chọn
-                        setIsDropdownOpen(false); // Đóng dropdown
-                      }}
-                    >
-                      {instructor.fullName}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
             {/* Basic Info */}
             <div className="space-y-4">
               <textarea
@@ -480,74 +421,86 @@ const RecurringScheduleForm = () => {
                   {selectedCourse.title}
                 </h3>
                 {selectedClass && (
-                  <p className="text-gray-600">Lớp: {selectedClass.name}</p>
+                  <p className="text-gray-600 mt-1">{selectedClass.name}</p>
                 )}
               </div>
             )}
 
-            {/* Selected Instructor */}
-            {selectedInstructor && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h3 className="font-semibold text-gray-800">Giảng viên</h3>
-                <p className="text-gray-600">{selectedInstructor.fullName}</p>
+            {/* Schedule Details */}
+            {scheduleData.startDate && scheduleData.endDate && (
+              <div className="flex items-center space-x-2 text-gray-600">
+                <Calendar size={18} />
+                <span>
+                  {format(new Date(scheduleData.startDate), "dd/MM/yyyy", {
+                    locale: vi,
+                  })}{" "}
+                  -{" "}
+                  {format(new Date(scheduleData.endDate), "dd/MM/yyyy", {
+                    locale: vi,
+                  })}
+                </span>
               </div>
             )}
 
-            {/* Session Details */}
-            <div className="bg-gray-50 p-4 rounded-md">
-              <h3 className="font-semibold text-gray-800 mb-2">
-                Chi tiết buổi học
-              </h3>
-              <div className="space-y-2 text-gray-600">
-                <p>Thời lượng: {scheduleData.duration} phút</p>
-                <p>
-                  Hình thức:{" "}
-                  {
-                    sessionTypes.find(
-                      (t) => t.value === scheduleData.sessionType
-                    )?.label
-                  }
-                </p>
-                {scheduleData.sessionType === "ONLINE" &&
-                  scheduleData.onlineLink && (
-                    <p>Link học: {scheduleData.onlineLink}</p>
-                  )}
-                {scheduleData.sessionType === "OFFLINE" &&
-                  scheduleData.location && (
-                    <p>Địa điểm: {scheduleData.location}</p>
-                  )}
+            {scheduleData.startTime && (
+              <div className="flex items-center space-x-2 text-gray-600">
+                <Clock size={18} />
+                <span>
+                  {scheduleData.startTime} -{" "}
+                  {calculateEndTime(scheduleData.startTime, scheduleData.duration)}
+                </span>
               </div>
+            )}
+
+            {/* Selected Days */}
+            {scheduleData.daysOfWeek.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {scheduleData.daysOfWeek
+                  .sort((a, b) => a - b)
+                  .map((dayId) => (
+                    <span
+                      key={dayId}
+                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                    >
+                      {daysOfWeek.find((day) => day.id === dayId)?.name}
+                    </span>
+                  ))}
+              </div>
+            )}
+
+            {/* Session Type Info */}
+            <div className="bg-gray-50 p-4 rounded-md">
+              <p className="font-medium text-gray-700">
+                {sessionTypes.find((type) => type.value === scheduleData.sessionType)?.label}
+              </p>
+              {scheduleData.sessionType === "ONLINE" && scheduleData.onlineLink && (
+                <p className="text-gray-600 mt-1">{scheduleData.onlineLink}</p>
+              )}
+              {scheduleData.sessionType === "OFFLINE" && scheduleData.location && (
+                <p className="text-gray-600 mt-1">{scheduleData.location}</p>
+              )}
             </div>
 
             {/* Preview Calendar */}
             <div className="mt-6">
-              <h3 className="font-semibold text-gray-800 mb-4">
-                Lịch học dự kiến
-              </h3>
-              <div className="space-y-2">
+              <h3 className="font-semibold text-gray-800 mb-4">Lịch học dự kiến</h3>
+              <div className="space-y-2 max-h-96 overflow-y-auto">
                 {previewDates.map((session, index) => (
                   <div
                     key={index}
-                    className="flex items-center space-x-4 p-2 bg-gray-50 rounded-md"
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
                   >
-                    <Calendar size={16} className="text-gray-500" />
-                    <span className="text-gray-700">
-                      {format(session.date, "eeee, dd/MM/yyyy", { locale: vi })}
-                    </span>
-                    <Clock size={16} className="text-gray-500" />
-                    <span className="text-gray-700">
-                      {session.startTime} - {session.endTime}
-                    </span>
+                    <div>
+                      <p className="font-medium">
+                        {format(session.date, "EEEE, dd/MM/yyyy", { locale: vi })}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {session.startTime} - {session.endTime}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
-
-              {previewDates.length === 0 && (
-                <p className="text-gray-500 text-center py-4">
-                  Chọn ngày bắt đầu, kết thúc và các ngày trong tuần để xem
-                  trước lịch học
-                </p>
-              )}
             </div>
           </div>
         </div>

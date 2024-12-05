@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import { addClass } from '../../../services/courseClassService';
 import { getCourses } from '../../../services/coursesService';
+import userService from '../../../services/userService';
 
 const CreateCourseClass = () => {
   const [formData, setFormData] = useState({
@@ -11,25 +12,31 @@ const CreateCourseClass = () => {
     endDate: '',
     studyTime: '',
     studyDays: '',
-    status: 'ACTIVE'
+    status: 'ACTIVE',
+    instructorId: ''  // Add instructor ID field
   });
   
   const [courses, setCourses] = useState([]);
+  const [instructors, setInstructors] = useState([]); // Add instructors state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchData = async () => {
       try {
-        const coursesData = await getCourses();
+        const [coursesData, instructorsData] = await Promise.all([
+          getCourses(),
+          userService.getInstructors()
+        ]);
         setCourses(coursesData);
+        setInstructors(instructorsData);
       } catch (err) {
-        setError('Không thể tải danh sách khóa học. Vui lòng thử lại sau.');
+        setError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
       }
     };
 
-    fetchCourses();
+    fetchData();
   }, []);
 
   const handleChange = (e) => {
@@ -46,11 +53,9 @@ const CreateCourseClass = () => {
     setError('');
     
     try {
-      const response = await addClass(formData);
+      await addClass(formData);
 
-      if (!response.ok) {
-        throw new Error('Failed to create class');
-      }
+  
 
       setSuccess(true);
       setFormData({
@@ -60,7 +65,8 @@ const CreateCourseClass = () => {
         endDate: '',
         studyTime: '',
         studyDays: '',
-        status: 'ACTIVE'
+        status: 'ACTIVE',
+        instructorId: ''
       });
     } catch (err) {
       setError(err.message);
@@ -120,6 +126,26 @@ const CreateCourseClass = () => {
                 {courses.map((course) => (
                   <option key={course.id} value={course.id}>
                     {course.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Giảng Viên
+              </label>
+              <select
+                name="instructorId"
+                value={formData.instructorId}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value="">Chọn giảng viên</option>
+                {instructors.map((instructor) => (
+                  <option key={instructor.id} value={instructor.id}>
+                    {instructor.fullName}
                   </option>
                 ))}
               </select>

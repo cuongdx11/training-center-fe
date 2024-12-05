@@ -8,7 +8,7 @@ import {orderService} from '../../services/orderService';
 const PaymentManagementPage = () => {
     const [payments, setPayments] = useState([]);
     const [selectedPayment, setSelectedPayment] = useState(null);
-    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [viewMode, setViewMode] = useState(null); // 'view' or 'edit'
 
     // Dropdown data
     const [orders, setOrders] = useState([]);
@@ -36,12 +36,12 @@ const PaymentManagementPage = () => {
 
     const handleView = (payment) => {
         setSelectedPayment(payment);
-        // Implement view logic (maybe open a modal)
+        setViewMode('view');
     };
 
     const handleEdit = (payment) => {
         setSelectedPayment(payment);
-        setIsFormOpen(true);
+        setViewMode('edit');
     };
 
     const handleDelete = async (payment) => {
@@ -56,16 +56,15 @@ const PaymentManagementPage = () => {
     const handleSubmit = async (formData) => {
         try {
             if (selectedPayment) {
-                // Update existing payment
-                const updatedPayment = await paymentService.updatePaymentStatus(selectedPayment.id, formData);
+                // Only allow status update when in edit mode
+                const updatedPayment = await paymentService.updatePaymentStatus(selectedPayment.id, {
+                    status: formData.status
+                });
                 setPayments(payments.map(p => p.id === selectedPayment.id ? updatedPayment.data : p));
-            } else {
-                // Create new payment (if backend supports this)
-                const newPayment = await paymentService.createPayment(formData);
-                setPayments([...payments, newPayment.data]);
             }
             
-            setIsFormOpen(false);
+            // Reset view and selection
+            setViewMode(null);
             setSelectedPayment(null);
         } catch (error) {
             console.error('Failed to submit payment:', error);
@@ -73,7 +72,7 @@ const PaymentManagementPage = () => {
     };
 
     const handleCloseForm = () => {
-        setIsFormOpen(false);
+        setViewMode(null);
         setSelectedPayment(null);
     };
 
@@ -81,12 +80,6 @@ const PaymentManagementPage = () => {
         <div className="container mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-800">Payment Management</h1>
-                <button 
-                    onClick={() => setIsFormOpen(true)} 
-                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200"
-                >
-                    Create New Payment
-                </button>
             </div>
     
             <PaymentTable 
@@ -96,13 +89,20 @@ const PaymentManagementPage = () => {
                 onDelete={handleDelete}
             />
     
-            {isFormOpen && (
+            {viewMode === 'view' && selectedPayment && (
                 <PaymentForm 
-                    initialData={selectedPayment} 
-                    onSubmit={handleSubmit}
+                    payment={selectedPayment} 
                     onClose={handleCloseForm}
-                    orders={orders}
-                    paymentMethods={paymentMethods}
+                    readOnly={true}
+                />
+            )}
+
+            {viewMode === 'edit' && selectedPayment && (
+                <PaymentForm 
+                    payment={selectedPayment} 
+                    onClose={handleCloseForm}
+                    onSubmit={handleSubmit}
+                    editStatusOnly={true}
                 />
             )}
         </div>

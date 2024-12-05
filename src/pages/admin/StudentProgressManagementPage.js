@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 
 const StudentProgressManagementPage = () => {
-  const [students, setStudents] = useState([
+  const [students] = useState([
     {
       id: 1,
       name: 'Nguyễn Văn A',
