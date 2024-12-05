@@ -39,6 +39,8 @@ import CheckinPage from '../pages/instructor/CheckinPage';
 import CourseClassesPage from '../pages/CourseClassesPage';
 import SearchResults from '../components/SearchResults';
 import AdminProfile from '../components/admin/AdminProfile';
+import AttendanceManagementPage from '../pages/instructor/AttendanceManagementPage';
+import Invoice from '../components/Invoice';
 
 const publicRoutes = [
     {
@@ -148,7 +150,11 @@ const publicRoutes = [
         component: SearchResults,
         layout: MainLayout,
     },
-
+    {
+        path: '/test',
+        component: Invoice,
+        layout: MainLayout,
+    },
     {
         path: '/admin/login',
         component: AdminLogin,
@@ -196,6 +202,7 @@ const publicRoutes = [
           { path: "courses/create-class", component: CreateCourseClass},
           { path: "attendances", component: AttendanceManagement},
           { path: "create-attendance", component: CreateAttendanceSession},
+          { path: "attendance", component: AttendanceManagementPage},
           
         ]
           

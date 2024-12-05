@@ -32,7 +32,7 @@ const userService = {
   getAllUsers: async () => {
     try {
       const response = await api.get(`/users`);
-      return response.data;
+      return response.data.content;
     } catch (error) {
       throw error;
     }

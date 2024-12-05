@@ -46,3 +46,12 @@ export const getStudentOfClass = async(classId) => {
 }
 
 
+export const getClassOfInstructor = async() => {
+    try {
+        const response = await api.get(`/classes/instructor`)
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
