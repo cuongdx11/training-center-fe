@@ -7,12 +7,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Kiểm tra người dùng đã đăng nhập chưa khi component được mount
     checkAuth();
   }, []);
 
   const checkAuth = () => {
-    // Lấy thông tin user từ localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
