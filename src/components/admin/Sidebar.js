@@ -61,6 +61,20 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       ]
     },
     {
+      title: 'Review',
+      icon: <Users className="w-5 h-5" />,
+      submenu: [
+        { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/reviews' },
+      ]
+    },
+    {
+      title: 'Danh Mục',
+      icon: <Users className="w-5 h-5" />,
+      submenu: [
+        { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/reviews' },
+      ]
+    },
+    {
       title: 'Thanh Toán',
       icon: <Users className="w-5 h-5" />,
       submenu: [

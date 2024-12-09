@@ -22,3 +22,13 @@ export const listReviewByCourse = async (courseId) => {
         throw error;
     }
 }
+
+export const deleteReview = async (id) => {
+    try {
+        const response = await api.delete(`/review/${id}`);
+        return response.data;
+    }
+    catch (error) {
+        throw error;
+    }
+}

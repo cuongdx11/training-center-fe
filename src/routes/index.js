@@ -41,6 +41,8 @@ import SearchResults from '../components/SearchResults';
 import AdminProfile from '../components/admin/AdminProfile';
 import AttendanceManagementPage from '../pages/instructor/AttendanceManagementPage';
 import Invoice from '../components/Invoice';
+import ReviewManagementPage from '../pages/admin/ReviewManagementPage';
+import CourseReviewPage from '../pages/admin/CourseReviewPage';
 
 const publicRoutes = [
     {
@@ -181,7 +183,9 @@ const publicRoutes = [
           { path: "orders", component: OrderManagementPage},
           { path: "payments", component: PaymentManagementPage},
           { path: "profile", component: AdminProfile },
-          
+          { path: "reviews", component: ReviewManagementPage},
+          { path: "reviews/:courseId", component: CourseReviewPage},
+
         ]
           
       },
