@@ -43,6 +43,7 @@ import AttendanceManagementPage from '../pages/instructor/AttendanceManagementPa
 import Invoice from '../components/Invoice';
 import ReviewManagementPage from '../pages/admin/ReviewManagementPage';
 import CourseReviewPage from '../pages/admin/CourseReviewPage';
+import CategoryManagementPage from '../pages/admin/CategoryManagementPage';
 
 const publicRoutes = [
     {
@@ -185,6 +186,7 @@ const publicRoutes = [
           { path: "profile", component: AdminProfile },
           { path: "reviews", component: ReviewManagementPage},
           { path: "reviews/:courseId", component: CourseReviewPage},
+          { path: "categories", component: CategoryManagementPage},
 
         ]
           
