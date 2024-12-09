@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // Import useAuth từ AuthContext
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
-import { login as loginService } from '../../services/authService'; // Import dịch vụ đăng nhập
+import { adminLogin as loginService } from '../../services/authService'; // Import dịch vụ đăng nhập
 
 
 const AdminLogin = () => {
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -39,11 +40,21 @@ const AdminLogin = () => {
       const loginEvent = new Event('userLogin');
       window.dispatchEvent(loginEvent);
 
-      // Chuyển hướng sau khi đăng nhập thành công
-      navigate('/admin/dashboard'); // Ví dụ chuyển hướng đến trang dashboard của admin
+      
+      if (userData.roles.includes("ROLE_ADMIN")) {
+        navigate('/admin/dashboard',{ state: { loginSuccess: true } });
+      } else if (userData.roles.includes("ROLE_INSTRUCTOR")) {
+        navigate('/instructor/dashboard', { state: { loginSuccess: true } });
+      }
 
     } catch (err) {
-      setError(err.response?.data?.message || 'Đăng nhập thất bại');
+      if(err.response?.data?.message === 'Bad credentials') {
+        setError("Thông tin đăng nhập không hợp lệ")
+      }
+      else {
+        setError(err.response?.data?.message);
+      }
+      
     } finally {
       setIsLoading(false);
     }

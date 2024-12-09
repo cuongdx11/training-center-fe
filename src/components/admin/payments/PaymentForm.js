@@ -1,135 +1,133 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { X } from 'lucide-react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import InvoicePDF from './InvoicePDF'; // Import the PDF component
 
-const PaymentForm = ({ 
-    initialData, 
-    onSubmit, 
-    onClose, 
-    paymentMethods, 
-    orders 
-}) => {
-    const [formData, setFormData] = useState(initialData || {
-        orderId: '',
-        amount: '',
-        paymentMethodId: '',
-        status: 'PENDING'
+const PaymentForm = ({ payment, onClose }) => {
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
     });
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto">
+        <button 
+          onClick={onClose} 
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200 rounded-full p-2 hover:bg-gray-100"
+          aria-label="Close"
+        >
+          <X className="w-6 h-6" />
+        </button>
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-            <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto">
-                <button 
-                    onClick={onClose} 
-                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors duration-200 rounded-full p-2 hover:bg-gray-100"
-                    aria-label="Close"
-                >
-                    <X className="w-6 h-6" />
-                </button>
+        <div className="p-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">HÓA ĐƠN THANH TOÁN</h2>
+            <p className="text-gray-600">Mã giao dịch: {payment.transactionCode}</p>
+          </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6 p-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
-                        {initialData ? 'Edit Payment' : 'Create New Payment'}
-                    </h2>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Order</label>
-                            <select 
-                                name="orderId"
-                                value={formData.orderId}
-                                onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                required
-                            >
-                                <option value="">Select Order</option>
-                                {orders.map(order => (
-                                    <option key={order.id} value={order.id}>
-                                        {order.id}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Payment Method</label>
-                            <select 
-                                name="paymentMethodId"
-                                value={formData.paymentMethodId}
-                                onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                required
-                            >
-                                <option value="">Select Payment Method</option>
-                                {paymentMethods.map(method => (
-                                    <option key={method.id} value={method.id}>
-                                        {method.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Amount</label>
-                            <input 
-                                type="number" 
-                                name="amount"
-                                value={formData.amount}
-                                onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Enter payment amount"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                            <select 
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            >
-                                <option value="PENDING">Pending</option>
-                                <option value="COMPLETED">Completed</option>
-                                <option value="FAILED">Failed</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-end space-x-4 pt-4 border-t">
-                        <button 
-                            type="button"
-                            onClick={onClose}
-                            className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-200"
-                        >
-                            Cancel
-                        </button>
-                        <button 
-                            type="submit" 
-                            className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-200"
-                        >
-                            Save Payment
-                        </button>
-                    </div>
-                </form>
+          <div className="grid grid-cols-2 gap-8 mb-6">
+            <div>
+              <h3 className="font-semibold text-gray-700 mb-2">Thông tin khách hàng</h3>
+              <div className="space-y-2">
+                <p><span className="text-gray-600">Họ tên:</span> {payment.order.user.fullName}</p>
+                <p><span className="text-gray-600">Email:</span> {payment.order.user.email}</p>
+                <p><span className="text-gray-600">Số điện thoại:</span> {payment.order.user.phoneNumber}</p>
+                <p><span className="text-gray-600">Địa chỉ:</span> {payment.order.user.address}</p>
+              </div>
             </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-700 mb-2">Thông tin thanh toán</h3>
+              <div className="space-y-2">
+                <p><span className="text-gray-600">Phương thức:</span> {payment.paymentMethod.name}</p>
+                <p><span className="text-gray-600">Trạng thái:</span> 
+                  <span className={`ml-2 px-2 py-1 rounded-full text-sm ${
+                    payment.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
+                    payment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {payment.status === 'COMPLETED' ? 'Đã thanh toán' :
+                     payment.status === 'PENDING' ? 'Chờ thanh toán' : 'Thất bại'}
+                  </span>
+                </p>
+                <p><span className="text-gray-600">Ngày tạo:</span> {formatDate(payment.createdAt)}</p>
+                {payment.completedAt && (
+                  <p><span className="text-gray-600">Ngày hoàn thành:</span> {formatDate(payment.completedAt)}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h3 className="font-semibold text-gray-700 mb-2">Chi tiết khóa học</h3>
+            <div className="border rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Khóa học</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Giảng viên</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">Giá tiền</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payment.order.orderItems.map((item) => (
+                    <tr key={item.id} className="border-t">
+                      <td className="px-4 py-3">
+                        <div>
+                          <p className="font-medium">{item.course.title}</p>
+                          <p className="text-sm text-gray-500">{item.course.category.name}</p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        {item.course.instructors.map(instructor => instructor.fullName).join(', ')}
+                      </td>
+                      <td className="px-4 py-3 text-right">{formatCurrency(item.price)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr className="border-t">
+                    <td colSpan="2" className="px-4 py-3 text-right font-semibold">Tổng cộng:</td>
+                    <td className="px-4 py-3 text-right font-semibold">{formatCurrency(payment.amount)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4 pt-4 border-t">
+            <PDFDownloadLink 
+              document={<InvoicePDF payment={payment} />} 
+              fileName={`hoa-don-${payment.transactionCode}.pdf`}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+            >
+              {({ loading }) => (loading ? 'Đang tạo PDF...' : 'Xuất hóa đơn PDF')}
+            </PDFDownloadLink>
+            
+            <button 
+              onClick={onClose}
+              className="px-6 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition duration-200"
+            >
+              Đóng
+            </button>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default PaymentForm;

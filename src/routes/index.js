@@ -39,6 +39,11 @@ import CheckinPage from '../pages/instructor/CheckinPage';
 import CourseClassesPage from '../pages/CourseClassesPage';
 import SearchResults from '../components/SearchResults';
 import AdminProfile from '../components/admin/AdminProfile';
+import AttendanceManagementPage from '../pages/instructor/AttendanceManagementPage';
+import Invoice from '../components/Invoice';
+import ReviewManagementPage from '../pages/admin/ReviewManagementPage';
+import CourseReviewPage from '../pages/admin/CourseReviewPage';
+import CategoryManagementPage from '../pages/admin/CategoryManagementPage';
 
 const publicRoutes = [
     {
@@ -148,7 +153,11 @@ const publicRoutes = [
         component: SearchResults,
         layout: MainLayout,
     },
-
+    {
+        path: '/test',
+        component: Invoice,
+        layout: MainLayout,
+    },
     {
         path: '/admin/login',
         component: AdminLogin,
@@ -175,7 +184,10 @@ const publicRoutes = [
           { path: "orders", component: OrderManagementPage},
           { path: "payments", component: PaymentManagementPage},
           { path: "profile", component: AdminProfile },
-          
+          { path: "reviews", component: ReviewManagementPage},
+          { path: "reviews/:courseId", component: CourseReviewPage},
+          { path: "categories", component: CategoryManagementPage},
+
         ]
           
       },
@@ -196,6 +208,7 @@ const publicRoutes = [
           { path: "courses/create-class", component: CreateCourseClass},
           { path: "attendances", component: AttendanceManagement},
           { path: "create-attendance", component: CreateAttendanceSession},
+          { path: "attendance", component: AttendanceManagementPage},
           
         ]
           
