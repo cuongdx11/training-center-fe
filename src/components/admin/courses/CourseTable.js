@@ -21,7 +21,25 @@ const CourseTable = ({ courses, onEdit, onDelete }) => {
           {courses.map((course) => (
             <tr key={course.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">{course.id}</td>
-              <td className="px-6 py-4 whitespace-nowrap font-medium">{course.title}</td>
+              <td className="px-6 py-4 whitespace-nowrap font-medium">
+                  <div className="flex items-center">
+                    {course?.thumbnail && (
+                      <img 
+                        src={course.thumbnail} 
+                        alt={course.title} 
+                        className="w-12 h-12 rounded-md mr-3 object-cover"
+                      />
+                    )}
+                    <div>
+                      <div className="text-sm font-medium text-gray-900 truncate max-w-[200px]">
+                        {course?.title || 'Không có thông tin khóa học'}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {course?.level || 'Chưa xác định'}
+                      </div>
+                    </div>
+                  </div>
+              </td>
               <td className="px-6 py-4 whitespace-nowrap">{course.category?.name}</td>
               <td className="px-6 py-4 whitespace-nowrap">{Number(course.price).toLocaleString()}</td>
               <td className="px-6 py-4 whitespace-nowrap">{course.duration} tuần</td>

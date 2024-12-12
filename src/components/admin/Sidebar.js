@@ -62,21 +62,21 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     },
     {
       title: 'Review',
-      icon: <Users className="w-5 h-5" />,
+      icon: <ClipboardCheck className="w-5 h-5" />,
       submenu: [
         { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/reviews' },
       ]
     },
     {
       title: 'Danh Mục',
-      icon: <Users className="w-5 h-5" />,
+      icon: <ListChecks className="w-5 h-5" />,
       submenu: [
-        { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/reviews' },
+        { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/categories' },
       ]
     },
     {
       title: 'Thanh Toán',
-      icon: <Users className="w-5 h-5" />,
+      icon: <ShoppingBag className="w-5 h-5" />,
       submenu: [
         { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/payments' },
         { title: 'Tạo Thanh Toán', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { PlusCircle } from 'lucide-react';
 import CourseReviewTable from '../../components/admin/reviews/CourseReviewTable';
-import Modal from '../../components/admin/reviews/Modal';
+// import Modal from '../../components/admin/reviews/Modal';
 import Header from '../../components/admin/reviews/Header';
 import { getCourses } from '../../services/coursesService';
 import { deleteReview, listReviewByCourse } from '../../services/courseReview';
@@ -10,11 +10,10 @@ import { useParams } from 'react-router-dom';
 
 const CourseReviewPage = () => {
   const { courseId } = useParams();
-  const [courses, setCourses] = useState([]);
   const [courseReviews, setCourseReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false);
+  // const [showAddModal, setShowAddModal] = useState(false);
   const [courseName, setCourseName] = useState("");
 
   useEffect(() => {
@@ -31,7 +30,6 @@ const CourseReviewPage = () => {
       const course = coursesResponse.find(course => course.id === courseId);
       setCourseName(course?.title || "Khóa học không tìm thấy");
       
-      setCourses(coursesResponse);
       setCourseReviews(courseReviewsResponse);
     } catch (err) {
       setError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
@@ -74,7 +72,7 @@ const CourseReviewPage = () => {
     <div className="bg-white rounded-lg shadow">
       <Header 
         review = {courseName}
-        onAddClick={() => setShowAddModal(true)} 
+        // onAddClick={() => setShowAddModal(true)} 
       />
       <CourseReviewTable
         courseReviews={courseReviews}
