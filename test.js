@@ -1,1 +1,1 @@
-console.log("Thu nhanh moi ten cuong")
+console.log("Update nhanh cuong thu")
