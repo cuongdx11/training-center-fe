@@ -41,7 +41,7 @@ const CartPage = () => {
   const handleClearCart = async () => {
     try {
       await cartService.deleteCart();
-      await loadCart();
+      loadCart();
       window.location.reload(false);
     } catch (error) {
       console.error('Error clearing cart:', error);
@@ -103,7 +103,7 @@ const CartPage = () => {
 
                 <button
                   className="text-red-500 hover:text-red-700"
-                  onClick={() => handleDeleteItem(item.id)}
+                  onClick={() => handleDeleteItem(item.course.id)}
                 >
                   Xóa
                 </button>

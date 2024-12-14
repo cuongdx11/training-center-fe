@@ -48,12 +48,17 @@ const Header = () => {
     const fetchCartItemCount = async () => {
       try {
         const cart = await CartService.getCart();
-        setCartItemCount(cart.cartItems.length);
+        if (cart?.cartItems?.length >= 0) {
+          setCartItemCount(cart.cartItems.length);
+        } else {
+          console.warn("Invalid cart data format");
+          setCartItemCount(0); // Nếu dữ liệu không hợp lệ, đặt giá trị mặc định
+        }
+      } catch (error) {
+        console.error("Failed to fetch cart items:", error);
+        setCartItemCount(0);
       }
-      catch(error) {
-        throw error;
-      }
-    }
+    };
 
     if(user) {
       fetchCartItemCount();
