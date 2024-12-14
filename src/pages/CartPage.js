@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import cartService from '../services/cartService';
-import { MinusCircle, PlusCircle } from 'lucide-react';
+
 
 const CartPage = () => {
   const [cart, setCart] = useState(null);
@@ -19,7 +19,7 @@ const CartPage = () => {
   const loadCart = async () => {
     try {
       setLoading(true);
-      const cartData = await cartService.getCart(user.id);
+      const cartData = await cartService.getCart();
       setCart(cartData);
     } catch (error) {
       console.error('Error loading cart:', error);
@@ -28,14 +28,23 @@ const CartPage = () => {
     }
   };
 
-  const handleUpdateQuantity = async (courseId, newQuantity) => {
+  const handleDeleteItem = async (itemId) => {
     try {
-      if (newQuantity > 0) {
-        await cartService.addToCart(user.id, courseId, newQuantity);
-        await loadCart();
-      }
+      await cartService.deleteCartItem(itemId);
+      await loadCart();
+      window.location.reload(false);
     } catch (error) {
-      console.error('Error updating quantity:', error);
+      console.error('Error deleting cart item:', error);
+    }
+  };
+
+  const handleClearCart = async () => {
+    try {
+      await cartService.deleteCart();
+      await loadCart();
+      window.location.reload(false);
+    } catch (error) {
+      console.error('Error clearing cart:', error);
     }
   };
 
@@ -91,23 +100,13 @@ const CartPage = () => {
                     {Number(item.price).toLocaleString('vi-VN')}đ
                   </p>
                 </div>
-                
-                <div className="flex items-center gap-2">
-                  <button
-                    className="p-1 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => handleUpdateQuantity(item.course.id, item.quantity - 1)}
-                    disabled={item.quantity <= 1}
-                  >
-                    <MinusCircle className="h-5 w-5" />
-                  </button>
-                  <span className="w-8 text-center">{item.quantity}</span>
-                  <button
-                    className="p-1 rounded-full hover:bg-gray-100"
-                    onClick={() => handleUpdateQuantity(item.course.id, item.quantity + 1)}
-                  >
-                    <PlusCircle className="h-5 w-5" />
-                  </button>
-                </div>
+
+                <button
+                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleDeleteItem(item.id)}
+                >
+                  Xóa
+                </button>
               </div>
             </div>
           ))}
@@ -132,6 +131,12 @@ const CartPage = () => {
               onClick={handleCheckout}
             >
               Tiến hành thanh toán
+            </button>
+            <button
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              onClick={handleClearCart}
+            >
+              Xóa toàn bộ giỏ hàng
             </button>
           </div>
         </div>

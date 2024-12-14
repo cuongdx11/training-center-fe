@@ -14,8 +14,10 @@ import {
   Phone,
   Star,
   StarHalf,
+  ShoppingCart
 } from "lucide-react";
 import { createReview, listReviewByCourse } from "../services/courseReview";
+import cartService from "../services/cartService";
 
 const CourseDetail = ({ course }) => {
   const formatDate = (dateString) => {
@@ -85,6 +87,17 @@ const CourseDetail = ({ course }) => {
       setError(error.response?.data?.message || "Error submitting review");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleAddToCart = async (courseId) => {
+    try {
+      await cartService.addToCart(courseId);
+      alert('Khóa học đã được thêm vào giỏ hàng!');
+      window.location.reload(false);
+    } catch (error) {
+      console.error('Error adding course to cart:', error);
+      alert('Không thể thêm khóa học vào giỏ hàng. Vui lòng thử lại.');
     }
   };
 
@@ -478,6 +491,15 @@ const CourseDetail = ({ course }) => {
                     Đăng ký ngay
                   </button>
 
+                  <button
+                    onClick={() => {
+                      handleAddToCart(course.id);
+                    }}
+                    className="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-green-700 transition duration-300"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    Thêm vào giỏ hàng
+                  </button>
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-gray-100">

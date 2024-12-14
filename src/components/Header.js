@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FaUser, FaSearch, FaBell } from "react-icons/fa";
+import { FaUser, FaSearch, FaBell, FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import CartService from "../services/cartService";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -9,7 +10,7 @@ const Header = () => {
   const [notifications] = useState(5); // Giả sử có 5 thông báo
   const navigate = useNavigate();
   const { user, logout: authLogout } = useAuth();
-
+  const [cartItemCount, setCartItemCount] =useState(0);
 
   
   const handleDropdownToggle = () => {
@@ -43,6 +44,22 @@ const Header = () => {
     };
   }, [isDropdownOpen]);
 
+  useEffect(() => {
+    const fetchCartItemCount = async () => {
+      try {
+        const cart = await CartService.getCart();
+        setCartItemCount(cart.cartItems.length);
+      }
+      catch(error) {
+        throw error;
+      }
+    }
+
+    if(user) {
+      fetchCartItemCount();
+    }
+  }, [user]);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-blue-600 text-white shadow-md">
       <div className="container mx-auto grid grid-cols-3 items-center p-4">
@@ -74,6 +91,22 @@ const Header = () => {
 
         {/* User menu */}
         <div className="flex justify-end items-center relative user-menu space-x-4">
+
+          {/* Thêm biểu tượng giỏ hàng */}
+          {user && (
+            <div
+              className="relative cursor-pointer"
+              onClick={() => navigate("/my-cart")} // Điều hướng đến trang giỏ hàng
+            >
+            <FaShoppingCart size={24} />
+            {cartItemCount >= 0 && ( // Hiển thị số lượng sản phẩm nếu có
+            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              {cartItemCount}
+            </span>
+            )}
+            </div>
+          )}
+
           {/* Notification Icon */}
           {user && (
             <div className="relative cursor-pointer">
