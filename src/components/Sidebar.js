@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { UserCircle2, PlayCircle, ShoppingBag, Gift, LogOut } from 'lucide-react';
+import { UserCircle2, PlayCircle, ShoppingBag, Gift, LogOut, Menu, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ userName, userImage }) => {
   const [image, setImage] = useState(userImage);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,8 +21,21 @@ const Sidebar = ({ userName, userImage }) => {
 
   const isActive = (path) => location.pathname === path;
 
-  return (
-    <div className="w-72 bg-white min-h-screen shadow-sm sticky top-0">
+  const MenuButton = ({ icon: Icon, text, path, onClick }) => (
+    <button 
+      className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive(path) ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+      onClick={() => {
+        onClick();
+        setIsMobileMenuOpen(false);
+      }}
+    >
+      <Icon size={20} />
+      <span>{text}</span>
+    </button>
+  );
+
+  const SidebarContent = () => (
+    <>
       <div className="flex flex-col items-center p-6">
         <div className="relative mb-3">
           <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
@@ -50,45 +64,40 @@ const Sidebar = ({ userName, userImage }) => {
 
       <div className="px-6 space-y-1">
         <h3 className="font-medium mb-4">Tài khoản của tôi</h3>
-        <button 
-          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/profile') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+        <MenuButton 
+          icon={UserCircle2} 
+          text="Thông tin cá nhân" 
+          path="/profile"
           onClick={() => navigate('/profile')}
-        >
-          <UserCircle2 size={20} />
-          <span>Thông tin cá nhân</span>
-        </button>
-        <button 
-          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/my-courses') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+        />
+        <MenuButton 
+          icon={PlayCircle} 
+          text="Khóa học của tôi" 
+          path="/my-courses"
           onClick={() => navigate('/my-courses')}
-        >
-          <PlayCircle size={20} />
-          <span>Khóa học của tôi</span>
-        </button>
-        <button 
-          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/calendar') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+        />
+        <MenuButton 
+          icon={ShoppingBag} 
+          text="Lịch học" 
+          path="/calendar"
           onClick={() => navigate('/calendar')}
-        >
-          <ShoppingBag size={20} />
-          <span>Lịch học</span>
-        </button>
-        <button 
-          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/orders') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+        />
+        <MenuButton 
+          icon={ShoppingBag} 
+          text="Đơn hàng" 
+          path="/orders"
           onClick={() => navigate('/orders')}
-        >
-          <ShoppingBag size={20} />
-          <span>Đơn hàng</span>
-        </button>
+        />
       </div>
 
       <div className="px-6 mt-8 space-y-1">
         <h3 className="font-medium mb-4">Quà tặng</h3>
-        <button 
-          className={`w-full flex items-center space-x-3 py-3 px-4 ${isActive('/coupons') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-50'} rounded-md`}
+        <MenuButton 
+          icon={Gift} 
+          text="Phiếu giảm giá" 
+          path="/coupons"
           onClick={() => navigate('/coupons')}
-        >
-          <Gift size={20} />
-          <span>Phiếu giảm giá</span>
-        </button>
+        />
       </div>
 
       <div className="px-6 mt-8">
@@ -100,7 +109,37 @@ const Sidebar = ({ userName, userImage }) => {
           <span>Đăng xuất</span>
         </button>
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile Menu Toggle */}
+      <button 
+        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block w-72 bg-white min-h-screen shadow-sm sticky top-0">
+        <SidebarContent />
+      </div>
+
+      {/* Mobile Sidebar */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
+          <div 
+            className="absolute inset-0 bg-black opacity-50" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="absolute left-0 top-0 w-72 h-full bg-white shadow-lg overflow-y-auto">
+            <SidebarContent />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

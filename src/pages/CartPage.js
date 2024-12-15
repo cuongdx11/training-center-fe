@@ -103,7 +103,7 @@ const CartPage = () => {
 
                 <button
                   className="text-red-500 hover:text-red-700"
-                  onClick={() => handleDeleteItem(item.course.id)}
+                  onClick={() => handleDeleteItem(item.id)}
                 >
                   Xóa
                 </button>
