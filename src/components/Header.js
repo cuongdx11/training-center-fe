@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { FaUser, FaSearch, FaBell, FaShoppingCart } from "react-icons/fa";
+import { FaUser, FaSearch, FaBell, FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import CartService from "../services/cartService";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [notifications] = useState(5); // Giả sử có 5 thông báo
+  const [notifications] = useState(5);
   const navigate = useNavigate();
   const { user, logout: authLogout } = useAuth();
-  const [cartItemCount, setCartItemCount] =useState(0);
+  const [cartItemCount, setCartItemCount] = useState(0);
 
-  
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -22,13 +22,19 @@ const Header = () => {
     navigate("/login");
     const logoutEvent = new Event("userLogout");
     window.dispatchEvent(logoutEvent);
+    setIsMobileMenuOpen(false);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setIsMobileMenuOpen(false);
     }
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   useEffect(() => {
@@ -48,12 +54,17 @@ const Header = () => {
     const fetchCartItemCount = async () => {
       try {
         const cart = await CartService.getCart();
-        setCartItemCount(cart.cartItems.length);
+        if (cart?.cartItems?.length >= 0) {
+          setCartItemCount(cart.cartItems.length);
+        } else {
+          console.warn("Invalid cart data format");
+          setCartItemCount(0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch cart items:", error);
+        setCartItemCount(0);
       }
-      catch(error) {
-        throw error;
-      }
-    }
+    };
 
     if(user) {
       fetchCartItemCount();
@@ -62,7 +73,8 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-blue-600 text-white shadow-md">
-      <div className="container mx-auto grid grid-cols-3 items-center p-4">
+      {/* Desktop Header */}
+      <div className="container mx-auto hidden md:grid md:grid-cols-3 items-center p-4">
         {/* Logo */}
         <div className="text-2xl font-bold">
           <a href="/" className="hover:text-blue-100">
@@ -71,14 +83,14 @@ const Header = () => {
         </div>
 
         {/* Search bar */}
-        <div className="mx-auto">
+        <div className="mx-auto w-full">
           <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm kiếm khóa học..."
-              className="w-96 px-4 py-2 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-sm"
+              className="w-full max-w-96 px-4 py-2 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-sm"
             />
             <button
               type="submit"
@@ -91,19 +103,18 @@ const Header = () => {
 
         {/* User menu */}
         <div className="flex justify-end items-center relative user-menu space-x-4">
-
-          {/* Thêm biểu tượng giỏ hàng */}
+          {/* Cart Icon */}
           {user && (
             <div
               className="relative cursor-pointer"
-              onClick={() => navigate("/my-cart")} // Điều hướng đến trang giỏ hàng
+              onClick={() => navigate("/my-cart")}
             >
-            <FaShoppingCart size={24} />
-            {cartItemCount >= 0 && ( // Hiển thị số lượng sản phẩm nếu có
-            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-              {cartItemCount}
-            </span>
-            )}
+              <FaShoppingCart size={24} />
+              {cartItemCount >= 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
             </div>
           )}
 
@@ -168,6 +179,112 @@ const Header = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Mobile Header */}
+      <div className="md:hidden">
+        {/* Mobile Top Bar */}
+        <div className="flex justify-between items-center p-4">
+          {/* Mobile Logo */}
+          <a href="/" className="text-xl font-bold">
+            Trung Tâm Đào Tạo Lập Trình
+          </a>
+
+          {/* Mobile Menu Toggle */}
+          <div className="flex items-center space-x-4">
+            {user && (
+              <div
+                className="relative cursor-pointer"
+                onClick={() => navigate("/my-cart")}
+              >
+                <FaShoppingCart size={24} />
+                {cartItemCount >= 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartItemCount}
+                  </span>
+                )}
+              </div>
+            )}
+            <button onClick={toggleMobileMenu}>
+              {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        {isMobileMenuOpen && (
+          <div className="absolute top-full left-0 w-full bg-blue-600 text-white z-50">
+            {/* Mobile Search */}
+            <div className="p-4">
+              <form onSubmit={handleSearch} className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Tìm kiếm khóa học..."
+                  className="w-full px-4 py-2 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-sm"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600 transition duration-200"
+                >
+                  <FaSearch />
+                </button>
+              </form>
+            </div>
+
+            {/* Mobile User Menu */}
+            {user ? (
+              <div className="p-4 space-y-4">
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={user.profilePicture}
+                    alt="User Avatar"
+                    className="w-12 h-12 rounded-full border-2 border-white"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/default-avatar.png";
+                    }}
+                  />
+                  <div>
+                    <p className="font-semibold">{user.name}</p>
+                    <p className="text-sm text-blue-200">{user.email}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <a
+                    href="/profile"
+                    className="block px-4 py-2 bg-blue-500 rounded hover:bg-blue-400 transition duration-200"
+                  >
+                    Hồ Sơ
+                  </a>
+                  <a
+                    href="/my-courses"
+                    className="block px-4 py-2 bg-blue-500 rounded hover:bg-blue-400 transition duration-200"
+                  >
+                    Khóa Học Của Tôi
+                  </a>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 bg-red-600 rounded hover:bg-red-500 transition duration-200"
+                  >
+                    Đăng Xuất
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4">
+                <a
+                  href="/login"
+                  className="block w-full px-4 py-2 bg-blue-500 rounded hover:bg-blue-400 transition duration-200 text-center"
+                >
+                  Đăng Nhập
+                </a>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </header>
   );

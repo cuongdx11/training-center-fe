@@ -41,7 +41,7 @@ const CartPage = () => {
   const handleClearCart = async () => {
     try {
       await cartService.deleteCart();
-      await loadCart();
+      loadCart();
       window.location.reload(false);
     } catch (error) {
       console.error('Error clearing cart:', error);

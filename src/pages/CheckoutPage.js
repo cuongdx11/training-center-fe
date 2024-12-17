@@ -48,8 +48,8 @@ const CheckoutPage = () => {
     setError('');
 
     try {
-      const order = await orderService.checkout(selectedPaymentMethod);
-      navigate(`/orders/${order.id}`);
+      const response = await orderService.checkout(selectedPaymentMethod);
+      navigate(`/orders/${response.order.id}`);
     } catch (error) {
       setError('Failed to process checkout. Please try again.');
       console.error('Checkout error:', error);
