@@ -22,7 +22,7 @@ const CourseRevenueStats = () => {
             const toDate = format(dateRange.to, 'yyyy-MM-dd');
             
             const response = await getRevenueByCourse(fromDate, toDate);
-            
+          
             const sortedData = response.data.sort((a, b) => b.totalRevenue - a.totalRevenue);
             
             setRevenueData(sortedData);
