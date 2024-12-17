@@ -44,6 +44,9 @@ import Invoice from '../components/Invoice';
 import ReviewManagementPage from '../pages/admin/ReviewManagementPage';
 import CourseReviewPage from '../pages/admin/CourseReviewPage';
 import CategoryManagementPage from '../pages/admin/CategoryManagementPage';
+import CreateNotificationForm from '../components/admin/notification/CreateNotificationForm';
+import SendNotificationForm from '../components/instructor/SendNotificationForm';
+import InstructorSchedule from '../components/instructor/InstructorSchedule';
 
 const publicRoutes = [
     {
@@ -188,6 +191,8 @@ const publicRoutes = [
           { path: "reviews/:courseId", component: CourseReviewPage},
           { path: "categories", component: CategoryManagementPage},
 
+          { path: "create-notification", component: CreateNotificationForm },
+          
         ]
           
       },
@@ -209,6 +214,8 @@ const publicRoutes = [
           { path: "attendances", component: AttendanceManagement},
           { path: "create-attendance", component: CreateAttendanceSession},
           { path: "attendance", component: AttendanceManagementPage},
+          { path: "send-notification", component: SendNotificationForm },
+          { path: "schedules", component: InstructorSchedule },
           
         ]
           

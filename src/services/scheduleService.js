@@ -30,4 +30,12 @@ export const getScheduleByUser = async() => {
     }
 }
 
+export const getScheduleByInstructor = async () => {
+    try {
+        const response = await axios.get(`/schedule/instructor`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 
