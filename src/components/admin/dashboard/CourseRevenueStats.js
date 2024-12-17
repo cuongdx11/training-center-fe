@@ -23,7 +23,6 @@ const CourseRevenueStats = () => {
             
             const response = await getRevenueByCourse(fromDate, toDate);
             
-            // Sort data by total revenue in descending order
             const sortedData = response.data.sort((a, b) => b.totalRevenue - a.totalRevenue);
             
             setRevenueData(sortedData);
