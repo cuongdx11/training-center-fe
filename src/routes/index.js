@@ -41,6 +41,9 @@ import SearchResults from '../components/SearchResults';
 import AdminProfile from '../components/admin/AdminProfile';
 import AttendanceManagementPage from '../pages/instructor/AttendanceManagementPage';
 import Invoice from '../components/Invoice';
+import CreateNotificationForm from '../components/admin/notification/CreateNotificationForm';
+import SendNotificationForm from '../components/instructor/SendNotificationForm';
+import InstructorSchedule from '../components/instructor/InstructorSchedule';
 
 const publicRoutes = [
     {
@@ -181,6 +184,7 @@ const publicRoutes = [
           { path: "orders", component: OrderManagementPage},
           { path: "payments", component: PaymentManagementPage},
           { path: "profile", component: AdminProfile },
+          { path: "create-notification", component: CreateNotificationForm },
           
         ]
           
@@ -203,6 +207,8 @@ const publicRoutes = [
           { path: "attendances", component: AttendanceManagement},
           { path: "create-attendance", component: CreateAttendanceSession},
           { path: "attendance", component: AttendanceManagementPage},
+          { path: "send-notification", component: SendNotificationForm },
+          { path: "schedules", component: InstructorSchedule },
           
         ]
           

@@ -16,7 +16,8 @@ import {
   ClipboardCheck,
   ListChecks,
   ShoppingBag,
-  CirclePlus 
+  CirclePlus,
+  Bell
 } from 'lucide-react';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
@@ -73,7 +74,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       icon: <Settings className="w-5 h-5" />,
       submenu: [
         { title: 'Phân Quyền', icon: <List className="w-5 h-5" />, path: '/admin/user-role' },
-        { title: 'Quyền Và Vai Trò', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }
+        { title: 'Quyền Và Vai Trò', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' },
+        { title: 'Gửi thông báo', icon: <Bell className="w-5 h-5" />, path: '/admin/create-notification' }
       ]
     }
   ];
@@ -98,7 +100,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       icon: <User className="w-5 h-5" />,
       submenu: [
         { title: 'Tiến Độ Học Tập', icon: <ListChecks className="w-5 h-5" />, path: '/instructor/student-process' },
-        { title: 'Điểm Danh', icon: <ClipboardCheck className="w-5 h-5" />, path: '/instructor/create-attendance' }
+        { title: 'Điểm Danh', icon: <ClipboardCheck className="w-5 h-5" />, path: '/instructor/create-attendance' },
+        { title: 'Gửi thông báo', icon: <Bell className="w-5 h-5" />, path: '/instructor/send-notification' }
       ]
     }
   ];
