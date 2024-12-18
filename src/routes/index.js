@@ -47,6 +47,10 @@ import CategoryManagementPage from '../pages/admin/CategoryManagementPage';
 import CreateNotificationForm from '../components/admin/notification/CreateNotificationForm';
 import SendNotificationForm from '../components/instructor/SendNotificationForm';
 import InstructorSchedule from '../components/instructor/InstructorSchedule';
+import AssignmentsPage from '../pages/instructor/AssignmentsPage';
+import SubmissionsPage from '../components/instructor/assignments/SubmissionsPage';
+import AssignmentListPage from '../pages/AssignmentListPage';
+import AssignmentDetailPage from '../pages/AssignmentDetailPage';
 
 const publicRoutes = [
     {
@@ -162,6 +166,18 @@ const publicRoutes = [
         layout: MainLayout,
     },
     {
+        path: '/assignments',
+        component: AssignmentListPage,
+        layout: MainLayout,
+        protected: true,
+    },
+    {
+        path: '/assignments/:assignmentId/submissions',
+        component: AssignmentDetailPage,
+        layout: MainLayout,
+        protected: true,
+    },
+    {
         path: '/admin/login',
         component: AdminLogin,
         layout: AdminAuthLayout,
@@ -216,6 +232,8 @@ const publicRoutes = [
           { path: "attendance", component: AttendanceManagementPage},
           { path: "send-notification", component: SendNotificationForm },
           { path: "schedules", component: InstructorSchedule },
+          { path: "assignments", component: AssignmentsPage },
+          { path: "assignments/:assignmentId/submissions", component: SubmissionsPage },
           
         ]
           
