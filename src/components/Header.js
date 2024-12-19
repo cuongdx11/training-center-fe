@@ -11,14 +11,21 @@ const Header = () => {
   const [notifications, setNotifications] = useState([]);
   const [cartItemCount, setCartItemCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showMobileNotifications, setShowMobileNotifications] = useState(false);
   const navigate = useNavigate();
   const { user, logout: authLogout } = useAuth();
 
   const toggleDropdown = (dropdownType) => {
     setActiveDropdown(activeDropdown === dropdownType ? null : dropdownType);
 
-    // Fetch notifications when notification dropdown is opened
     if (dropdownType === "notifications" && notifications.length === 0) {
+      fetchNotifications();
+    }
+  };
+
+  const toggleMobileNotifications = () => {
+    setShowMobileNotifications(!showMobileNotifications);
+    if (!showMobileNotifications && notifications.length === 0) {
       fetchNotifications();
     }
   };
@@ -41,6 +48,7 @@ const Header = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    setShowMobileNotifications(false);
   };
 
   useEffect(() => {
@@ -88,7 +96,6 @@ const Header = () => {
     }
   };
 
-  // Function to format relative time
   const formatRelativeTime = (timestamp) => {
     const date = new Date(timestamp);
     const now = new Date();
@@ -99,6 +106,45 @@ const Header = () => {
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
     return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
   };
+
+  const NotificationsList = ({ isMobile = false }) => (
+    <div className={`${isMobile ? 'w-full' : 'w-96'} bg-white text-black rounded-lg shadow-lg py-2 ${isMobile ? '' : 'absolute right-0 top-full mt-2'} z-50 border border-gray-200`}>
+      <div className="px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-gray-800">Thông Báo</h3>
+        <span className="text-sm text-gray-500">
+          {notifications.length} thông báo mới
+        </span>
+      </div>
+      <div className="max-h-80 overflow-y-auto">
+        {notifications.map((notification, index) => (
+          <div
+            key={index}
+            className="px-4 py-3 hover:bg-gray-100 transition duration-200 border-b border-gray-100 last:border-b-0 group"
+          >
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0 mt-1">
+                <FaClock className="text-gray-400 group-hover:text-blue-500 transition" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-800 mb-1">
+                  {notification.creator.name}
+                </p>
+                <p className="text-sm font-semibold text-gray-800 mb-1">
+                  Tiêu đề: {notification.title}
+                </p>
+                <p className="text-xs text-gray-500 mb-1">
+                  Nội dung: {notification.message}
+                </p>
+                <div className="text-xs text-gray-400 flex items-center space-x-1">
+                  <span>{formatRelativeTime(notification.createdAt)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-blue-600 text-white shadow-md">
@@ -211,41 +257,9 @@ const Header = () => {
             </div>
           )}
 
-          {/* Notification Dropdown */}
+          {/* Desktop Notifications Dropdown */}
           {activeDropdown === "notifications" && notifications.length > 0 && (
-            <div className="absolute right-0 top-full mt-2 w-96 bg-white text-black rounded-lg shadow-lg py-2 z-50 border border-gray-200">
-              <div className="px-4 py-2 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-800">Thông Báo</h3>
-                <span className="text-sm text-gray-500">
-                  {notifications.length} thông báo mới
-                </span>
-              </div>
-              <div className="max-h-80 overflow-y-auto">
-                {notifications.map((notification, index) => (
-                  <div
-                    key={index}
-                    className="px-4 py-3 hover:bg-gray-100 transition duration-200 border-b border-gray-100 last:border-b-0 group"
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 mt-1">
-                        <FaClock className="text-gray-400 group-hover:text-blue-500 transition" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-800 mb-1">
-                          {notification.title}
-                        </p>
-                        <p className="text-xs text-gray-500 mb-1">
-                          {notification.message}
-                        </p>
-                        <div className="text-xs text-gray-400 flex items-center space-x-1">
-                          <span>{formatRelativeTime(notification.createdAt)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <NotificationsList />
           )}
         </div>
       </div>
@@ -262,17 +276,30 @@ const Header = () => {
           {/* Mobile Menu Toggle */}
           <div className="flex items-center space-x-4">
             {user && (
-              <div
-                className="relative cursor-pointer"
-                onClick={() => navigate("/my-cart")}
-              >
-                <FaShoppingCart size={24} />
-                {cartItemCount >= 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartItemCount}
-                  </span>
-                )}
-              </div>
+              <>
+                <div
+                  className="relative cursor-pointer"
+                  onClick={() => navigate("/my-cart")}
+                >
+                  <FaShoppingCart size={24} />
+                  {cartItemCount >= 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="relative cursor-pointer"
+                  onClick={toggleMobileNotifications}
+                >
+                  <FaBell size={24} />
+                  {notifications.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {notifications.length}
+                    </span>
+                  )}
+                </div>
+              </>
             )}
             <button onClick={toggleMobileMenu}>
               {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
@@ -280,9 +307,16 @@ const Header = () => {
           </div>
         </div>
 
+        {/* Mobile Notifications Panel */}
+        {showMobileNotifications && notifications.length > 0 && (
+          <div className="absolute top-full left-0 w-full z-50">
+            <NotificationsList isMobile={true} />
+          </div>
+        )}
+
         {/* Mobile Dropdown Menu */}
         {isMobileMenuOpen && (
-          <div className="absolute top-full left-0 w-full bg-blue-600 text-white z-50">
+          <div className="absolute top-full left-0 w-full bg-blue-600 text-white z-40">
             {/* Mobile Search */}
             <div className="p-4">
               <form onSubmit={handleSearch} className="relative">
