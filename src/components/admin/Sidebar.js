@@ -106,7 +106,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       title: 'Khóa Học',
       icon: <BookOpen className="w-5 h-5" />,
       submenu: [
-        { title: 'Danh Sách Khóa Học', icon: <List className="w-5 h-5" />, path: '/instructor/courses' },
+        { title: 'Danh Sách Lớp', icon: <List className="w-5 h-5" />, path: '/instructor/classes' },
         { title: 'Lịch Dạy', icon: <FileText className="w-5 h-5" />, path: '/instructor/schedules' }
       ]
     },
