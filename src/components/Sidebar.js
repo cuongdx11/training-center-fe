@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { UserCircle2, PlayCircle, ShoppingBag, Gift, LogOut, Menu, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ userName, userImage }) => {
   const [image, setImage] = useState(userImage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout: authLogout } = useAuth();
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -17,6 +19,14 @@ const Sidebar = ({ userName, userImage }) => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleLogout = () => {
+    authLogout();
+    navigate("/login");
+    const logoutEvent = new Event("userLogout");
+    window.dispatchEvent(logoutEvent);
+    setIsMobileMenuOpen(false);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -103,7 +113,7 @@ const Sidebar = ({ userName, userImage }) => {
       <div className="px-6 mt-8">
         <button 
           className="w-full flex items-center justify-center space-x-2 py-3 bg-blue-600 text-white rounded-md"
-          onClick={() => navigate('/logout')}
+          onClick={handleLogout}
         >
           <LogOut size={20} />
           <span>Đăng xuất</span>

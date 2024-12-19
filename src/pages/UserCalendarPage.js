@@ -58,12 +58,12 @@ const UserCalendarPage = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <div className="hidden md:block">
+      {/* <div className="hidden md:block"> */}
         <Sidebar 
           userName={userInfo?.fullName} 
           userImage={userInfo?.profilePicture} 
         />
-      </div>
+      {/* </div> */}
       <div className="flex-1 p-8">
         <div className="max-w-4xl mx-auto">
           <div className="md:hidden mb-6">
