@@ -103,7 +103,7 @@ const AssignmentDetailPage = () => {
                         <div>
                             <p className="text-sm text-gray-600">Hạn nộp</p>
                             <p className="font-medium text-red-600">
-                                {new Date(assignment.deadline).toLocaleDateString()}
+                                {new Date(assignment.dueDate).toLocaleDateString()}
                             </p>
                         </div>
                     </div>

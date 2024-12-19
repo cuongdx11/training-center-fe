@@ -51,6 +51,7 @@ import AssignmentsPage from '../pages/instructor/AssignmentsPage';
 import SubmissionsPage from '../components/instructor/assignments/SubmissionsPage';
 import AssignmentListPage from '../pages/AssignmentListPage';
 import AssignmentDetailPage from '../pages/AssignmentDetailPage';
+import InstructorClasses from '../components/instructor/InstructorClasses';
 
 const publicRoutes = [
     {
@@ -234,6 +235,7 @@ const publicRoutes = [
           { path: "schedules", component: InstructorSchedule },
           { path: "assignments", component: AssignmentsPage },
           { path: "assignments/:assignmentId/submissions", component: SubmissionsPage },
+          { path: "classes", component: InstructorClasses },
           
         ]
           

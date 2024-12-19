@@ -57,10 +57,10 @@ const AssignmentListPage = () => {
                                             {assignment.title}
                                         </h2>
                                         <span 
-                                            className={`font-medium ${getStatusColor(assignment.deadline)}`}
+                                            className={`font-medium ${getStatusColor(assignment.dueDate)}`}
                                         >
                                             <Clock className="inline-block mr-2" size={18} />
-                                            Hạn nộp: {new Date(assignment.deadline).toLocaleDateString()}
+                                            Hạn nộp: {new Date(assignment.dueDate).toLocaleDateString()}
                                         </span>
                                     </div>
 
