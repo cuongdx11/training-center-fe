@@ -78,3 +78,12 @@ export const getAssignmentsOfStudent = async () => {
     }
 };
 
+export const getAssignmentsOfInstructor = async () => {
+    try {
+        const response = await api.get('/assignments/instructor');
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+

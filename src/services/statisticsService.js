@@ -30,3 +30,12 @@ export const getUserStatistics = async () => {
         throw error;
     }
 }
+
+export const getInstructorStatistics = async () => {
+    try {
+      const response = await api.get('/statistics/instructor');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
