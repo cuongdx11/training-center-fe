@@ -65,6 +65,11 @@ const ReviewManagementPage = () => {
 
   return (
     <div className="bg-white rounded-lg shadow">
+
+    <div className="flex justify-between items-center p-6 border-b">
+      <h1 className="text-2xl font-bold text-gray-800">Chọn khóa học muốn xem review</h1>
+    </div>
+
       <SearchBar value={searchTerm} onChange={handleSearch} />
       <CourseTable
         courses={filteredCourses}

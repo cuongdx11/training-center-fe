@@ -24,6 +24,15 @@ export const getClassByCourseId = async(courseId) => {
         throw error;
     }
 }
+export const getClassById = async(Id) => {
+    try {
+        const response = await api.get(`/classes/${Id}`)
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
 
 export const getClass = async() => {
     try {
@@ -52,6 +61,23 @@ export const getClassOfInstructor = async() => {
         return response.data;
     }
     catch(error) {
+        throw error;
+    }
+}
+
+export const updateClass = async(id, data) => {
+    try {
+        const response = await api.put(`/classes/${id}`, data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const deleteClass = async(id) => {
+    try {
+        return await api.delete(`/classes/${id}`);
+    } catch (error) {
         throw error;
     }
 }
