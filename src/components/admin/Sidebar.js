@@ -43,7 +43,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
         { title: 'Lộ Trình Học', icon: <Clock className="w-5 h-5" />, path: '/admin/courses/roadmap' },
         { title: 'Lịch Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/schedules' },
         { title: 'Tạo Lịch Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/recurring' },
-        { title: 'Tạo Lớp Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/create-class' }
+        { title: 'Tạo Lớp Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/create-class' },
+        { title: 'Danh sách lớp học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/classes' }
       ]
     },
     {

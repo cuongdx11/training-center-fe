@@ -53,6 +53,7 @@ import AssignmentListPage from '../pages/AssignmentListPage';
 import AssignmentDetailPage from '../pages/AssignmentDetailPage';
 import InstructorClasses from '../components/instructor/InstructorClasses';
 import DashboardInstructorPage from '../pages/instructor/DashboardInstructorPage';
+import CourseClassPage from '../pages/admin/CourseClassPage';
 
 const publicRoutes = [
     {
@@ -208,7 +209,7 @@ const publicRoutes = [
           { path: "reviews", component: ReviewManagementPage},
           { path: "reviews/:courseId", component: CourseReviewPage},
           { path: "categories", component: CategoryManagementPage},
-
+          { path: "courses/classes", component: CourseClassPage },
           { path: "create-notification", component: CreateNotificationForm },
           
         ]
