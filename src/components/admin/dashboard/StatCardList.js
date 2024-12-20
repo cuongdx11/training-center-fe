@@ -33,7 +33,7 @@ const StatCardList = () => {
             color: 'bg-green-500'
           },
           {
-                title: 'Số Cơ Sở',
+                title: 'Tổng doanh thu',
                 value: '2',
                 icon: <DollarSign className="w-6 h-6 text-white" />,
                 color: 'bg-yellow-500'

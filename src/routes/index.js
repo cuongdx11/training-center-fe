@@ -52,6 +52,7 @@ import SubmissionsPage from '../components/instructor/assignments/SubmissionsPag
 import AssignmentListPage from '../pages/AssignmentListPage';
 import AssignmentDetailPage from '../pages/AssignmentDetailPage';
 import InstructorClasses from '../components/instructor/InstructorClasses';
+import DashboardInstructorPage from '../pages/instructor/DashboardInstructorPage';
 
 const publicRoutes = [
     {
@@ -219,7 +220,7 @@ const publicRoutes = [
         protected: true,
         children: [
           { path: "courses", component: CourseManagementPage },
-          { path: "dashboard", component: DashboardPage},
+          { path: "dashboard", component: DashboardInstructorPage},
           { path: "courses/schedules", component: ScheduleManagementPage},
           { path: "courses/roadmap", component: CourseRoadmapPage},
           { path: "courses/recurring", component: RecurringScheduleForm},
