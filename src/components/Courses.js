@@ -7,22 +7,26 @@ const Courses = () => {
     const [coursesData, setCoursesData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+    const [totalPages, setTotalPages] = useState(0); // Tổng số trang
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCourses = async () => {
-            try {
-                const response = await getCourses();
-                setCoursesData(response);
-            } catch (err) {
-                setError(err.response?.data?.message || 'Không thể tải danh sách khóa học');
-            } finally {
-                setLoading(false);
-            }
+          setLoading(true);
+          try {
+            const response = await getCourses(currentPage, 10); // Lấy 10 mục mỗi trang
+            setCoursesData(response.content); // Dữ liệu khóa học
+            setTotalPages(response.totalPages); // Tổng số trang
+          } catch (err) {
+            setError('Không thể tải danh sách khóa học');
+          } finally {
+            setLoading(false);
+          }
         };
-
+      
         fetchCourses();
-    }, []);
+    }, [currentPage]); // Thay đổi dữ liệu khi trang hiện tại thay đổi
 
     const handleCourseClick = (courseId) => {
         navigate(`/courses/${courseId}`);
@@ -128,6 +132,46 @@ const Courses = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+                <div className="flex justify-center mt-4">
+                    {/* Nút nhảy về trang đầu */}
+                    {currentPage > 0 && (
+                        <button
+                        onClick={() => setCurrentPage(0)}
+                        className="px-4 py-2 mx-1 rounded bg-gray-200"
+                        >
+                        &laquo;
+                        </button>
+                    )}
+
+                    {/* Các nút chuyển trang */}
+                    {Array.from({ length: totalPages })
+                        .map((_, index) => index)
+                        .filter((index) => 
+                        index >= Math.max(0, currentPage - 2) && 
+                        index <= Math.min(totalPages - 1, currentPage + 2)
+                        )
+                        .map((index) => (
+                        <button
+                            key={index}
+                            onClick={() => setCurrentPage(index)}
+                            className={`px-4 py-2 mx-1 rounded ${
+                            currentPage === index ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                            }`}
+                        >
+                            {index + 1}
+                        </button>
+                        ))}
+
+                    {/* Nút nhảy đến trang cuối */}
+                    {currentPage < totalPages - 1 && (
+                        <button
+                        onClick={() => setCurrentPage(totalPages - 1)}
+                        className="px-4 py-2 mx-1 rounded bg-gray-200"
+                        >
+                        &raquo;
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

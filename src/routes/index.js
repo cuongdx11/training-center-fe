@@ -60,6 +60,7 @@ import ClassDetailPage from '../pages/ClassDetailPage';
 import ClassPage from '../pages/ClassPage';
 import ChangePasswordPage from '../pages/ChangePasswordPage';
 
+import InstructorsPage from '../pages/InstructorsPage';
 
 const publicRoutes = [
     {
@@ -80,6 +81,11 @@ const publicRoutes = [
     {
         path: '/courses',
         component: CoursesPage,
+        layout: MainLayout,
+    },
+    {
+        path: '/instructors',
+        component: InstructorsPage,
         layout: MainLayout,
     },
     {

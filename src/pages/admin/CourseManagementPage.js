@@ -8,6 +8,7 @@ import Header from '../../components/admin/courses/Header';
 import { getCourses, addCourse, updateCourse, deleteCourse } from '../../services/coursesService';
 import { getCategories } from '../../services/categoryService';
 import  userService  from '../../services/userService';
+import Pagination from '../../components/Pagination';
 
 const CourseManagementPage = () => {
   const [courses, setCourses] = useState([]);
@@ -19,6 +20,8 @@ const CourseManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+  const [totalPages, setTotalPages] = useState(0); // Tổng số trang
 
   const emptyCourseForm = {
     categoryId: "",
@@ -36,18 +39,19 @@ const CourseManagementPage = () => {
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [currentPage]);
 
   const fetchInitialData = async () => {
     try {
       setLoading(true);
       const [coursesResponse, categoriesResponse, instructorsResponse] = await Promise.all([
-        getCourses(),
+        getCourses(currentPage, 10),
         getCategories(),
         userService.getInstructors()
       ]);
       
-      setCourses(coursesResponse);
+      setCourses(coursesResponse.content); // Lấy dữ liệu từ trang hiện tại
+      setTotalPages(coursesResponse.totalPages); // Tổng số trang
       setCategories(categoriesResponse.data);
       setInstructors(instructorsResponse);
     } catch (err) {
@@ -137,6 +141,12 @@ const CourseManagementPage = () => {
         courses={filteredCourses}
         onEdit={handleEditClick}
         onDelete={handleDeleteCourse}
+      />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage} // Thay đổi trạng thái currentPage
       />
 
       {/* Add Course Modal */}
