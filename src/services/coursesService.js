@@ -1,9 +1,11 @@
 import axios from "./api";
 
-export const getCourses = async () => {
+export const getCourses = async (page = 0, size = 10, sortBy = 'title', sortDirection = 'asc') => {
   try {
-    const response = await axios.get(`/courses`);
-    return response.data.data.content;
+    const response = await axios.get(`/courses`, {
+      params: { page, size, sortBy, sortDirection },
+    });
+    return response.data.data;
   } catch (error) {
     throw error;
   }

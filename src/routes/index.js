@@ -54,6 +54,7 @@ import AssignmentDetailPage from '../pages/AssignmentDetailPage';
 import InstructorClasses from '../components/instructor/InstructorClasses';
 import DashboardInstructorPage from '../pages/instructor/DashboardInstructorPage';
 import CourseClassPage from '../pages/admin/CourseClassPage';
+import InstructorsPage from '../pages/InstructorsPage';
 
 const publicRoutes = [
     {
@@ -74,6 +75,11 @@ const publicRoutes = [
     {
         path: '/courses',
         component: CoursesPage,
+        layout: MainLayout,
+    },
+    {
+        path: '/instructors',
+        component: InstructorsPage,
         layout: MainLayout,
     },
     {
