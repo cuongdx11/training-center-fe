@@ -91,7 +91,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       submenu: [
         { title: 'Phân Quyền', icon: <List className="w-5 h-5" />, path: '/admin/user-role' },
         { title: 'Quyền Và Vai Trò', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' },
-        { title: 'Gửi thông báo', icon: <Bell className="w-5 h-5" />, path: '/admin/create-notification' }
+        { title: 'Gửi thông báo', icon: <Bell className="w-5 h-5" />, path: '/admin/create-notification' },
+        { title: 'Tư vấn', icon: <Bell className="w-5 h-5" />, path: '/admin/consults' }
       ]
     }
   ];

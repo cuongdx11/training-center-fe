@@ -18,3 +18,14 @@ export const activateUser = async (token) => {
     const response = await api.get(`/auth/activate?token=${token}`);
     return response.data;
 };
+
+export const changePass = async (data) => {
+    try {
+        const response = await api.post(`/auth/change-password`,data);
+    return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+    
+};

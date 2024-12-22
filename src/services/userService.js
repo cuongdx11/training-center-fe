@@ -98,7 +98,38 @@ const userService = {
       console.error('Error blocking user:', error);
       throw error;
     }
-  }
+  },
+  getListInstructorHome: async () => {
+    try {
+      const response = await api.get(`/users/home/instructors`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      throw error;
+    }
+  },
+  updateProfileUser: async (data) => {
+    try {
+      const response = await api.put(`/users/profile`,data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      throw error;
+    }
+  },
+  uploadAvatar: async (formData) => {
+    try {
+      const response = await api.post('/users/upload-avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      throw error;
+    }
+  },
   
 };
 

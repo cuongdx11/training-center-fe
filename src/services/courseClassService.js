@@ -65,6 +65,16 @@ export const getClassOfInstructor = async() => {
     }
 }
 
+export const getClassOfStudent = async() => {
+    try {
+        const response = await api.get(`/classes/student`)
+        return response.data;
+    }
+    catch(error) {
+        throw error;
+    }
+}
+
 export const updateClass = async(id, data) => {
     try {
         const response = await api.put(`/classes/${id}`, data);

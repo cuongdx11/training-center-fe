@@ -1,39 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import PersonalInfo from '../components/PersonalInfo';
-import { useAuth } from '../context/AuthContext';
 import userService from '../services/userService';
+import { toast } from 'react-hot-toast';
 
 const ProfilePage = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { user } = useAuth();
+  
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            if (!user?.id) return;
-            
-            try {
-                setLoading(true);
-                setError(null);
-                // const data = await userService.getUserById(user.id);
-                const data = await userService.getProfileUser();
-                setUserInfo(data);
-            } catch (error) {
-                setError(error.message || 'Có lỗi xảy ra khi tải thông tin người dùng');
-                console.error('Error fetching user info:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchUserInfo();
-    }, [user?.id]);
+    }, []);
+
+    const fetchUserInfo = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await userService.getProfileUser();
+            setUserInfo(data);
+        } catch (error) {
+            setError(error.message || 'Có lỗi xảy ra khi tải thông tin người dùng');
+            toast.error('Không thể tải thông tin người dùng');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUpdateSuccess = async (updatedInfo) => {
+        try {
+            const response = await userService.updateProfileUser(updatedInfo);
+            setUserInfo(response);
+            toast.success('Cập nhật thông tin thành công');
+        } catch (error) {
+            toast.error('Cập nhật thông tin thất bại');
+        }
+    };
+
+    const handleAvatarUpdate = async (newAvatarUrl) => {
+        setUserInfo(prev => ({
+            ...prev,
+            profilePicture: newAvatarUrl
+        }));
+    };
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
         );
@@ -41,15 +55,15 @@ const ProfilePage = () => {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-red-500 bg-red-100 p-4 rounded-lg">
-                    <h3 className="font-semibold">Lỗi</h3>
-                    <p>{error}</p>
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                <div className="text-red-500 bg-white p-6 rounded-lg shadow-lg">
+                    <h3 className="font-semibold text-xl mb-2">Đã xảy ra lỗi</h3>
+                    <p className="mb-4">{error}</p>
                     <button 
-                        onClick={() => window.location.reload()}
-                        className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200"
+                        onClick={fetchUserInfo}
+                        className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200"
                     >
-                        Thử lại
+                        Tải lại
                     </button>
                 </div>
             </div>
@@ -58,28 +72,28 @@ const ProfilePage = () => {
 
     if (!userInfo) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-gray-500">Không tìm thấy thông tin người dùng</div>
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                <div className="text-gray-500 bg-white p-6 rounded-lg shadow-lg">
+                    Không tìm thấy thông tin người dùng
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
-            {/* <div className="hidden md:block"> */}
-                <Sidebar 
-                    userName={userInfo.fullName} 
-                    userImage={userInfo.profilePicture} 
-                />
-            {/* </div> */}
+        <div className="flex min-h-screen bg-gray-50">
+            <Sidebar 
+                userName={userInfo.fullName} 
+                userImage={userInfo.profilePicture} 
+            />
             <div className="flex-1 p-4 md:p-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="md:hidden mb-6">
-                        <div className="flex items-center space-x-4 p-4 bg-white rounded-lg shadow">
+                        <div className="flex items-center space-x-4 p-4 bg-white rounded-lg shadow-md">
                             <img
                                 src={userInfo.profilePicture || '/default-avatar.png'}
                                 alt={userInfo.fullName}
-                                className="w-16 h-16 rounded-full"
+                                className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                                 onError={(e) => {
                                     e.target.onerror = null;
                                     e.target.src = '/default-avatar.png';
@@ -88,13 +102,17 @@ const ProfilePage = () => {
                             <div>
                                 <h2 className="text-xl font-semibold">{userInfo.fullName}</h2>
                                 <p className="text-gray-500">{userInfo.email}</p>
+                                {userInfo.bio && (
+                                    <p className="text-gray-600 text-sm mt-1">{userInfo.bio}</p>
+                                )}
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-lg shadow">
+                    <div className="bg-white rounded-lg shadow-md">
                         <PersonalInfo 
                             userInfo={userInfo}
-                            onUpdateSuccess={(updatedInfo) => setUserInfo(updatedInfo)}
+                            onUpdateSuccess={handleUpdateSuccess}
+                            onAvatarUpdate={handleAvatarUpdate}
                         />
                     </div>
                 </div>

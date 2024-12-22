@@ -58,7 +58,7 @@ const Register = () => {
                 confirmPassword: formData.confirmPassword
             });
 
-            if (response.status === "success") {
+            if (response.data.status === "success") {
                 setSuccess(true);
                 setFormData({
                     email: '',

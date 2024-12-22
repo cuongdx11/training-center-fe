@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserCircle2, PlayCircle, ShoppingBag, Gift, LogOut, Menu, X } from 'lucide-react';
+import { UserCircle2, ShoppingBag, LogOut, Menu, X,GraduationCap,DoorOpen ,CalendarSearch  ,LockKeyhole   } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -62,12 +62,7 @@ const Sidebar = ({ userName, userImage }) => {
             className="absolute bottom-0 right-0 opacity-0 cursor-pointer w-full h-full"
             id="file-input" 
           />
-          <label 
-            htmlFor="file-input" 
-            className="absolute bottom-0 right-0 bg-white text-gray-600 px-2 py-1 text-sm rounded-md shadow-sm border cursor-pointer"
-          >
-            Sửa
-          </label>
+         
         </div>
         <h2 className="text-lg font-medium">{userName}</h2>
       </div>
@@ -81,32 +76,38 @@ const Sidebar = ({ userName, userImage }) => {
           onClick={() => navigate('/profile')}
         />
         <MenuButton 
-          icon={PlayCircle} 
-          text="Khóa học của tôi" 
-          path="/my-courses"
-          onClick={() => navigate('/my-courses')}
-        />
-        <MenuButton 
-          icon={ShoppingBag} 
-          text="Lịch học" 
-          path="/calendar"
-          onClick={() => navigate('/calendar')}
-        />
-        <MenuButton 
           icon={ShoppingBag} 
           text="Đơn hàng" 
           path="/orders"
           onClick={() => navigate('/orders')}
         />
+        <MenuButton 
+          icon={LockKeyhole} 
+          text="Đổi mật khẩu" 
+          path="/change-pass"
+          onClick={() => navigate('/change-pass')}
+        />
       </div>
 
       <div className="px-6 mt-8 space-y-1">
-        <h3 className="font-medium mb-4">Quà tặng</h3>
+        <h3 className="font-medium mb-4">Khóa học</h3>
         <MenuButton 
-          icon={Gift} 
-          text="Phiếu giảm giá" 
-          path="/coupons"
-          onClick={() => navigate('/coupons')}
+          icon={GraduationCap} 
+          text="Khóa học đã đăng ký" 
+          path="/my-courses"
+          onClick={() => navigate('/my-courses')}
+        />
+        <MenuButton 
+          icon={DoorOpen } 
+          text="Lớp học của tôi" 
+          path="/classes"
+          onClick={() => navigate('/classes')}
+        />
+        <MenuButton 
+          icon={CalendarSearch} 
+          text="Lịch học" 
+          path="/calendar"
+          onClick={() => navigate('/calendar')}
         />
       </div>
 

@@ -54,6 +54,12 @@ import AssignmentDetailPage from '../pages/AssignmentDetailPage';
 import InstructorClasses from '../components/instructor/InstructorClasses';
 import DashboardInstructorPage from '../pages/instructor/DashboardInstructorPage';
 import CourseClassPage from '../pages/admin/CourseClassPage';
+import ConsultList from '../components/consult/ConsultList';
+import ConsultDetail from '../components/consult/ConsultDetail';
+import ClassDetailPage from '../pages/ClassDetailPage';
+import ClassPage from '../pages/ClassPage';
+import ChangePasswordPage from '../pages/ChangePasswordPage';
+
 
 const publicRoutes = [
     {
@@ -181,6 +187,24 @@ const publicRoutes = [
         protected: true,
     },
     {
+        path: '/classes',
+        component: ClassPage,
+        layout: MainLayout,
+        protected: true,
+    },
+    {
+        path: '/classes/:id',
+        component: ClassDetailPage,
+        layout: MainLayout,
+        protected: true,
+    },
+    {
+        path: '/change-pass',
+        component: ChangePasswordPage,
+        layout: MainLayout,
+        protected: true,
+    },
+    {
         path: '/admin/login',
         component: AdminLogin,
         layout: AdminAuthLayout,
@@ -211,6 +235,8 @@ const publicRoutes = [
           { path: "categories", component: CategoryManagementPage},
           { path: "courses/classes", component: CourseClassPage },
           { path: "create-notification", component: CreateNotificationForm },
+          { path: "consults", component: ConsultList },
+          { path: "consults/:id", component: ConsultDetail },
           
         ]
           
