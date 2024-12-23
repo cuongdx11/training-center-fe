@@ -41,7 +41,7 @@ const UserTable = ({ users, onEdit, onDelete, onToggleLock }) => {
         <div className="relative flex-1 min-w-[300px]">
           <input
             type="text"
-            placeholder="Search users..."
+            placeholder="Tìm kiếm người dùng..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
@@ -55,13 +55,13 @@ const UserTable = ({ users, onEdit, onDelete, onToggleLock }) => {
             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <FilterIcon className="w-5 h-5" />
-            <span>Filter</span>
+            <span>Bộ lọc</span>
           </button>
           
           {showFilters && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
               <div className="p-2">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">Status</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">Trạng thái</h3>
                 <div className="space-y-2">
                   {['all', 'active', 'inactive'].map((status) => (
                     <button
@@ -96,7 +96,7 @@ const UserTable = ({ users, onEdit, onDelete, onToggleLock }) => {
                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
                     <UserIcon className="w-5 h-5 text-blue-500" />
                   </div>
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">User Info</span>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Thông tin</span>
                 </div>
               </th>
               <th className="px-6 py-4 text-left">
@@ -104,7 +104,7 @@ const UserTable = ({ users, onEdit, onDelete, onToggleLock }) => {
                   <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
                     <PhoneIcon className="w-5 h-5 text-purple-500" />
                   </div>
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</span>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Liên Hệ</span>
                 </div>
               </th>
               <th className="px-6 py-4 text-left">
@@ -112,7 +112,7 @@ const UserTable = ({ users, onEdit, onDelete, onToggleLock }) => {
                   <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
                     <ChevronUpIcon className="w-5 h-5 text-green-500" />
                   </div>
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Status</span>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</span>
                 </div>
               </th>
               <th className="px-6 py-4 text-left">
@@ -120,11 +120,11 @@ const UserTable = ({ users, onEdit, onDelete, onToggleLock }) => {
                   <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
                     <MapPinIcon className="w-5 h-5 text-orange-500" />
                   </div>
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Roles</span>
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Vai trò</span>
                 </div>
               </th>
               <th className="px-6 py-4 text-right">
-                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</span>
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</span>
               </th>
             </tr>
           </thead>

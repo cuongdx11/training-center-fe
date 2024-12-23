@@ -66,17 +66,17 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
         {/* Basic Information */}
         <div className="space-y-6 lg:col-span-2">
           <div className="bg-gray-50 p-6 rounded-lg space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Thông tin cơ bản</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">Full Name *</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Tên đầy đủ *</label>
                 <input
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   required
-                  placeholder="Enter full name"
+                  placeholder="Nhập tên đầy đủ"
                 />
               </div>
               <div>
@@ -87,7 +87,7 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   required
-                  placeholder="Enter email address"
+                  placeholder="Nhập email"
                 />
               </div>
             </div>
@@ -95,26 +95,26 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
 
           {/* Contact Information */}
           <div className="bg-gray-50 p-6 rounded-lg space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Contact Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Thông tin liên hệ</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">Phone Number</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Sđt</label>
                 <input
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="Enter phone number"
+                  placeholder="Nhập số điện thoại"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">Address</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Địa chỉ</label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({...formData, address: e.target.value})}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="Enter address"
+                  placeholder="Nhập địa chỉ"
                 />
               </div>
             </div>
@@ -122,10 +122,10 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
 
           {/* Additional Information */}
           <div className="bg-gray-50 p-6 rounded-lg space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Additional Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Thông tin bổ sung</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">Birth Date</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Ngày sinh</label>
                 <input
                   type="date"
                   value={formData.birthDate || ''}
@@ -134,16 +134,16 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">Gender</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">Giới tính</label>
                 <select
                   value={formData.gender || ''}
                   onChange={(e) => setFormData({...formData, gender: e.target.value})}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
-                  <option value="">Select gender</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                  <option value="OTHER">Other</option>
+                  <option value="">chọn giới tính</option>
+                  <option value="MALE">Nam</option>
+                  <option value="FEMALE">Nữ</option>
+                  <option value="OTHER">khác</option>
                 </select>
               </div>
             </div>
@@ -159,7 +159,7 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
                 <div>
                   <div className="flex items-center space-x-2 mb-2">
                     <Camera className="w-4 h-4 text-gray-500" />
-                    <label className="block text-sm font-medium text-gray-700">Profile Picture</label>
+                    <label className="block text-sm font-medium text-gray-700">Ảnh đại diện</label>
                   </div>
                   
                   {previewUrl ? (
@@ -183,7 +183,7 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
                       className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500"
                     >
                       <Camera className="w-8 h-8 text-gray-400" />
-                      <span className="mt-2 text-sm text-gray-500">Click to upload</span>
+                      <span className="mt-2 text-sm text-gray-500">chọn ảnh</span>
                     </div>
                   )}
                   
@@ -203,12 +203,12 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
                   onChange={(e) => setFormData({...formData, bio: e.target.value})}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   rows="4"
-                  placeholder="Write a few sentences about the user..."
+                  placeholder="Viết thông tin mô tả"
                 />
               </div>
               {!selectedUser && (  // Only show roles section for new user creation
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">Roles *</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-700">Vai trò *</label>
                   <div className="space-y-2">
                     {roles.map((role) => (
                       <label key={role.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
@@ -239,7 +239,7 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
           onClick={onCancel}
           className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
         >
-          Cancel
+          Hủy
         </button>
         <button
           type="submit"

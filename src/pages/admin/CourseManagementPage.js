@@ -45,7 +45,7 @@ const CourseManagementPage = () => {
     try {
       setLoading(true);
       const [coursesResponse, categoriesResponse, instructorsResponse] = await Promise.all([
-        getCourses(currentPage, 10),
+        getCourses(currentPage, 6),
         getCategories(),
         userService.getInstructors()
       ]);

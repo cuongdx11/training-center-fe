@@ -69,7 +69,7 @@ const CheckoutPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+        <h1 className="text-3xl font-bold mb-8">Thanh toán</h1>
         
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -80,7 +80,7 @@ const CheckoutPage = () => {
         <div className="grid gap-8 md:grid-cols-2">
           {/* Order Summary Card */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <h2 className="text-xl font-semibold mb-4">Tóm Tắt đơn hàng</h2>
             <div className="space-y-4">
               {cart.cartItems?.map((item) => (
                 <div key={item.id} className="flex justify-between items-center">
@@ -93,7 +93,7 @@ const CheckoutPage = () => {
               ))}
               <div className="pt-4 border-t">
                 <div className="flex justify-between items-center font-bold">
-                  <span>Total Amount</span>
+                  <span>Tổng số tiền</span>
                   <span>${cart.totalAmount}</span>
                 </div>
               </div>
@@ -102,7 +102,7 @@ const CheckoutPage = () => {
 
           {/* Payment Method Card */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
+            <h2 className="text-xl font-semibold mb-4">Phương thức thanh toán</h2>
             <div className="space-y-4">
               {paymentMethods.map((method) => (
                 <label
@@ -134,7 +134,7 @@ const CheckoutPage = () => {
               {loading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Processing
+                  Đang xử lý
                 </div>
               ) : (
                 `Pay $${cart.totalAmount}`

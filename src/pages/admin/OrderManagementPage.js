@@ -92,12 +92,12 @@ const OrderManagementPage = () => {
     return (
         <div className="container mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Order Management</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Quản lý đơn hàng</h1>
                 <button 
                     onClick={() => setIsFormOpen(true)} 
                     className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200"
                 >
-                    Create New Order
+                    Tạo đơn mới
                 </button>
             </div>
     

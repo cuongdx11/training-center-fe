@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserCircle2, ShoppingBag, LogOut, Menu, X,GraduationCap,DoorOpen ,CalendarSearch  ,LockKeyhole   } from 'lucide-react';
+import { UserCircle2, ShoppingBag, LogOut, Menu, X,GraduationCap,DoorOpen ,CalendarSearch  ,LockKeyhole, ClipboardList   } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -102,6 +102,12 @@ const Sidebar = ({ userName, userImage }) => {
           text="Lớp học của tôi" 
           path="/classes"
           onClick={() => navigate('/classes')}
+        />
+        <MenuButton 
+          icon={ClipboardList } 
+          text="Bài Tập của tôi" 
+          path="/assignments"
+          onClick={() => navigate('/assignments')}
         />
         <MenuButton 
           icon={CalendarSearch} 

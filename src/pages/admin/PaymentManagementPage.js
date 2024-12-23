@@ -79,7 +79,7 @@ const PaymentManagementPage = () => {
     return (
         <div className="container mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Payment Management</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Quản lý Thanh Toán</h1>
             </div>
     
             <PaymentTable 

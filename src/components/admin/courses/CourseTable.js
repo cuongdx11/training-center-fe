@@ -34,7 +34,7 @@ const CourseTable = ({ courses, onEdit, onDelete }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {courses.map((course) => (
               <tr key={course.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">{course.id}</td>
+                <td className="px-6 py-4">{course.id}</td>
                 <td className="px-6 py-4 whitespace-nowrap font-medium">
                   <div className="flex items-center">
                     {course?.thumbnail && (

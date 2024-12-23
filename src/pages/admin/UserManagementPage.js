@@ -141,13 +141,13 @@ const UserManagementPage = () => {
         <div className="bg-white rounded-lg shadow-lg transition-shadow hover:shadow-xl">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Quản lý người dùng</h1>
               <button
                 onClick={handleAddUser}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 <UserPlusIcon className="w-5 h-5 mr-2" />
-                Add User
+                Thêm Người dùng mới
               </button>
             </div>
 

@@ -60,32 +60,32 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
           </button>
 
           <form onSubmit={handleSubmit} className="space-y-6 p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">Create New Order</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">Tạo đơn mới</h2>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">User</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Người dùng</label>
                 <select 
                   name="userId" 
                   value={formData.userId} 
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                 >
-                  <option value="">Select User</option>
+                  <option value="">Chọn người dùng</option>
                   {users.map(user => (
                     <option key={user.id} value={user.id}>{user.fullName}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Payment Method</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Phương thức thanh toán</label>
                 <select 
                   name="paymentMethodId" 
                   value={formData.paymentMethodId} 
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                 >
-                  <option value="">Select Payment Method</option>
+                  <option value="">Chọn phương thức thanh toán</option>
                   {paymentMethods.map(method => (
                     <option key={method.id} value={method.id}>{method.name}</option>
                   ))}
@@ -95,13 +95,13 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
   
             <div>
               <div className="flex justify-between items-center mb-4">
-                <label className="block text-sm font-semibold text-gray-700">Order Items</label>
+                <label className="block text-sm font-semibold text-gray-700">Danh sách Khóa học</label>
                 <button 
                   type="button" 
                   onClick={addOrderItem}
                   className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 transition duration-200"
                 >
-                  Add Item
+                  Thêm khóa học
                 </button>
               </div>
               {formData.items.map((item, index) => (
@@ -112,7 +112,7 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
                     onChange={(e) => handleItemChange(index, e)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                   >
-                    <option value="">Select Course</option>
+                    <option value="">Chọn khóa học</option>
                     {courses.map(course => (
                       <option key={course.id} value={course.id}>{course.title}</option>
                     ))}
@@ -122,7 +122,7 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
                     name="price"
                     value={item.price}
                     onChange={(e) => handleItemChange(index, e)}
-                    placeholder="Price"
+                    placeholder="giá"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                   />
                   <button 
@@ -130,7 +130,7 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
                     onClick={() => removeOrderItem(index)}
                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
                   >
-                    Remove
+                    xóa
                   </button>
                 </div>
               ))}
@@ -144,7 +144,7 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
                 rows="4"
-                placeholder="Additional notes for this order..."
+                placeholder="ghi chú..."
               />
             </div>
   
@@ -154,13 +154,13 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
                 onClick={onClose}
                 className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-200"
               >
-                Cancel
+                Hủy
               </button>
               <button 
                 type="submit" 
                 className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-200"
               >
-                Save Order
+                Lưu
               </button>
             </div>
           </form>

@@ -46,7 +46,7 @@ const PaymentTable = ({ payments, onView, onEdit, onDelete }) => {
 
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
-      <table className="w-full">
+      <table className="w-full min-w-full">
         <thead className="bg-gray-50 border-b">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã giao dịch</th>
@@ -62,31 +62,31 @@ const PaymentTable = ({ payments, onView, onEdit, onDelete }) => {
         <tbody className="divide-y divide-gray-200">
           {payments.map((payment) => (
             <tr key={payment.id} className="hover:bg-gray-50 transition duration-150">
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 text-sm text-gray-500">
                 {payment.transactionCode}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className="px-6 py-4  text-sm text-gray-900">
                 <div>
                   <div className="font-medium">{payment.order?.user.fullName}</div>
                   <div className="text-gray-500">{payment.order?.user.email}</div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4  text-sm text-gray-500">
                 {payment.order?.orderItems[0]?.course.title}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <td className="px-6 py-4  text-sm font-medium text-gray-900">
                 {formatCurrency(payment.amount)}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4  text-sm text-gray-500">
                 {payment.paymentMethod?.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <PaymentStatusBadge status={payment.status} />
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 text-sm text-gray-500">
                 {formatDate(payment.createdAt)}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <td className="px-6 py-4 text-sm font-medium">
                 <div className="flex justify-center space-x-3">
                   <button 
                     onClick={() => onView(payment)} 
