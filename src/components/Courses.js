@@ -15,7 +15,7 @@ const Courses = () => {
         const fetchCourses = async () => {
           setLoading(true);
           try {
-            const response = await getCourses(currentPage, 10); // Lấy 10 mục mỗi trang
+            const response = await getCourses(currentPage, 6); // Lấy 10 mục mỗi trang
             setCoursesData(response.content); // Dữ liệu khóa học
             setTotalPages(response.totalPages); // Tổng số trang
           } catch (err) {

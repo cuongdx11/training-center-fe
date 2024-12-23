@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import { addClass, updateClass } from '../../../services/courseClassService';
-import { getCourses } from '../../../services/coursesService';
+import { getAllCourses } from '../../../services/coursesService';
 import userService from '../../../services/userService';
 
 const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false }) => {
@@ -41,7 +41,7 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
     const fetchData = async () => {
       try {
         const [coursesData, instructorsData] = await Promise.all([
-          getCourses(),
+          getAllCourses(),
           userService.getInstructors()
         ]);
         setCourses(coursesData);

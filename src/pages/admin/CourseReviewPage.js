@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import CourseReviewTable from '../../components/admin/reviews/CourseReviewTable';
 // import Modal from '../../components/admin/reviews/Modal';
 import Header from '../../components/admin/reviews/Header';
-import { getCourses } from '../../services/coursesService';
+import { getAllCourses } from '../../services/coursesService';
 import { deleteReview, listReviewByCourse } from '../../services/courseReview';
 import { useParams } from 'react-router-dom';
 
@@ -25,7 +25,7 @@ const CourseReviewPage = () => {
       setLoading(true);
       const [courseReviewsResponse, coursesResponse] = await Promise.all([
         listReviewByCourse(courseId),
-        getCourses()
+        getAllCourses()
       ]);
       const course = coursesResponse.find(course => course.id === courseId);
       setCourseName(course?.title || "Khóa học không tìm thấy");

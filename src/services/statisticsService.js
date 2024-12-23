@@ -39,3 +39,21 @@ export const getInstructorStatistics = async () => {
       throw error;
     }
   };
+
+  export const getTotalRevenue = async () => {
+    try {
+        const response = await api.get(`/statistics/total-revenue`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getTotalCourse = async () => {
+    try {
+        const response = await api.get(`/statistics/total-course`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

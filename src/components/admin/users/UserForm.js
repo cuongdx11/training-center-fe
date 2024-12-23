@@ -1,26 +1,36 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Camera, X } from 'lucide-react';
+import { roleService } from '../../../services/roleService';
 
 const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) => {
+  const [roles, setRoles] = useState([]);
   const fileInputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState('');
 
-  // Set initial preview URL when editing user
   useEffect(() => {
-    if (formData.profilePicture) {
-      // Nếu profilePicture là File (upload mới)
-      if (formData.profilePicture instanceof File) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreviewUrl(reader.result);
-        };
-        reader.readAsDataURL(formData.profilePicture);
-      } else {
-        // Nếu profilePicture là URL (từ server)
-        setPreviewUrl(formData.profilePicture);
+    const initializeForm = () => {
+      if (selectedUser && selectedUser.profilePicture) {
+        setPreviewUrl(selectedUser.profilePicture);
       }
-    }
-  }, [formData.profilePicture]);
+    };
+
+    initializeForm();
+  }, [selectedUser]);
+
+  useEffect(() => {
+    const loadRoles = async () => {
+      if (!selectedUser) {  // Only load roles for new user creation
+        try {
+          const rolesData = await roleService.getAllRoles();
+          setRoles(rolesData);
+        } catch (error) {
+          console.error('Error fetching roles:', error);
+        }
+      }
+    };
+
+    loadRoles();
+  }, [selectedUser]);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -40,6 +50,14 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const handleRoleChange = (roleId) => {
+    const updatedRoles = formData.roleIds?.includes(roleId)
+      ? formData.roleIds.filter(id => id !== roleId)
+      : [...(formData.roleIds || []), roleId];
+    
+    setFormData({ ...formData, roleIds: updatedRoles });
   };
 
   return (
@@ -137,45 +155,47 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
           <div className="bg-gray-50 p-6 rounded-lg space-y-6">
             <h3 className="text-lg font-semibold text-gray-900">Profile</h3>
             <div className="space-y-6">
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <Camera className="w-4 h-4 text-gray-500" />
-                  <label className="block text-sm font-medium text-gray-700">Profile Picture</label>
-                </div>
-                
-                {previewUrl ? (
-                  <div className="relative w-full h-48">
-                    <img
-                      src={previewUrl}
-                      alt="Profile preview"
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="absolute -top-2 -right-2 p-1 bg-red-100 rounded-full hover:bg-red-200"
+              {selectedUser && (
+                <div>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Camera className="w-4 h-4 text-gray-500" />
+                    <label className="block text-sm font-medium text-gray-700">Profile Picture</label>
+                  </div>
+                  
+                  {previewUrl ? (
+                    <div className="relative w-full h-48">
+                      <img
+                        src={previewUrl}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="absolute -top-2 -right-2 p-1 bg-red-100 rounded-full hover:bg-red-200"
+                      >
+                        <X className="w-4 h-4 text-red-600" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500"
                     >
-                      <X className="w-4 h-4 text-red-600" />
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500"
-                  >
-                    <Camera className="w-8 h-8 text-gray-400" />
-                    <span className="mt-2 text-sm text-gray-500">Click to upload</span>
-                  </div>
-                )}
-                
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  className="hidden"
-                />
-              </div>
+                      <Camera className="w-8 h-8 text-gray-400" />
+                      <span className="mt-2 text-sm text-gray-500">Click to upload</span>
+                    </div>
+                  )}
+                  
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium mb-2 text-gray-700">Bio</label>
                 <textarea
@@ -186,17 +206,25 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
                   placeholder="Write a few sentences about the user..."
                 />
               </div>
-              {!selectedUser && (
+              {!selectedUser && (  // Only show roles section for new user creation
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">Password *</label>
-                  <input
-                    type="password"
-                    value={formData.password || ''}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    required={!selectedUser}
-                    placeholder="Enter password"
-                  />
+                  <label className="block text-sm font-medium mb-2 text-gray-700">Roles *</label>
+                  <div className="space-y-2">
+                    {roles.map((role) => (
+                      <label key={role.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          checked={formData.roleIds?.includes(role.id)}
+                          onChange={() => handleRoleChange(role.id)}
+                          className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        />
+                        <div>
+                          <p className="font-medium text-gray-900">{role.name}</p>
+                          <p className="text-sm text-gray-500">{role.description}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

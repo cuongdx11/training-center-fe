@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import StatCard from './StatCard';  
-import { getUserStatistics } from '../../../services/statisticsService';  
+import { getUserStatistics ,getTotalRevenue ,getTotalCourse} from '../../../services/statisticsService';  
 import { Users, BookOpen, GraduationCap, DollarSign } from 'lucide-react';
 
 const StatCardList = () => {
@@ -13,6 +13,8 @@ const StatCardList = () => {
     const fetchStats = async () => {
       try {
         const data = await getUserStatistics(); 
+        const data1 = await getTotalRevenue(); 
+        const data2 = await getTotalCourse(); 
         setStats([
           {
             title: 'Tổng Học Viên',
@@ -28,13 +30,13 @@ const StatCardList = () => {
           },
           {
             title: 'Khóa Học Đang Mở',
-            value: '15',
+            value: data2.totalCourse.toString(),
             icon: <BookOpen className="w-6 h-6 text-white" />,
             color: 'bg-green-500'
           },
           {
                 title: 'Tổng doanh thu',
-                value: '2',
+                value: data1.totalRevenue.toString(),
                 icon: <DollarSign className="w-6 h-6 text-white" />,
                 color: 'bg-yellow-500'
               }

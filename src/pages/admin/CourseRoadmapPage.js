@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {  ChevronDown, ChevronRight, Clock, Plus, X } from 'lucide-react';
-import { getCourses } from '../../services/coursesService';
+import { getAllCourses } from '../../services/coursesService';
 import {getSectionsByCourseId ,addSection} from '../../services/sectionService';
 import {addLesson} from '../../services/lessonService';
 const CourseRoadmap = () => {
@@ -39,7 +39,7 @@ const CourseRoadmap = () => {
 
   const fetchCourses = async () => {
     try {
-      const data = await getCourses();
+      const data = await getAllCourses();
       setCourses(data);
     } catch (error) {
       console.error('Error fetching courses:', error);

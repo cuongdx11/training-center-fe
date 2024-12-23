@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { PlusCircle } from 'lucide-react';
 import CourseTable from '../../components/admin/reviews/CourseTable';
 import SearchBar from '../../components/admin/reviews/SearchBar';
-import { getCourses } from '../../services/coursesService';
+import { getAllCourses } from '../../services/coursesService';
 import { getCategories } from '../../services/categoryService';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ const ReviewManagementPage = () => {
     try {
       setLoading(true);
       const [coursesResponse] = await Promise.all([
-        getCourses(),
+        getAllCourses(),
         getCategories(),
       ]);
       

@@ -36,13 +36,13 @@ const CourseDetail = ({ course }) => {
     }).format(price);
   };
 
-  const learningOutcomes = [
-    "Hiểu rõ các nguyên lý cơ bản của lập trình Fullstack",
-    "Phát triển website hoàn chỉnh sử dụng NodeJS, ExpressJS, ReactJS, NextJS",
-    "Sử dụng Typescript và các công nghệ liên quan",
-    "Xây dựng API RESTful với Node.js",
-    "Phát triển ứng dụng web tương tác với ReactJS",
-  ];
+  // const learningOutcomes = [
+  //   "Hiểu rõ các nguyên lý cơ bản của lập trình Fullstack",
+  //   "Phát triển website hoàn chỉnh sử dụng NodeJS, ExpressJS, ReactJS, NextJS",
+  //   "Sử dụng Typescript và các công nghệ liên quan",
+  //   "Xây dựng API RESTful với Node.js",
+  //   "Phát triển ứng dụng web tương tác với ReactJS",
+  // ];
 
   const [openSections, setOpenSections] = useState({});
   const [reviews, setReviews] = useState([]);
@@ -239,7 +239,7 @@ const CourseDetail = ({ course }) => {
             </div>
 
             {/* Learning Outcomes */}
-            <div className="bg-white rounded-xl shadow-sm mb-8">
+            {/* <div className="bg-white rounded-xl shadow-sm mb-8">
               <div className="p-6">
                 <h2 className="text-2xl font-bold mb-6">Bạn sẽ học được gì?</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -251,7 +251,7 @@ const CourseDetail = ({ course }) => {
                   ))}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Course Sections */}
             <div className="bg-white rounded-xl shadow-sm mb-8">
@@ -473,12 +473,6 @@ const CourseDetail = ({ course }) => {
                   <h3 className="text-2xl font-bold text-blue-600">
                     {formatPrice(course.price)}
                   </h3>
-                  <div className="flex items-center gap-2 mt-2">
-                    <BookOpen className="w-5 h-5 text-gray-400" />
-                    <span className="text-gray-600">
-                      {course.lessonCount} bài học
-                    </span>
-                  </div>
                 </div>
 
                 <div className="space-y-3">

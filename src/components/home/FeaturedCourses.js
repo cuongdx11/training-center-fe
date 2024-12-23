@@ -11,7 +11,7 @@ const FeaturedCourses = () => {
         const fetchCourses = async () => {
             try {
                 const response = await getCourses();
-                setCourses(response.slice(0, 3));
+                setCourses(response.content.slice(0, 3));
             } catch (err) {
                 setError(err.message);
             } finally {

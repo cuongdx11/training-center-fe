@@ -6,7 +6,7 @@ import OrderModal from '../../components/admin/orders/OrderModal';
 import {orderService} from '../../services/orderService';
 import {paymentService} from '../../services/paymentService';
 import userService from '../../services/userService';
-import {getCourses} from '../../services/coursesService';
+import {getAllCourses} from '../../services/coursesService';
 
 const OrderManagementPage = () => {
     const [orders, setOrders] = useState([]);
@@ -36,7 +36,7 @@ const OrderManagementPage = () => {
                 setUsers(usersResponse);
 
                 // Fetch courses
-                const coursesResponse = await getCourses()
+                const coursesResponse = await getAllCourses()
                 setCourses(coursesResponse);
             } catch (error) {
                 console.error('Failed to fetch initial data:', error);

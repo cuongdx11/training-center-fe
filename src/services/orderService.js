@@ -1,6 +1,16 @@
 import api from './api';
 
 export const orderService = {
+
+  async createOrder(data) {
+    try {
+      const response = await api.post('orders', data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   async checkout(paymentMethodId) {
     try {
       const response = await api.post('orders/check-out', { paymentMethodId });

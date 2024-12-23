@@ -11,10 +11,9 @@ const initialFormData = {
   phoneNumber: '',
   address: '',
   bio: '',
-  password: '',
-  profilePicture: null,
   birthDate: '',
   gender: '',
+  roleIds: [] // Thêm trường này
 };
 
 const UserManagementPage = () => {

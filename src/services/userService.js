@@ -48,14 +48,9 @@ const userService = {
   },
   addUser: async (userData) => {
     try {
-      const formData = new FormData();
-      for (const key in userData) {
-        formData.append(key, userData[key]);
-      }
-  
-      const response = await api.post('/users', formData, {
+      const response = await api.post('/users', userData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json', 
         },
       });
       return response.data;
@@ -63,6 +58,7 @@ const userService = {
       throw error;
     }
   },
+  
   
   updateUser: async (userId, userData) => {
     try {

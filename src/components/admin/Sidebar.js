@@ -18,7 +18,10 @@ import {
   ShoppingBag,
   CirclePlus,
   Bell,
-  BookText 
+  BookText,
+  Layers,
+  CalendarPlus,
+  ClipboardList 
 } from 'lucide-react';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
@@ -41,10 +44,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       submenu: [
         { title: 'Danh Sách Khóa Học', icon: <List className="w-5 h-5" />, path: '/admin/courses' },
         { title: 'Lộ Trình Học', icon: <Clock className="w-5 h-5" />, path: '/admin/courses/roadmap' },
-        { title: 'Lịch Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/schedules' },
+        { title: 'Chủ Đề Khóa Học', icon: <Layers className="w-5 h-5" />, path: '/admin/courses/topics' },
         { title: 'Tạo Lịch Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/recurring' },
-        { title: 'Tạo Lớp Học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/create-class' },
-        { title: 'Danh sách lớp học', icon: <FileText className="w-5 h-5" />, path: '/admin/courses/classes' }
+        { title: 'Tạo Lớp Học', icon: <CalendarPlus className="w-5 h-5" />, path: '/admin/courses/create-class' },
+        { title: 'Danh Sách Lớp Học', icon: <ClipboardList className="w-5 h-5" />, path: '/admin/courses/classes' },
+       
       ]
     },
     {
@@ -60,7 +64,14 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       icon: <ShoppingBag className="w-5 h-5" />,
       submenu: [
         { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/orders' },
-        { title: 'Tạo Đơn Hàng', icon: <CirclePlus  className="w-5 h-5" />, path: '/admin/roles' }
+        { title: 'Tạo Đơn Hàng', icon: <CirclePlus  className="w-5 h-5" />, path: '/admin/orders/create' }
+      ]
+    },
+    {
+      title: 'Đăng Ký',
+      icon: <ShoppingBag className="w-5 h-5" />,
+      submenu: [
+        { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/enrollments' },
       ]
     },
     {

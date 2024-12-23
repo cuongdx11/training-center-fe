@@ -1,6 +1,6 @@
 import axios from "./api";
 
-export const getCourses = async (page = 0, size = 10, sortBy = 'title', sortDirection = 'asc') => {
+export const getCourses = async (page = 0, size = 6, sortBy = 'title', sortDirection = 'asc') => {
   try {
     const response = await axios.get(`/courses`, {
       params: { page, size, sortBy, sortDirection },
@@ -15,6 +15,15 @@ export const getCourses = async (page = 0, size = 10, sortBy = 'title', sortDire
 export const getCourseById = async (courseId) => {
   try {
     const response = await axios.get(`/courses/${courseId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllCourses = async () => {
+  try {
+    const response = await axios.get(`/courses/all`);
     return response.data;
   } catch (error) {
     throw error;

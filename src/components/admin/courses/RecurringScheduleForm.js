@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Calendar, Clock, Search, X } from "lucide-react";
 import { format, eachDayOfInterval, getDay } from "date-fns";
 import { vi } from "date-fns/locale";
-import { getCourses } from "../../../services/coursesService";
+import { getAllCourses } from "../../../services/coursesService";
 import { getClassByCourseId } from "../../../services/courseClassService";
 import { addRecurringSchedule } from "../../../services/scheduleService";
 
@@ -49,7 +49,7 @@ const RecurringScheduleForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const coursesResponse = await getCourses();
+        const coursesResponse = await getAllCourses();
         setCourses(coursesResponse);
       } catch (err) {
         setError("Error loading data");

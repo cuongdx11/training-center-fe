@@ -61,6 +61,9 @@ import ClassPage from '../pages/ClassPage';
 import ChangePasswordPage from '../pages/ChangePasswordPage';
 
 import InstructorsPage from '../pages/InstructorsPage';
+import CreateOrderPage from '../pages/admin/order/CreateOrderPage';
+import TopicManagement from '../components/admin/topics/TopicManagement';
+import TopicCoursesPage from '../pages/TopicCoursesPage';
 
 const publicRoutes = [
     {
@@ -205,6 +208,11 @@ const publicRoutes = [
         protected: true,
     },
     {
+        path: '/topic/:id',
+        component: TopicCoursesPage,
+        layout: MainLayout
+    },
+    {
         path: '/change-pass',
         component: ChangePasswordPage,
         layout: MainLayout,
@@ -230,10 +238,11 @@ const publicRoutes = [
           {path : "roles", component: RoleManagementPage },
           { path : "user-role", component: UserRoleManagementPage},
           { path : "users", component: UserManagementPage},
-          { path :"student-process" , component: StudentProgressManagementPage},
+        //   { path :"student-process" , component: StudentProgressManagementPage},
           { path: "courses/create-class", component: CreateCourseClass},
           { path: "attendances", component: AttendanceManagement},
           { path: "orders", component: OrderManagementPage},
+          { path: "orders/create", component: CreateOrderPage},
           { path: "payments", component: PaymentManagementPage},
           { path: "profile", component: AdminProfile },
           { path: "reviews", component: ReviewManagementPage},
@@ -243,6 +252,9 @@ const publicRoutes = [
           { path: "create-notification", component: CreateNotificationForm },
           { path: "consults", component: ConsultList },
           { path: "consults/:id", component: ConsultDetail },
+          { path :"enrollments" , component: StudentProgressManagementPage},
+          { path :"courses/topics" , component: TopicManagement},
+
           
         ]
           
@@ -260,7 +272,7 @@ const publicRoutes = [
           {path : "roles", component: RoleManagementPage },
           { path : "user-role", component: UserRoleManagementPage},
           { path : "users", component: UserManagementPage},
-          { path :"student-process" , component: StudentProgressManagementPage},
+        //   { path :"student-process" , component: StudentProgressManagementPage},
           { path: "courses/create-class", component: CreateCourseClass},
           { path: "attendances", component: AttendanceManagement},
           { path: "create-attendance", component: CreateAttendanceSession},

@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { getAllSchedule } from '../../services/scheduleService';
 import userService from '../../services/userService';
-import { getCourses } from '../../services/coursesService';
+import { getAllCourses } from '../../services/coursesService';
 import api from "../../services/api"; 
 
 const ScheduleManagementPage = () => {
@@ -39,7 +39,7 @@ const ScheduleManagementPage = () => {
         // Fetch all required data in parallel
         const [scheduleResponse, coursesResponse, instructorsResponse] = await Promise.all([
           getAllSchedule(),
-          getCourses(),
+          getAllCourses(),
           userService.getInstructors()
         ]);
 
