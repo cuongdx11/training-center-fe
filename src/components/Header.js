@@ -146,43 +146,6 @@ const Header = () => {
     </div>
   );
 
-  const SearchBar = ({ isMobile = false }) => (
-    <form onSubmit={handleSearch} className="relative w-full">
-      <div className="relative flex items-center">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Tìm kiếm khóa học..."
-          className={`
-            w-full 
-            pl-4 pr-12 py-2
-            rounded-full
-            bg-white text-gray-800
-            placeholder-gray-400
-            border-none
-            shadow-sm
-            focus:outline-none focus:ring-2 focus:ring-blue-300
-            ${isMobile ? '' : 'max-w-96'}
-          `}
-        />
-        <button
-          type="submit"
-          className="
-            absolute right-1
-            p-2
-            text-gray-400
-            rounded-full
-            hover:text-gray-600
-            transition-colors
-          "
-        >
-          <FaSearch className="w-4 h-4" />
-        </button>
-      </div>
-    </form>
-  );
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-blue-600 text-white shadow-md">
       {/* Desktop Header */}
@@ -196,7 +159,23 @@ const Header = () => {
 
         {/* Search bar */}
         <div className="mx-4 flex-grow max-w-2xl">
-          <SearchBar />
+          <form onSubmit={handleSearch} className="relative w-full">
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                placeholder="Tìm kiếm khóa học..."
+                className="w-full pl-4 pr-12 py-2 rounded-full bg-white text-gray-800 placeholder-gray-400 border-none shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 max-w-96"
+              />
+              <button
+                type="submit" 
+                className="absolute right-1 p-2 text-gray-400 rounded-full hover:text-gray-600 transition-colors"
+              >
+                <FaSearch className="w-4 h-4" />
+              </button>
+            </div>
+          </form>
         </div>
 
         {/* User menu */}
@@ -342,7 +321,23 @@ const Header = () => {
           <div className="absolute top-full left-0 w-full bg-blue-600 text-white z-40">
             {/* Mobile Search */}
             <div className="p-4">
-              <SearchBar isMobile />
+              <form onSubmit={handleSearch} className="relative w-full">
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Tìm kiếm khóa học..."
+                    className="w-full pl-4 pr-12 py-2 rounded-full bg-white text-gray-800 placeholder-gray-400 border-none shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-1 p-2 text-gray-400 rounded-full hover:text-gray-600 transition-colors"
+                  >
+                    <FaSearch className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
             </div>
 
             {/* Mobile User Menu */}
