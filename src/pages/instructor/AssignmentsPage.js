@@ -55,13 +55,13 @@ const AssignmentsPage = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">All Assignments</h1>
+                <h1 className="text-3xl font-bold">Danh sách bài tập</h1>
                 <button 
                     onClick={handleOpenCreateModal}
                     className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
                 >
                     <Plus className="mr-2" size={20} />
-                    Create Assignment
+                    Tạo bài tập mới
                 </button>
             </div>
 

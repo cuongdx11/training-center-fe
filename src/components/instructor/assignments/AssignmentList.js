@@ -32,10 +32,10 @@ const AssignmentList = ({ assignments, refreshAssignments }) => {
                 <table className="w-full">
                     <thead className="bg-gray-100 border-b">
                         <tr>
-                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
+                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
+                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày nộp</th>
+                            <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">

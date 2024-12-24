@@ -94,7 +94,7 @@ const AssignmentForm = ({
 
             <div>
                 <label htmlFor="classId" className="block text-sm font-medium text-gray-700">
-                    Course Class
+                    Lớp học
                 </label>
                 <select
                     name="classId"
@@ -104,7 +104,7 @@ const AssignmentForm = ({
                     required
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 >
-                    <option value="">Select a Course Class</option>
+                    <option value="">Chọn lớp học</option>
                     {courseClasses.map((courseClass) => (
                         <option key={courseClass.id} value={courseClass.id}>
                             {courseClass.course.title} - {courseClass.name}
@@ -115,7 +115,7 @@ const AssignmentForm = ({
 
             <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                    Assignment Title
+                    Tiêu đề bài tập
                 </label>
                 <input
                     type="text"
@@ -130,7 +130,7 @@ const AssignmentForm = ({
 
             <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Description
+                    Mô tả
                 </label>
                 <textarea
                     name="description"
@@ -144,7 +144,7 @@ const AssignmentForm = ({
 
             <div>
                 <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-                    Assignment Type
+                    Loại bài tập
                 </label>
                 <select
                     name="type"
@@ -163,7 +163,7 @@ const AssignmentForm = ({
 
             <div>
                 <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700">
-                    Due Date
+                    Hạn nộp
                 </label>
                 <input
                     type="datetime-local"
@@ -178,7 +178,7 @@ const AssignmentForm = ({
 
             <div>
                 <label htmlFor="file" className="block text-sm font-medium text-gray-700">
-                    Attachment {initialData ? '(Optional)' : ''}
+                    Tệp đính kèm {initialData ? '(Optional)' : ''}
                 </label>
                 <input
                     type="file"
@@ -200,13 +200,13 @@ const AssignmentForm = ({
                     onClick={onCancel}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Cancel
+                    Hủy
                 </button>
                 <button
                     type="submit"
                     className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    {initialData ? 'Update' : 'Create'} Assignment
+                    {initialData ? 'Update' : 'Create'} Bài tập
                 </button>
             </div>
         </form>

@@ -47,16 +47,16 @@ const AssignmentTable = ({
                 <thead className="bg-gray-50 border-b">
                     <tr>
                         <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Title
+                            Tiêu đề
                         </th>
                         <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Type
+                            Loại bài tập
                         </th>
                         <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Due Date
+                            Hạn nộp
                         </th>
                         <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
+                            Thao tác
                         </th>
                     </tr>
                 </thead>
