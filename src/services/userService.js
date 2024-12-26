@@ -126,6 +126,24 @@ const userService = {
       throw error;
     }
   },
+  getUsersWithFilters: async ({ criteria = "", page = 0, size = 5, sortBy = "id", sortDirection = "desc" }) => {
+    try {
+      const response = await api.get(`/users`, {
+        params: {
+          criteria,
+          page,
+          size,
+          sortBy,
+          sortDirection,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching users with filters:", error);
+      throw error;
+    }
+  },
+
   
 };
 

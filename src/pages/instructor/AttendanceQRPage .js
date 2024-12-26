@@ -5,9 +5,12 @@ import { Check } from 'lucide-react';
 const AttendanceQRPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { qrCodeUrl, className, duration } = location.state || {};
+  const searchParams = new URLSearchParams(location.search);
+  
+  const qrCodeUrl = searchParams.get('qrCodeUrl');
+  const className = searchParams.get('className');
+  const duration = searchParams.get('duration');
 
-  // Nếu không có thông tin QR, quay lại trang chính
   if (!qrCodeUrl) {
     navigate('/create-attendance');
     return null;

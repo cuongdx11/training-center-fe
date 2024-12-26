@@ -53,4 +53,22 @@ export const orderService = {
       throw error;
     }
   },
+  async getAllOrders({ customerName, orderCode, status, startDate, endDate, page = 0, size = 10 }) {
+    try {
+      const params = new URLSearchParams({
+        ...(customerName && { customerName }),
+        ...(orderCode && { orderCode }),
+        ...(status && { status }),
+        ...(startDate && { startDate }), 
+        ...(endDate && { endDate }), 
+        size,
+      });
+  
+      const response = await api.get(`orders/all?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
 };

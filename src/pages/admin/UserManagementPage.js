@@ -13,40 +13,112 @@ const initialFormData = {
   bio: '',
   birthDate: '',
   gender: '',
-  roleIds: [] // Thêm trường này
+  roleIds: []
 };
 
 const UserManagementPage = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [showModal, setShowModal] = useState({ show: false, type: null }); // type: 'add' | 'edit'
+  const [showModal, setShowModal] = useState({ show: false, type: null });
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 5,
+    totalElements: 0,
+    totalPages: 0
+  });
+  const [filters, setFilters] = useState({
+    fullName: '',
+    gender: '',
+    roleNames: [],
+    status: ''
+  });
+  const [sortConfig, setSortConfig] = useState({
+    sortBy: 'createdAt',
+    sortDirection: 'desc'
+  });
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [pagination.page, pagination.size, filters, sortConfig]);
 
-  // Reset form when modal closes
   useEffect(() => {
     if (!showModal.show) {
       setTimeout(() => {
         setFormData(initialFormData);
         setSelectedUser(null);
-      }, 300); // Wait for modal close animation
+      }, 300);
     }
   }, [showModal.show]);
+
+  const buildCriteria = () => {
+    const criteriaArray = [];
+    
+    if (filters.fullName) {
+      criteriaArray.push(`fullName,:,${filters.fullName}`);
+    }
+    if (filters.gender) {
+      criteriaArray.push(`gender,:,${filters.gender}`);
+    }
+    if (filters.roleNames.length > 0) {
+      filters.roleNames.forEach(role => {
+        criteriaArray.push(`roles.name,:,${role}`);
+      });
+    }
+    if (filters.status) {
+      criteriaArray.push(`isEnabled,:,${filters.status === 'active'}`);
+    }
+
+    return criteriaArray.join(';');
+  };
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const data = await userService.getAllUsers();
-      setUsers(data);
+      const criteria = buildCriteria();
+      const response = await userService.getUsersWithFilters({
+        criteria,
+        page: pagination.page,
+        size: pagination.size,
+        sortBy: sortConfig.sortBy,
+        sortDirection: sortConfig.sortDirection
+      });
+
+      setUsers(response.content);
+      setPagination(prev => ({
+        ...prev,
+        totalElements: response.totalElements,
+        totalPages: response.totalPages
+      }));
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePageChange = (newPage, newSize) => {
+    
+    setPagination(prev => ({
+      ...prev,
+      page: newPage,
+      size: newSize
+    }));
+    
+  };
+  
+
+  const handleFiltersChange = (newFilters) => {
+    setFilters(newFilters);
+    setPagination(prev => ({ ...prev, page: 0 })); // Reset to first page
+  };
+
+  const handleSortChange = (field) => {
+    setSortConfig(prev => ({
+      sortBy: field,
+      sortDirection: prev.sortBy === field && prev.sortDirection === 'asc' ? 'desc' : 'asc'
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -151,22 +223,19 @@ const UserManagementPage = () => {
               </button>
             </div>
 
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600">
-                  <div className="animate-ping absolute inline-flex h-12 w-12 rounded-full bg-blue-400 opacity-75"></div>
-                </div>
-              </div>
-            ) : (
-              <div className="transition-all duration-300 ease-in-out">
-                <UserTable
-                  users={users}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onToggleLock={handleToggleLock}
-                />
-              </div>
-            )}
+            <UserTable
+              users={users}
+              loading={loading}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onToggleLock={handleToggleLock}
+              pagination={pagination}
+              onPageChange={handlePageChange}
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              sortConfig={sortConfig}
+              onSortChange={handleSortChange}
+            />
           </div>
         </div>
       </div>
