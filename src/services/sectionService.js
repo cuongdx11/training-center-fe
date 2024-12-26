@@ -23,3 +23,22 @@ export const addSection = async (sectionData,courseId) => {
      throw error;
     }
 }
+
+// Cập nhật section
+export const updateSection = async (sectionId, sectionData) => {
+    try {
+        const response = await api.put(`/sections/${sectionId}`, sectionData);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Xóa section
+export const deleteSection = async (sectionId) => {
+    try {
+        await api.delete(`/sections/${sectionId}`);
+    } catch (error) {
+        throw error;
+    }
+};

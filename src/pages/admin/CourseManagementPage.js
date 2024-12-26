@@ -9,6 +9,9 @@ import { getCourses, addCourse, updateCourse, deleteCourse } from '../../service
 import { getCategories } from '../../services/categoryService';
 import  userService  from '../../services/userService';
 import Pagination from '../../components/Pagination';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const CourseManagementPage = () => {
   const [courses, setCourses] = useState([]);
@@ -23,6 +26,14 @@ const CourseManagementPage = () => {
   const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
 
+  const [searchState, setSearchState] = useState({
+    searchTerm: '',
+    filters: {
+      priceRange: '',
+      category: '',
+      level: ''
+    }
+  });
   const emptyCourseForm = {
     categoryId: "",
     title: "",
@@ -61,10 +72,30 @@ const CourseManagementPage = () => {
       setLoading(false);
     }
   };
+  
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+  const handleSearch = async (searchParams) => {
+    try {
+      setLoading(true);
+      const response = await getCourses(
+        currentPage,
+        6,
+        'title',
+        'asc',
+        searchParams.keys,
+        searchParams.operations,
+        searchParams.values
+      );
+      setCourses(response.content); // Tuỳ chỉnh theo cấu trúc dữ liệu trả về
+      setTotalPages(response.totalPages); // Tương tự
+    } catch (err) {
+      setError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+      console.error('Error fetching data:', err);
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   const handleEditClick = (course) => {
     setSelectedCourse(course);
@@ -81,8 +112,10 @@ const CourseManagementPage = () => {
   const handleEditCourse = async (formData) => {
     try {
       await updateCourse(selectedCourse.id, formData);
+      await fetchInitialData();
       setShowEditModal(false);
-      fetchInitialData();
+      
+      toast.success("Cập nhật khóa học thành công!");
     } catch (err) {
       console.error('Error updating course:', err);
       alert('Không thể cập nhật khóa học. Vui lòng thử lại!');
@@ -93,7 +126,9 @@ const CourseManagementPage = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa khóa học này?')) {
       try {
         await deleteCourse(courseId);
-        fetchInitialData();
+        
+        await fetchInitialData();
+        toast.success("Xóa khóa học thành công!");
       } catch (err) {
         console.error('Error deleting course:', err);
         alert('Không thể xóa khóa học. Vui lòng thử lại!');
@@ -104,14 +139,17 @@ const CourseManagementPage = () => {
   const handleAddCourse = async (formData) => {
     try {
       await addCourse(formData);
+      await fetchInitialData();
       setShowAddModal(false);
-      fetchInitialData();
+      // fetchInitialData();
       setNewCourse(emptyCourseForm);
+      toast.success("Thêm khóa học thành công!");
     } catch (err) {
       console.error('Error adding course:', err);
       alert('Không thể thêm khóa học. Vui lòng thử lại!');
     }
   };
+  
 
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -136,7 +174,7 @@ const CourseManagementPage = () => {
   return (
     <div className="bg-white rounded-lg shadow">
       <Header onAddClick={() => setShowAddModal(true)} />
-      <SearchBar value={searchTerm} onChange={handleSearch} />
+     <SearchBar onSearch={handleSearch} categories={categories} />
       <CourseTable
         courses={filteredCourses}
         onEdit={handleEditClick}
@@ -176,6 +214,7 @@ const CourseManagementPage = () => {
           instructors={instructors}
         />
       </Modal>
+      <ToastContainer />
     </div>
   );
 };

@@ -6,6 +6,8 @@ import Header from '../../components/admin/categories/Header'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../../services/categoryService';
 import CategoryForm from '../../components/admin/categories/CategoryForm';
 import Modal from '../../components/admin/categories/Modal';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CategoryManagementPage = () => {
   const [categories, setCategories] = useState([]);
@@ -45,12 +47,13 @@ const CategoryManagementPage = () => {
       try {
         await deleteCategory(categoryId);
         setCategories(categories.filter((cat) => cat.id !== categoryId));
-        alert("Xóa thành công!")
+        toast.success('Xóa danh mục thành công!');
       } catch (error) {
-        const retry = window.confirm('Không thể xóa danh mục. Bạn có muốn thử lại không?');
-        if (retry) {
-          handleDelete(categoryId);
-        }
+        // const retry = window.confirm('Không thể xóa danh mục. Bạn có muốn thử lại không?');
+        // if (retry) {
+        //   handleDelete(categoryId);
+        // }
+        toast.error('Không thể xóa danh mục.');
       }
     }
   };
@@ -70,10 +73,13 @@ const CategoryManagementPage = () => {
           categories.map((cate) => {
             return cate.id === editingCategory.id ? updatedCategory : cate;
           }
+          
         ));
+        toast.success('Cập nhật danh mục danh mục thành công!');
       } else {
         const newCategory = await createCategory(data);
         setCategories([...categories, newCategory]);
+        toast.success('Thêm danh mục thành công!');
       }
       setModalOpen(false);
       setEditingCategory(null);
@@ -127,7 +133,7 @@ const CategoryManagementPage = () => {
           onClose={() => setModalOpen(false)}
         />
       </Modal>
-
+<ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

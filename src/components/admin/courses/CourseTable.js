@@ -26,7 +26,7 @@ const CourseTable = ({ courses, onEdit, onDelete }) => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá (VNĐ)</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời lượng</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+              {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th> */}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số học viên</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
             </tr>
@@ -55,7 +55,7 @@ const CourseTable = ({ courses, onEdit, onDelete }) => {
                 <td className="px-6 py-4 whitespace-nowrap">{course.category?.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{Number(course.price).toLocaleString()}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{course.duration} tuần</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                {/* <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 py-1 rounded-full text-xs ${
                     course.status === 'active'
                       ? 'bg-green-100 text-green-800'
@@ -63,8 +63,8 @@ const CourseTable = ({ courses, onEdit, onDelete }) => {
                   }`}>
                     {course.status === 'active' ? 'Đang mở' : 'Đã đóng'}
                   </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">{course.studentCount || 0}</td>
+                </td> */}
+                <td className="px-6 py-4 whitespace-nowrap text-center">{course.studentCount || 0}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <button 
@@ -125,8 +125,8 @@ const CourseTable = ({ courses, onEdit, onDelete }) => {
                   <div>{Number(course.price).toLocaleString()} VNĐ</div>
                   <div className="text-gray-500">Thời lượng:</div>
                   <div>{course.duration} tuần</div>
-                  <div className="text-gray-500">Trạng thái:</div>
-                  <div>{course.status === 'active' ? 'Đang mở' : 'Đã đóng'}</div>
+                  {/* <div className="text-gray-500">Trạng thái:</div>
+                  <div>{course.status === 'active' ? 'Đang mở' : 'Đã đóng'}</div> */}
                   <div className="text-gray-500">Số học viên:</div>
                   <div>{course.studentCount || 0}</div>
                 </div>

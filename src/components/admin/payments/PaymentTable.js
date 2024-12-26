@@ -51,7 +51,7 @@ const PaymentTable = ({ payments, onView, onEdit, onDelete }) => {
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã giao dịch</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khóa học</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã đơn hàng</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số tiền</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phương thức</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
@@ -65,19 +65,19 @@ const PaymentTable = ({ payments, onView, onEdit, onDelete }) => {
               <td className="px-6 py-4 text-sm text-gray-500">
                 {payment.transactionCode}
               </td>
-              <td className="px-6 py-4  text-sm text-gray-900">
+              <td className="px-6 py-4 text-sm text-gray-900">
                 <div>
                   <div className="font-medium">{payment.order?.user.fullName}</div>
                   <div className="text-gray-500">{payment.order?.user.email}</div>
                 </div>
               </td>
-              <td className="px-6 py-4  text-sm text-gray-500">
-                {payment.order?.orderItems[0]?.course.title}
+              <td className="px-6 py-4 text-sm text-gray-500">
+                {payment.order?.id}
               </td>
-              <td className="px-6 py-4  text-sm font-medium text-gray-900">
+              <td className="px-6 py-4 text-sm font-medium text-gray-900">
                 {formatCurrency(payment.amount)}
               </td>
-              <td className="px-6 py-4  text-sm text-gray-500">
+              <td className="px-6 py-4 text-sm text-gray-500">
                 {payment.paymentMethod?.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
@@ -88,20 +88,24 @@ const PaymentTable = ({ payments, onView, onEdit, onDelete }) => {
               </td>
               <td className="px-6 py-4 text-sm font-medium">
                 <div className="flex justify-center space-x-3">
-                  <button 
-                    onClick={() => onView(payment)} 
-                    className="text-blue-600 hover:text-blue-900 transition duration-150"
-                    title="Xem chi tiết"
-                  >
-                    <Eye size={18} />
-                  </button>
-                  <button 
-                    onClick={() => onEdit(payment)} 
-                    className="text-green-600 hover:text-green-900 transition duration-150"
-                    title="Chỉnh sửa"
-                  >
-                    <Pencil size={18} />
-                  </button>
+                  {payment.status === 'COMPLETED' && (
+                    <button 
+                      onClick={() => onView(payment)} 
+                      className="text-blue-600 hover:text-blue-900 transition duration-150"
+                      title="Xem chi tiết"
+                    >
+                      <Eye size={18} />
+                    </button>
+                  )}
+                  {payment.status !== 'COMPLETED' && (
+                    <button 
+                      onClick={() => onEdit(payment)} 
+                      className="text-green-600 hover:text-green-900 transition duration-150"
+                      title="Cập nhật trạng thái"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                  )}
                   <button 
                     onClick={() => onDelete(payment)} 
                     className="text-red-600 hover:text-red-900 transition duration-150"

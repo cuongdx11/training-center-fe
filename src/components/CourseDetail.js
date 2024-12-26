@@ -254,102 +254,100 @@ const CourseDetail = ({ course }) => {
             </div> */}
 
             {/* Course Sections */}
-            <div className="bg-white rounded-xl shadow-sm mb-8">
-              <div className="p-6">
-                <h2 className="text-2xl font-bold mb-6">Nội dung khóa học</h2>
-                <div className="space-y-4">
-                  {course.sectionList && course.sectionList.length > 0 ? (
-                    course.sectionList.map((section, index) => {
-                      const isOpen = openSections[section.id] || false;
+<div className="bg-white rounded-xl shadow-sm mb-8">
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-6">Nội dung khóa học</h2>
+    <div className="space-y-4">
+      {course.sectionList && course.sectionList.length > 0 ? (
+        // Sort sections by createdAt
+        [...course.sectionList]
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+          .map((section, index) => {
+            const isOpen = openSections[section.id] || false;
 
-                      return (
-                        <div
-                          key={section.id}
-                          className={`border border-gray-100 rounded-xl transition-all duration-300 ${
-                            isOpen
-                              ? "bg-blue-50/50"
-                              : "bg-white hover:bg-gray-50"
-                          }`}
-                        >
-                          <button
-                            onClick={() => toggleSection(section.id)}
-                            className="w-full px-6 py-4 flex items-center justify-between"
+            return (
+              <div
+                key={section.id}
+                className={`border border-gray-100 rounded-xl transition-all duration-300 ${
+                  isOpen ? "bg-blue-50/50" : "bg-white hover:bg-gray-50"
+                }`}
+              >
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className="w-full px-6 py-4 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600 font-semibold">
+                      {index + 1}
+                    </span>
+                    <div className="text-left">
+                      <h3 className="font-semibold text-gray-900">
+                        {section.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Lessons List */}
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    isOpen ? "opacity-100" : "opacity-0 max-h-0"
+                  }`}
+                  style={{
+                    maxHeight: isOpen ? "2000px" : "0",
+                    marginTop: isOpen ? "0.5rem" : "0",
+                    marginBottom: isOpen ? "1rem" : "0",
+                  }}
+                >
+                  {section.lessonList && section.lessonList.length > 0 ? (
+                    <div className="px-6 space-y-3">
+                      {/* Sort lessons by createdAt */}
+                      {[...section.lessonList]
+                        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+                        .map((lesson) => (
+                          <div
+                            key={lesson.id}
+                            className="p-4 rounded-lg bg-white border border-gray-100 hover:border-blue-200 transition-all duration-200"
                           >
-                            <div className="flex items-center gap-4">
-                              <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600 font-semibold">
-                                {index + 1}
-                              </span>
-                              <div className="text-left">
-                                <h3 className="font-semibold text-gray-900">
-                                  {section.title}
-                                </h3>
-                                <p className="text-sm text-gray-600 mt-1">
-                                  {section.description}
-                                </p>
+                            <div className="flex items-start gap-3">
+                              <PlayCircle className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-medium text-gray-900 truncate">
+                                  {lesson.title}
+                                </h4>
+                                <div className="flex items-center gap-2 mt-2">
+                                  <Clock className="w-4 h-4 text-gray-400" />
+                                  <span className="text-sm text-gray-500">
+                                    {lesson.duration} phút
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                            <ChevronDown
-                              className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${
-                                isOpen ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-
-                          {/* Lessons List */}
-                          <div
-                            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                              isOpen ? "opacity-100" : "opacity-0 max-h-0"
-                            }`}
-                            style={{
-                              maxHeight: isOpen ? "2000px" : "0",
-                              marginTop: isOpen ? "0.5rem" : "0",
-                              marginBottom: isOpen ? "1rem" : "0",
-                            }}
-                          >
-                            {section.lessons && section.lessons.length > 0 ? (
-                              <div className="px-6 space-y-3">
-                                {section.lessons.map((lesson) => (
-                                  <div
-                                    key={lesson.id}
-                                    className="p-4 rounded-lg bg-white border border-gray-100 hover:border-blue-200 transition-all duration-200"
-                                  >
-                                    <div className="flex items-start gap-3">
-                                      <PlayCircle className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" />
-                                      <div className="flex-1 min-w-0">
-                                        <h4 className="font-medium text-gray-900 truncate">
-                                          {lesson.title}
-                                        </h4>
-                                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                                          {lesson.content}
-                                        </p>
-                                        <div className="flex items-center gap-2 mt-2">
-                                          <Clock className="w-4 h-4 text-gray-400" />
-                                          <span className="text-sm text-gray-500">
-                                            {lesson.duration} phút
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="px-6 text-gray-600 text-sm">
-                                Không có bài học nào trong phần này.
-                              </p>
-                            )}
                           </div>
-                        </div>
-                      );
-                    })
+                        ))}
+                    </div>
                   ) : (
-                    <p className="text-gray-600">
-                      Không có nội dung nào được tìm thấy.
+                    <p className="px-6 text-gray-600 text-sm">
+                      Không có bài học nào trong phần này.
                     </p>
                   )}
                 </div>
               </div>
-            </div>
+            );
+          })
+      ) : (
+        <p className="text-gray-600">
+          Không có nội dung nào được tìm thấy.
+        </p>
+      )}
+    </div>
+  </div>
+</div>
 
             {/* Reviews Section */}
             <div className="bg-white rounded-xl shadow-sm">

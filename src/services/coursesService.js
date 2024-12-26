@@ -1,15 +1,42 @@
 import axios from "./api";
 
-export const getCourses = async (page = 0, size = 6, sortBy = 'title', sortDirection = 'asc') => {
+export const getCourses = async (
+  page = 0,
+  size = 6,
+  sortBy = 'title',
+  sortDirection = 'asc',
+  keys = [],
+  operations = [],
+  values = []
+) => {
   try {
-    const response = await axios.get(`/courses`, {
-      params: { page, size, sortBy, sortDirection },
-    });
-    return response.data.data;
+    const params = {
+      page,
+      size,
+      sortBy,
+      sortDirection,
+    };
+
+    // Chỉ thêm các tham số filter nếu có
+    if (keys.length > 0 && operations.length > 0 && values.length > 0) {
+      params.keys = keys.join(',');
+      params.operations = operations.join(',');
+      params.values = values.join(',');
+    }
+
+    const response = await axios.get(`/courses`, { params });
+    return response.data.data; // Trả về toàn bộ dữ liệu để xử lý linh hoạt
   } catch (error) {
-    throw error;
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Error fetching courses');
+    } else if (error.request) {
+      throw new Error('No response from server. Please check your connection.');
+    } else {
+      throw new Error('Error setting up the request');
+    }
   }
 };
+
 
 // Lấy chi tiết một khóa học
 export const getCourseById = async (courseId) => {
