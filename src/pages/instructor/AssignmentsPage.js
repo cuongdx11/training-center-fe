@@ -85,7 +85,7 @@ const AssignmentsPage = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={editingAssignment ? 'Edit Assignment' : 'Create New Assignment'}
+                title={editingAssignment ? 'Chỉnh sửa bài tập' : 'Giao bài tập'}
             >
                 <AssignmentForm 
                     initialData={editingAssignment}
