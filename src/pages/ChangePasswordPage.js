@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar';
 import { changePass } from '../services/authService';
 import userService from '../services/userService';
 import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const ChangePasswordPage = () => {
   const [formData, setFormData] = useState({
@@ -46,33 +47,33 @@ const ChangePasswordPage = () => {
 
     // Validation
     if (!formData.oldPassword || !formData.newPassword || !formData.confirmPassword) {
-      toast.error('Vui lòng điền đầy đủ thông tin');
+      Swal.fire('Lỗi', 'Vui lòng điền đầy đủ thông tin', 'error');
       setLoading(false);
       return;
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      toast.error('Mật khẩu mới không khớp');
+      Swal.fire('Lỗi', 'Mật khẩu mới không khớp', 'error');
       setLoading(false);
       return;
     }
 
     if (formData.newPassword.length < 6) {
-      toast.error('Mật khẩu mới phải có ít nhất 6 ký tự');
+      Swal.fire('Lỗi', 'Mật khẩu mới phải có ít nhất 6 ký tự', 'error');
       setLoading(false);
       return;
     }
 
     try {
       await changePass(formData);
-      toast.success('Đổi mật khẩu thành công');
+      Swal.fire('Thành công', 'Đổi mật khẩu thành công', 'success');
       setFormData({
         oldPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Có lỗi xảy ra khi đổi mật khẩu');
+      Swal.fire('Lỗi', err.response?.data?.message || 'Có lỗi xảy ra khi đổi mật khẩu', 'error');
     } finally {
       setLoading(false);
     }

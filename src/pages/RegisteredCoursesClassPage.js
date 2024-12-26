@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {getCourseByUserRegister} from '../services/coursesService';
 import {getClassByCourseId} from '../services/courseClassService';
 import {addUserToClass} from '../services/classStudent';
+import Swal from "sweetalert2";
 const RegisteredCoursesClassPage = () => {
   const [registeredCourses, setRegisteredCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -41,13 +42,14 @@ const RegisteredCoursesClassPage = () => {
 
   const handleClassSelection = async () => {
     if (!selectedClassId) {
-      return alert("Vui lòng chọn một lớp học!");
+      Swal.fire("Thông báo", "Vui lòng chọn một lớp học!", "info");
+      return;
     }
 
     setLoading(true);
     try {
       await addUserToClass({classId: selectedClassId})
-      alert("Đăng ký lớp học thành công!");
+      Swal.fire("Thành công", "Đăng ký lớp học thành công!", "success");
       
       // Cập nhật trạng thái sau khi đăng ký thành công
       setRegisteredCourses(prevCourses => 
@@ -64,7 +66,7 @@ const RegisteredCoursesClassPage = () => {
       setClasses([]);
     } catch (error) {
       console.error("Đăng ký lớp học thất bại", error);
-      alert("Đã xảy ra lỗi khi đăng ký lớp học.");
+      Swal.fire("Lỗi", "Đã xảy ra lỗi khi đăng ký lớp học.", "error");
     } finally {
       setLoading(false);
     }

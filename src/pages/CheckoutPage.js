@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { orderService } from '../services/orderService';
 import cartService from '../services/cartService';
 import { paymentService } from '../services/paymentService';
+import Swal from 'sweetalert2';
 
 const CheckoutPage = () => {
   const [cart, setCart] = useState(null);
@@ -41,17 +42,32 @@ const CheckoutPage = () => {
   const handleCheckout = async () => {
     if (!selectedPaymentMethod) {
       setError('Please select a payment method');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Phương thức thanh toán',
+        text: 'Vui lòng chọn phương thức thanh toán',
+      });
       return;
     }
-
+  
     setLoading(true);
     setError('');
-
+  
     try {
       const response = await orderService.checkout(selectedPaymentMethod);
+      Swal.fire({
+        icon: 'success',
+        title: 'Thanh toán thành công',
+        text: `Đơn hàng đã được đặt thành công với ID: ${response.order.id}`,
+      });
       navigate(`/orders/${response.order.id}`);
     } catch (error) {
       setError('Failed to process checkout. Please try again.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi Thanh toán',
+        text: 'Không thể xử lý thanh toán. Vui lòng thử lại.',
+      });
       console.error('Checkout error:', error);
     } finally {
       setLoading(false);

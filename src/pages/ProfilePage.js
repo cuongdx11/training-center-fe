@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import PersonalInfo from '../components/PersonalInfo';
 import userService from '../services/userService';
-import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const ProfilePage = () => {
     const [userInfo, setUserInfo] = useState(null);
@@ -22,7 +22,11 @@ const ProfilePage = () => {
             setUserInfo(data);
         } catch (error) {
             setError(error.message || 'Có lỗi xảy ra khi tải thông tin người dùng');
-            toast.error('Không thể tải thông tin người dùng');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể tải thông tin người dùng',
+            });
         } finally {
             setLoading(false);
         }
@@ -32,9 +36,17 @@ const ProfilePage = () => {
         try {
             const response = await userService.updateProfileUser(updatedInfo);
             setUserInfo(response);
-            toast.success('Cập nhật thông tin thành công');
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: 'Cập nhật thông tin thành công',
+            });
         } catch (error) {
-            toast.error('Cập nhật thông tin thất bại');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Cập nhật thông tin thất bại',
+            });
         }
     };
 

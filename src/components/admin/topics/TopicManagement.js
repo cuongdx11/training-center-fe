@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getTopics, addTopic, deleteTopic, addCourseToTopic, removeCourseFromTopic, getCoursesOfTopic } from '../../../services/courseTopicService';
 import { getAllCourses } from '../../../services/coursesService';
 import { Plus, X, Check, ChevronDown } from 'lucide-react';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TopicManagement = () => {
   const [topics, setTopics] = useState([]);
@@ -71,8 +73,9 @@ const TopicManagement = () => {
       setIsAddTopicOpen(false);
       setNewTopic({ name: '', description: '' });
       fetchTopics();
+      toast.success('Chủ đề đã được thêm thành công!');
     } catch (err) {
-      setError('Failed to add topic');
+      toast.error('Không thể thêm chủ đề!');
     }
   };
 
@@ -81,8 +84,9 @@ const TopicManagement = () => {
       try {
         await deleteTopic(id);
         fetchTopics();
+        toast.success('Chủ đề đã được xóa thành công!');
       } catch (err) {
-        setError('Failed to delete topic');
+        toast.error('Không thể xóa chủ đề!');
       }
     }
   };
@@ -91,18 +95,21 @@ const TopicManagement = () => {
     try {
       if (isSelected) {
         await addCourseToTopic(topicId, courseId);
+        toast.success('Khóa học đã được thêm vào chủ đề!');
       } else {
         await removeCourseFromTopic(topicId, courseId);
+        toast.info('Khóa học đã được xóa khỏi chủ đề!');
       }
       fetchTopicCourses(topicId);
       fetchTopics();
     } catch (err) {
-      setError(isSelected ? 'Failed to add course' : 'Failed to remove course');
+      toast.error(isSelected ? 'Không thể thêm khóa học!' : 'Không thể xóa khóa học!');
     }
   };
 
   return (
     <div className="p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+      <ToastContainer position="top-right" autoClose={3000} />
       {error && (
         <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg shadow-sm flex justify-between items-center">
           <span>{error}</span>
@@ -118,7 +125,7 @@ const TopicManagement = () => {
           className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
         >
           <Plus size={20} />
-          Add New Topic
+          Thêm chủ đề mới
         </button>
 
         <button
@@ -126,7 +133,7 @@ const TopicManagement = () => {
           className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
         >
           <Plus size={20} />
-          Add Courses to Topic
+          Thêm khóa học vào chủ đề
         </button>
       </div>
 
@@ -135,7 +142,7 @@ const TopicManagement = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Add New Topic</h2>
+              <h2 className="text-2xl font-bold">Thêm mới chủ đề</h2>
               <button
                 onClick={() => setIsAddTopicOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -146,7 +153,7 @@ const TopicManagement = () => {
             <form onSubmit={handleAddTopic} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Topic Name
+                  Tên chủ đề
                 </label>
                 <input
                   type="text"
@@ -158,7 +165,7 @@ const TopicManagement = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
+                  Mô tả
                 </label>
                 <textarea
                   value={newTopic.description}
@@ -174,13 +181,13 @@ const TopicManagement = () => {
                   onClick={() => setIsAddTopicOpen(false)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  Save Topic
+                  Lưu chủ đề
                 </button>
               </div>
             </form>

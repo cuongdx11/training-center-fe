@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getCourseById } from '../services/coursesService';
 import { orderService } from '../services/orderService';
 import { paymentService } from '../services/paymentService';
+import Swal from 'sweetalert2';
 
 const CheckoutFlashPage = () => {
   const { id } = useParams();
@@ -45,22 +46,35 @@ const CheckoutFlashPage = () => {
 
   const handleCheckout = async () => {
     if (!selectedPaymentMethod) {
-      setError('Vui lòng chọn phương thức thanh toán');
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Vui lòng chọn phương thức thanh toán',
+      });
       return;
     }
-
+  
     setLoading(true);
     setError('');
-
+  
     try {
       const response = await orderService.checkoutNow(selectedPaymentMethod, course.id);
       if (response?.paymentUrl) {
         window.location.href = response.paymentUrl;
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: 'Thanh toán thành công!',
+          text: `Bạn đã đăng ký khóa học: ${course.title}`,
+        });
+        navigate('/');
       }
-      alert(`Bạn đã đăng ký khóa học: ${course.title}`);
-      navigate('/');
     } catch (error) {
-      setError('Lỗi khi xử lý thanh toán. Vui lòng thử lại.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Thanh toán thất bại',
+        text: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
+      });
       console.error('Lỗi thanh toán:', error);
     } finally {
       setLoading(false);

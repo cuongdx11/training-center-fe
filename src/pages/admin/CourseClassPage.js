@@ -49,6 +49,7 @@ const CourseClassPage = () => {
 
   const handleEditSuccess = () => {
     setShowEditModal(false);
+    alert('Lớp học đã được cập nhật thành công!');
     fetchInitialData();
   };
 
@@ -62,6 +63,7 @@ const CourseClassPage = () => {
       try {
         await deleteClass(classId);
         fetchInitialData();
+        alert('Lớp học đã được xóa!');
       } catch (err) {
         console.error('Error deleting class:', err);
         alert('Không thể xóa lớp học. Vui lòng thử lại!');
@@ -95,15 +97,14 @@ const CourseClassPage = () => {
 
   return (
     <div className="bg-white rounded-lg shadow">
-
-        <div className="flex justify-between items-center p-6 border-b">
-            <h1 className="text-2xl font-bold text-gray-800">Quản lý Lớp học</h1>
-            <button onClick={handleAddClass} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              <PlusCircle className="w-4 h-4" />
-                Tạo lớp học
-            </button>
-        </div>
-
+      <div className="flex justify-between items-center p-6 border-b">
+          <h1 className="text-2xl font-bold text-gray-800">Quản lý Lớp học</h1>
+          <button onClick={handleAddClass} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <PlusCircle className="w-4 h-4" />
+              Tạo lớp học
+          </button>
+      </div>
+      
       <SearchBar value={searchTerm} onChange={handleSearch} />
       <CourseClassTable
         courseClass={filteredCourseClass}

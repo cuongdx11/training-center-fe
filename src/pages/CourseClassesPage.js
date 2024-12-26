@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getClassByCourseId } from '../services/courseClassService';
 import {getCourseById} from '../services/coursesService';
 import { addUserToClass } from '../services/classStudent';
+import Swal from 'sweetalert2';
 
 const CourseClassesPage = () => {
   const { courseId } = useParams();
@@ -35,18 +36,29 @@ const CourseClassesPage = () => {
 
   const handleClassRegistration = async () => {
     if (!selectedClassId) {
-      alert("Vui lòng chọn một lớp học!");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Cảnh báo',
+        text: 'Vui lòng chọn một lớp học!',
+      });
       return;
     }
 
     setLoading(true);
     try {
       await addUserToClass({ classId: selectedClassId });
-      alert("Đăng ký lớp học thành công!");
-      navigate('/courses'); // Or redirect to a confirmation page
+      Swal.fire({
+        icon: 'success',
+        title: 'Thành công',
+        text: 'Đăng ký lớp học thành công!',
+        confirmButtonText: 'Xem khóa học',
+      }).then(() => navigate('/courses'));
     } catch (error) {
-      console.error("Đăng ký lớp học thất bại", error);
-      alert("Đã xảy ra lỗi khi đăng ký lớp học.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Thất bại',
+        text: 'Đã xảy ra lỗi khi đăng ký lớp học.',
+      });
     } finally {
       setLoading(false);
     }

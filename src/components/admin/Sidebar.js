@@ -95,7 +95,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       icon: <Banknote className="w-5 h-5" />,
       submenu: [
         { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/payments' },
-        { title: 'Tạo Thanh Toán', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }
+        // { title: 'Tạo Thanh Toán', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }
       ]
     },
     {

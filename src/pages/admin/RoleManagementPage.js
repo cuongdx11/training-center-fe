@@ -119,13 +119,13 @@ const RoleManagementPage = () => {
                     onClick={() => setActiveTab('roles')}
                     className={`px-4 py-2 mr-2 ${activeTab === 'roles' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                 >
-                    Roles
+                    Vai trò
                 </button>
                 <button
                     onClick={() => setActiveTab('permissions')}
                     className={`px-4 py-2 ${activeTab === 'permissions' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                 >
-                    Permissions
+                    Quyền hạn
                 </button>
             </div>
 
@@ -134,12 +134,12 @@ const RoleManagementPage = () => {
                 <>
                     {/* Header */}
                     <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-2xl font-bold">Role Management</h1>
+                        <h1 className="text-2xl font-bold">Quản lý vai trò</h1>
                         <button
                             onClick={() => setIsRoleModalOpen(true)}
                             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
                         >
-                            Add New Role
+                            Thêm vai trò mới
                         </button>
                     </div>
 
@@ -148,9 +148,9 @@ const RoleManagementPage = () => {
                         <table className="min-w-full">
                             <thead>
                                 <tr className="bg-gray-50">
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Name</th>
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Description</th>
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Tên</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Mô tả</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -163,13 +163,13 @@ const RoleManagementPage = () => {
                                                 onClick={() => setSelectedRole(role)}
                                                 className="text-blue-500 hover:text-blue-700"
                                             >
-                                                Manage Permissions
+                                                Quản lý quyền hạn
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteRole(role.id)}
                                                 className="text-red-500 hover:text-red-700"
                                             >
-                                                Delete
+                                                Xóa
                                             </button>
                                         </td>
                                     </tr>
@@ -185,12 +185,12 @@ const RoleManagementPage = () => {
                 <>
                     {/* Header */}
                     <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-2xl font-bold">Permission Management</h1>
+                        <h1 className="text-2xl font-bold">Quản lý quyền hạn</h1>
                         <button
                             onClick={() => setIsPermissionModalOpen(true)}
                             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
                         >
-                            Add New Permission
+                            Thêm quyền mới
                         </button>
                     </div>
 
@@ -199,9 +199,9 @@ const RoleManagementPage = () => {
                         <table className="min-w-full">
                             <thead>
                                 <tr className="bg-gray-50">
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Name</th>
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Description</th>
-                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Tên</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Mô tả</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -211,10 +211,10 @@ const RoleManagementPage = () => {
                                         <td className="px-6 py-4 text-sm text-gray-900">{permission.description}</td>
                                         <td className="px-6 py-4 text-sm">
                                             <button className="text-blue-500 hover:text-blue-700 mr-2">
-                                                Edit
+                                                Sửa
                                             </button>
                                             <button className="text-red-500 hover:text-red-700">
-                                                Delete
+                                                Xóa
                                             </button>
                                         </td>
                                     </tr>
@@ -229,10 +229,10 @@ const RoleManagementPage = () => {
             {isRoleModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg w-96">
-                        <h2 className="text-xl font-bold mb-4">Add New Role</h2>
+                        <h2 className="text-xl font-bold mb-4">Thêm vai trò</h2>
                         <form onSubmit={handleAddRole}>
                             <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Name</label>
+                                <label className="block text-sm font-medium mb-1">Tên</label>
                                 <input
                                     type="text"
                                     value={newRole.name}
@@ -242,7 +242,7 @@ const RoleManagementPage = () => {
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Description</label>
+                                <label className="block text-sm font-medium mb-1">Mô tả</label>
                                 <input
                                     type="text"
                                     value={newRole.description}
@@ -257,14 +257,14 @@ const RoleManagementPage = () => {
                                     onClick={() => setIsRoleModalOpen(false)}
                                     className="px-4 py-2 text-gray-600 hover:text-gray-800"
                                 >
-                                    Cancel
+                                    Hủy
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={loading}
                                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
                                 >
-                                    {loading ? 'Adding...' : 'Add Role'}
+                                    {loading ? 'Adding...' : 'Thêm'}
                                 </button>
                             </div>
                         </form>
@@ -276,10 +276,10 @@ const RoleManagementPage = () => {
             {isPermissionModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg w-96">
-                        <h2 className="text-xl font-bold mb-4">Add New Permission</h2>
+                        <h2 className="text-xl font-bold mb-4">Thêm quyền mới</h2>
                         <form onSubmit={handleAddPermission}>
                             <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Name</label>
+                                <label className="block text-sm font-medium mb-1">Tên</label>
                                 <input
                                     type="text"
                                     value={newPermission.name}
@@ -289,7 +289,7 @@ const RoleManagementPage = () => {
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Description</label>
+                                <label className="block text-sm font-medium mb-1">Mô tả</label>
                                 <textarea
                                     value={newPermission.description}
                                     onChange={(e) => setNewPermission({ ...newPermission, description: e.target.value })}
@@ -303,7 +303,7 @@ const RoleManagementPage = () => {
                                     onClick={() => setIsPermissionModalOpen(false)}
                                     className="px-4 py-2 text-gray-600 hover:text-gray-800"
                                 >
-                                    Cancel
+                                    Hủy
                                 </button>
                                 <button
                                     type="submit"
@@ -347,7 +347,7 @@ const RoleManagementPage = () => {
                                 onClick={() => setSelectedRole(null)}
                                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
                             >
-                                Close
+                                Đóng
                             </button>
                         </div>
                     </div>
