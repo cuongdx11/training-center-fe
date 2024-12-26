@@ -57,8 +57,8 @@ const CheckoutPage = () => {
       const response = await orderService.checkout(selectedPaymentMethod);
       Swal.fire({
         icon: 'success',
-        title: 'Thanh toán thành công',
-        text: `Đơn hàng đã được đặt thành công với ID: ${response.order.id}`,
+        title: 'Đăng kí thành công',
+        text: `Đơn hàng đã được đặt thành công, Vui lòng thanh toán để kích hoạt`,
       });
       navigate(`/orders/${response.order.id}`);
     } catch (error) {

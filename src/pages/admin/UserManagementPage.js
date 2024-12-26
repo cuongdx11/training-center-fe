@@ -4,6 +4,8 @@ import Modal from '../../components/admin/users/Modal';
 import UserForm from '../../components/admin/users/UserForm';
 import UserTable from '../../components/admin/users/UserTable';
 import userService from '../../services/userService';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const initialFormData = {
   email: '',
@@ -128,15 +130,18 @@ const UserManagementPage = () => {
       if (selectedUser) {
         // Update user
         await userService.updateUser(selectedUser.id, formData);
+        toast.success('Cập nhật người dùng thành công!');
       } else {
         // Add new user
         await userService.addUser(formData);
+        toast.success('Thêm người dùng mới thành công!');
       }
   
       await fetchUsers(); // Tải lại danh sách người dùng
       setShowModal({ show: false, type: null });
     } catch (error) {
       console.error("Error saving user:", error);
+      toast.error('Đã xảy ra lỗi khi lưu thông tin người dùng.');
       // Thêm thông báo lỗi nếu cần
     } finally {
       setLoading(false);
@@ -145,7 +150,7 @@ const UserManagementPage = () => {
   
 
   const handleDelete = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm('Bạn muốn xóa user này không?')) {
       try {
         setLoading(true);
         const response = await userService.deleteUser(userId);
@@ -153,10 +158,12 @@ const UserManagementPage = () => {
         if (response === true) {
           await fetchUsers();
           // Show success toast notification
+          toast.success('Xóa người dùng thành công!');
         }
       } catch (error) {
         console.error('Error deleting user:', error);
         // Show error toast notification
+        toast.error('Đã xảy ra lỗi khi xóa người dùng.');
       } finally {
         setLoading(false);
       }
@@ -172,11 +179,14 @@ const UserManagementPage = () => {
       const response = await userService.blockUser(blockUserRequest); // Gọi API block user
       if (response) {
         await fetchUsers();
+        toast.success(user.isLocked ? 'Mở khóa người dùng thành công!' : 'Khóa người dùng thành công!');
       } else {
         console.error('Failed to toggle lock state');
+        toast.error('Không thể thay đổi trạng thái khóa.');
       }
     } catch (error) {
       console.error('Error toggling lock state:', error);
+      toast.error('Đã xảy ra lỗi khi thay đổi trạng thái khóa.');
     } finally {
       setLoading(false);
     }
@@ -209,6 +219,7 @@ const UserManagementPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4 transition-all duration-300">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-lg transition-shadow hover:shadow-xl">
           <div className="px-4 py-5 sm:p-6">
@@ -243,7 +254,7 @@ const UserManagementPage = () => {
       <Modal
         show={showModal.show}
         onClose={handleCloseModal}
-        title={showModal.type === 'add' ? 'Add New User' : 'Edit User'}
+        title={showModal.type === 'add' ? 'Thêm Người dùng mới' : 'Chỉnh sửa thông tin'}
       >
         <UserForm
           formData={formData}

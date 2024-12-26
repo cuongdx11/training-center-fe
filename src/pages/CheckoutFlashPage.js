@@ -64,8 +64,8 @@ const CheckoutFlashPage = () => {
       } else {
         Swal.fire({
           icon: 'success',
-          title: 'Thanh toán thành công!',
-          text: `Bạn đã đăng ký khóa học: ${course.title}`,
+          title: 'Đăng kí thành công!',
+          text: `Vui lòng Thanh toán để kích hoạt khóa học`,
         });
         navigate('/');
       }

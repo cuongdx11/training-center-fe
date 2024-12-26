@@ -80,7 +80,7 @@ const UserRoleManagementPage = () => {
 
             {/* Header and Search */}
             <div className="mb-6">
-                <h1 className="text-2xl font-bold mb-4">User Role Management</h1>
+                <h1 className="text-2xl font-bold mb-4">Quản lý Vai trò người dùng</h1>
                 <div className="flex gap-4">
                     <input
                         type="text"
@@ -98,16 +98,16 @@ const UserRoleManagementPage = () => {
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                User
+                                Người dùng
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Email
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Current Roles
+                                Vai trò hiện tại
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions
+                                Thao tác
                             </th>
                         </tr>
                     </thead>
@@ -143,7 +143,7 @@ const UserRoleManagementPage = () => {
                                         onClick={() => setSelectedUser(user)}
                                         className="text-blue-600 hover:text-blue-900"
                                     >
-                                        Manage Roles
+                                        Cập nhật
                                     </button>
                                 </td>
                             </tr>
