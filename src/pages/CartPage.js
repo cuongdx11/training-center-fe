@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import cartService from '../services/cartService';
-
+import Swal from 'sweetalert2';
 
 const CartPage = () => {
   const [cart, setCart] = useState(null);
@@ -29,22 +29,46 @@ const CartPage = () => {
   };
 
   const handleDeleteItem = async (itemId) => {
-    try {
-      await cartService.deleteCartItem(itemId);
-      await loadCart();
-      window.location.reload(false);
-    } catch (error) {
-      console.error('Error deleting cart item:', error);
+    const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: 'Bạn có chắc chắn muốn xóa mục này khỏi giỏ hàng?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy',
+    });
+  
+    if (result.isConfirmed) {
+      try {
+        await cartService.deleteCartItem(itemId);
+        await loadCart();
+        Swal.fire('Thành công!', 'Mục đã được xóa.', 'success');
+      } catch (error) {
+        console.error('Error deleting cart item:', error);
+        Swal.fire('Lỗi!', 'Không thể xóa mục.', 'error');
+      }
     }
   };
-
+  
   const handleClearCart = async () => {
-    try {
-      await cartService.deleteCart();
-      loadCart();
-      window.location.reload(false);
-    } catch (error) {
-      console.error('Error clearing cart:', error);
+    const result = await Swal.fire({
+      title: 'Xác nhận',
+      text: 'Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Xóa tất cả',
+      cancelButtonText: 'Hủy',
+    });
+  
+    if (result.isConfirmed) {
+      try {
+        await cartService.deleteCart();
+        loadCart();
+        Swal.fire('Thành công!', 'Giỏ hàng đã được xóa.', 'success');
+      } catch (error) {
+        console.error('Error clearing cart:', error);
+        Swal.fire('Lỗi!', 'Không thể xóa giỏ hàng.', 'error');
+      }
     }
   };
 

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { createReview, listReviewByCourse } from "../services/courseReview";
 import cartService from "../services/cartService";
+import Swal from "sweetalert2";
 
 const CourseDetail = ({ course }) => {
   const formatDate = (dateString) => {
@@ -93,11 +94,22 @@ const CourseDetail = ({ course }) => {
   const handleAddToCart = async (courseId) => {
     try {
       await cartService.addToCart(courseId);
-      alert('Khóa học đã được thêm vào giỏ hàng!');
-      window.location.reload(false);
+      Swal.fire({
+        icon: 'success',
+        title: 'Thành công!',
+        text: 'Khóa học đã được thêm vào giỏ hàng!',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        window.location.reload(false);
+      });
     } catch (error) {
       console.error('Error adding course to cart:', error);
-      alert('Không thể thêm khóa học vào giỏ hàng. Vui lòng thử lại.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi!',
+        text: 'Không thể thêm khóa học vào giỏ hàng. Vui lòng thử lại.',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
