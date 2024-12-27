@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { FileText, Upload, CheckCircle } from 'lucide-react';
+import { FileText, Upload, CheckCircle, Star } from 'lucide-react';
 import { 
     getAssignmentDetails
-    
-     
 } from '../services/assignmentService';
 
-import {createStudentSubmission,getStudentSubmissionForAssignment} from '../services/studentSubmissions'
+import {createStudentSubmission, getStudentSubmissionForAssignment} from '../services/studentSubmissions'
+import Swal from "sweetalert2";
+
 const AssignmentDetailPage = () => {
     const { assignmentId } = useParams();
 
@@ -55,7 +55,13 @@ const AssignmentDetailPage = () => {
 
             const response = await createStudentSubmission(formData);
             
-            alert('Nộp bài thành công');
+            Swal.fire({
+                icon: 'success',
+                title: 'Nộp bài thành công',
+                text: 'Bài sẽ được chấm bởi giảng viên',
+                confirmButtonText: 'OK',
+              })
+            // alert('Nộp bài thành công');
             // Refresh submission status
             setSubmission(response);
             setSelectedFile(null);
@@ -108,7 +114,7 @@ const AssignmentDetailPage = () => {
                         </div>
                     </div>
 
-                    {/* Submission Status */}
+                    {/* Submission Status and Grade */}
                     <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
                         <div className="flex items-center">
                             <CheckCircle 
@@ -122,17 +128,44 @@ const AssignmentDetailPage = () => {
                             </p>
                         </div>
                         {submission && (
-                            <div className="mt-2">
-                                <a 
-                                    href={submission.fileUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline flex items-center"
-                                >
-                                    <FileText className="mr-2" size={18} />
-                                    Xem bài nộp
-                                </a>
-                            </div>
+                            <>
+                                <div className="mt-2">
+                                    <a 
+                                        href={submission.fileUrl} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline flex items-center"
+                                    >
+                                        <FileText className="mr-2" size={18} />
+                                        Xem bài nộp
+                                    </a>
+                                </div>
+                                
+                                {/* Grade Display */}
+                                {submission.status === 'GRADED' && (
+                                    <div className="mt-4 border-t border-blue-200 pt-4">
+                                        <div className="flex items-center mb-2">
+                                            <Star className="text-yellow-500 mr-2" size={20} />
+                                            <span className="font-semibold text-lg">
+                                                Điểm: {submission.score.toFixed(2)}
+                                            </span>
+                                        </div>
+                                        {submission.feedback && (
+                                            <div className="mt-2">
+                                                <p className="text-sm font-medium text-gray-700">Nhận xét của giảng viên:</p>
+                                                <p className="text-gray-600 mt-1 p-2 bg-white rounded">
+                                                    {submission.feedback}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                {submission.status === 'SUBMITTED' && (
+                                    <div className="mt-4 text-gray-600 italic">
+                                        Bài tập đang chờ chấm điểm
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
 

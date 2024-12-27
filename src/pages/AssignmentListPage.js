@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Clock, CheckCircle, BookOpen, AlertCircle } from 'lucide-react';
+import { FileText, Clock, CheckCircle, BookOpen, AlertCircle, Eye } from 'lucide-react';
 import { getAssignmentsOfStudent } from '../services/assignmentService';
 
 const AssignmentListPage = () => {
@@ -104,9 +104,23 @@ const AssignmentListPage = () => {
                                         </p>
 
                                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                            <div className="flex items-center px-3 py-1 bg-gray-50 rounded-full text-sm text-gray-600">
-                                                <FileText className="mr-2 h-4 w-4" />
-                                                <span>{assignment.fileType || 'Tất cả định dạng'}</span>
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex items-center px-3 py-1 bg-gray-50 rounded-full text-sm text-gray-600">
+                                                    <FileText className="mr-2 h-4 w-4" />
+                                                    <span>{assignment.fileType || 'Tất cả định dạng'}</span>
+                                                </div>
+                                                
+                                                {assignment.fileUrl && (
+                                                    <a
+                                                        href={assignment.fileUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100 transition-colors"
+                                                    >
+                                                        <Eye className="mr-2 h-4 w-4" />
+                                                        Xem đề bài
+                                                    </a>
+                                                )}
                                             </div>
 
                                             <Link

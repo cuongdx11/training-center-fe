@@ -39,6 +39,7 @@ const UserCalendar = ({ schedules }) => {
 
     return days;
   };
+  
 
   const handlePreviousMonth = () => {
     setCurrentDate(addDays(startOfMonth(currentDate), -1));
@@ -47,6 +48,7 @@ const UserCalendar = ({ schedules }) => {
   const handleNextMonth = () => {
     setCurrentDate(addDays(endOfMonth(currentDate), 1));
   };
+  
 
   const renderSchedulesForDate = (date) => {
     return schedules
@@ -138,7 +140,7 @@ const UserCalendar = ({ schedules }) => {
                     
                     <div className="flex items-center text-gray-600 mb-2">
                       <Clock className="mr-2 w-4 h-4" />
-                      <span>{schedule.startTime} - {schedule.endTime}</span>
+                      <span>{format(schedule.startTime, "HH:mm", { locale: vi })} - {format(schedule.endTime, "HH:mm", { locale: vi })}</span>
                     </div>
                     
                     {schedule.location && (
