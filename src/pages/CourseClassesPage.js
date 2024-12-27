@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Users, MapPin, AlertCircle } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getClassByCourseId } from '../services/courseClassService';
+import { getClassByCourse } from '../services/courseClassService';
 import {getCourseById} from '../services/coursesService';
 import { addUserToClass } from '../services/classStudent';
 import Swal from 'sweetalert2';
@@ -23,8 +23,44 @@ const CourseClassesPage = () => {
         const courseDetails = await getCourseById(courseId);
         setCourse(courseDetails.data);
 
-        const classesData = await getClassByCourseId(courseId);
-        setClasses(classesData);
+        try {
+          const classesData = await getClassByCourse(courseId);
+          setClasses(classesData);
+        } catch (error) {
+          if (error.response) {
+            // Kiểm tra mã lỗi 404
+            if (error.response.status === 404) {
+              const message = error.response.data?.message || "Bạn chưa đăng ký khóa học này.";
+               Swal.fire({
+                      icon: 'warning',
+                      title: message,
+                      text: 'Vui đăng ký khóa học này trước',
+                    });
+             
+              navigate(`/courses/${courseId}`); // Điều hướng về trang khóa học
+            }
+            // Kiểm tra mã lỗi 403
+            else if (error.response.status === 403) {
+              const message = error.response.data?.message || "Bạn chưa kích hoạt khóa học này";
+              Swal.fire({
+                icon: 'warning',
+                title: message,
+                text: 'Vui kích hoạt khóa học này trước',
+              });
+              navigate(`/my-courses`); 
+            }
+            // Các mã lỗi khác
+            else {
+              const message = error.response.data?.message || "Không thể tải lớp học.";
+              console.error(message, error);
+            }
+          } else {
+            // Nếu không có phản hồi từ backend
+            console.error("Lỗi kết nối hoặc không có phản hồi từ server.", error);
+          }
+        }
+        
+        
       } catch (error) {
         console.error("Không thể tải thông tin khóa học và lớp học", error);
         navigate('/courses');

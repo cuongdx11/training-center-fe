@@ -64,6 +64,7 @@ import InstructorsPage from '../pages/InstructorsPage';
 import CreateOrderPage from '../pages/admin/order/CreateOrderPage';
 import TopicManagement from '../components/admin/topics/TopicManagement';
 import TopicCoursesPage from '../pages/TopicCoursesPage';
+import ProfileLayout from '../layouts/ProfileLayout';
 
 const publicRoutes = [
     {
@@ -186,7 +187,7 @@ const publicRoutes = [
     {
         path: '/assignments',
         component: AssignmentListPage,
-        layout: MainLayout,
+        layout: ProfileLayout,
         protected: true,
     },
     {

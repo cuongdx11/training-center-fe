@@ -62,16 +62,27 @@ const CheckoutPage = () => {
       });
       navigate(`/orders/${response.order.id}`);
     } catch (error) {
-      setError('Failed to process checkout. Please try again.');
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi Thanh toán',
-        text: 'Không thể xử lý thanh toán. Vui lòng thử lại.',
-      });
-      console.error('Checkout error:', error);
+      if (error.response && error.response.status === 403) {
+        // Kiểm tra thông điệp lỗi chi tiết
+        const errorMessage = error.response.data.message || 'Bạn đã đăng ký khóa học này rồi.';
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi Thanh toán',
+          text: errorMessage,
+        });
+      } else {
+        setError('Failed to process checkout. Please try again.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi Thanh toán',
+          text: 'Không thể xử lý thanh toán. Vui lòng thử lại.',
+        });
+        console.error('Checkout error:', error);
+      }
     } finally {
       setLoading(false);
     }
+    
   };
 
   if (!cart) {

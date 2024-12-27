@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getClassOfStudent } from '../../services/courseClassService';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Users } from 'lucide-react';
+import { Calendar, Clock, Users, BookOpen, AlertCircle } from 'lucide-react';
 
 const ClassList = () => {
   const [classes, setClasses] = useState([]);
@@ -23,13 +23,45 @@ const ClassList = () => {
   }, []);
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-    </div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-3">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+        <p className="text-gray-500">Đang tải danh sách lớp học...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-red-500 text-center p-4">{error}</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <AlertCircle className="w-16 h-16 text-red-500" />
+        <p className="text-red-500 font-medium text-lg">{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+        >
+          Thử lại
+        </button>
+      </div>
+    );
+  }
+
+  if (!classes.length) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <BookOpen className="w-16 h-16 text-gray-400" />
+        <h3 className="text-xl font-semibold text-gray-600">Chưa có lớp học nào</h3>
+        <p className="text-gray-500 text-center max-w-md">
+          Bạn chưa tham gia lớp học nào. Hãy khám phá các khóa học của chúng tôi để bắt đầu hành trình học tập của bạn.
+        </p>
+        <Link
+          to="/courses"
+          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Xem khóa học
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -39,55 +71,71 @@ const ClassList = () => {
           <Link
             to={`/classes/${classItem.id}`}
             key={classItem.id}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            className="group"
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">{classItem.name}</h2>
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  classItem.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {classItem.status === 'ACTIVE' ? 'Đang hoạt động' : 'Không hoạt động'}
-                </span>
-              </div>
-              
-              <div className="mb-4">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
+              <div className="relative">
                 <img
                   src={classItem.course.thumbnail}
                   alt={classItem.course.title}
-                  className="w-full h-48 object-cover rounded-md"
+                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-gray-600">Khóa học: {classItem.course.title}</p>
-                
-                <div className="flex items-center text-gray-600">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  <span>{classItem.studyDays}</span>
-                </div>
-                
-                <div className="flex items-center text-gray-600">
-                  <Clock className="w-4 h-4 mr-2" />
-                  <span>{classItem.studyTime}</span>
-                </div>
-                
-                <div className="flex items-center text-gray-600">
-                  <Users className="w-4 h-4 mr-2" />
-                  <span>{classItem.currentStudentCount}/{classItem.maxStudents} học viên</span>
+                <div className="absolute top-4 right-4">
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    classItem.status === 'ACTIVE' 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-gray-500 text-white'
+                  }`}>
+                    {classItem.status === 'ACTIVE' ? 'Đang hoạt động' : 'Không hoạt động'}
+                  </span>
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t">
-                <div className="flex items-center">
-                  <img
-                    src={classItem.instructor.profilePicture}
-                    alt={classItem.instructor.fullName}
-                    className="w-10 h-10 rounded-full mr-3"
-                  />
-                  <div>
-                    <p className="font-medium">{classItem.instructor.fullName}</p>
-                    <p className="text-sm text-gray-600">Giảng viên</p>
+              <div className="p-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-500 transition-colors">
+                  {classItem.name}
+                </h2>
+                
+                <p className="text-gray-600 mb-4">{classItem.course.title}</p>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-gray-600">
+                    <Calendar className="w-4 h-4 mr-3 text-blue-500" />
+                    <span>{classItem.studyDays}</span>
+                  </div>
+                  
+                  <div className="flex items-center text-gray-600">
+                    <Clock className="w-4 h-4 mr-3 text-blue-500" />
+                    <span>{classItem.studyTime}</span>
+                  </div>
+                  
+                  <div className="flex items-center text-gray-600">
+                    <Users className="w-4 h-4 mr-3 text-blue-500" />
+                    <div className="flex items-center gap-2 flex-1">
+                      <span>{classItem.currentStudentCount}/{classItem.maxStudents} học viên</span>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div 
+                          className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                          style={{
+                            width: `${(classItem.currentStudentCount / classItem.maxStudents) * 100}%`
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100">
+                  <div className="flex items-center">
+                    <img
+                      src={classItem.instructor.profilePicture}
+                      alt={classItem.instructor.fullName}
+                      className="w-12 h-12 rounded-full mr-3 border-2 border-gray-100"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-800">{classItem.instructor.fullName}</p>
+                      <p className="text-sm text-gray-500">Giảng viên</p>
+                    </div>
                   </div>
                 </div>
               </div>
