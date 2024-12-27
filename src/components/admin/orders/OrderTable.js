@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, Edit, Trash2 } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 
 const OrderTable = ({ orders, onView, onEdit, onDelete, loading }) => {
   const getStatusColor = (status) => {
@@ -123,13 +123,13 @@ const OrderTable = ({ orders, onView, onEdit, onDelete, loading }) => {
                       >
                         <Eye size={18} />
                       </button>
-                      <button 
+                      {/* <button 
                         onClick={() => onEdit(order)} 
                         className="text-green-500 hover:text-green-700 transition-colors"
                         title="Chỉnh sửa"
                       >
                         <Edit size={18} />
-                      </button>
+                      </button> */}
                       <button 
                         onClick={() => onDelete(order)} 
                         className="text-red-500 hover:text-red-700 transition-colors"

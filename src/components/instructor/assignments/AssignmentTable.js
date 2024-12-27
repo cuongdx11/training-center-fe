@@ -8,6 +8,7 @@ import {
     File 
 } from 'lucide-react';
 import { deleteAssignment } from '../../../services/assignmentService';
+import Swal from 'sweetalert2';
 
 const AssignmentTable = ({ 
     assignments, 
@@ -15,13 +16,39 @@ const AssignmentTable = ({
     refreshAssignments 
 }) => {
     const handleDeleteAssignment = async (assignmentId) => {
-        if (window.confirm('Are you sure you want to delete this assignment?')) {
-            try {
+        try {
+            const result = await Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: 'Thao tác này sẽ xóa bài tập và không thể hoàn tác!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy',
+            });
+    
+            if (result.isConfirmed) {
+                // Thực hiện xóa bài tập
                 await deleteAssignment(assignmentId);
-                refreshAssignments();
-            } catch (error) {
-                alert('Failed to delete assignment: ' + error.message);
+                refreshAssignments(); // Làm mới danh sách bài tập
+    
+                // Thông báo thành công
+                Swal.fire({
+                    title: 'Đã xóa!',
+                    text: 'Bài tập đã được xóa thành công.',
+                    icon: 'success',
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
             }
+        } catch (error) {
+            // Thông báo lỗi
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Không thể xóa bài tập. Vui lòng thử lại.',
+                icon: 'error',
+                timer: 3000,
+                showConfirmButton: false,
+            });
         }
     };
 
@@ -124,7 +151,7 @@ const AssignmentTable = ({
 
             {assignments.length === 0 && (
                 <div className="text-center py-6 text-gray-500">
-                    No assignments found
+                    Không tìm thấy bài tập
                 </div>
             )}
         </div>

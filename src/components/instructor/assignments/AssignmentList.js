@@ -70,7 +70,7 @@ const AssignmentList = ({ assignments, refreshAssignments }) => {
                                             onClick={() => handleDeleteAssignment(assignment.id)}
                                             className="text-red-600 hover:text-red-900"
                                         >
-                                            Delete
+                                            Xóa
                                         </button>
                                     </div>
                                 </td>

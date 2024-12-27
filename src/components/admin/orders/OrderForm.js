@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react'; // Import close icon
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, courses }) => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState(initialData || {
       userId: '',
       paymentMethodId: '',
@@ -44,8 +47,30 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      onSubmit(formData);
+  
+      try {
+        onSubmit(formData); // Gửi dữ liệu
+        Swal.success({
+          title: 'Thành công!',
+          text: 'Đơn hàng đã được lưu.',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => {
+          navigate('/admin/orders'); // Điều hướng sau khi thông báo hoàn tất
+        });
+        onClose(); // Đóng form
+      } catch (error) {
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Không thể lưu đơn hàng. Vui lòng thử lại.',
+            icon: 'error',
+            timer: 3000,
+            showConfirmButton: false,
+        });
+      }
     };
+  
   
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -167,6 +192,6 @@ const OrderForm = ({ initialData, onSubmit, onClose, paymentMethods, users, cour
         </div>
       </div>
     );
-  };
+};
 
 export default OrderForm;

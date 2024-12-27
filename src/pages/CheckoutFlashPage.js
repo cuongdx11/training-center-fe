@@ -72,8 +72,8 @@ const CheckoutFlashPage = () => {
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Thanh toán thất bại',
-        text: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
+        title: 'Đăng kí thất bại',
+        text: 'Lỗi khi xử lý Đăng kí. Vui lòng thử lại.',
       });
       console.error('Lỗi thanh toán:', error);
     } finally {

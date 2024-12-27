@@ -5,6 +5,7 @@ import { getAllAssignments } from '../../services/assignmentService';
 import AssignmentTable from '../../components/instructor/assignments/AssignmentTable';
 import AssignmentForm from '../../components/instructor/assignments/AssignmentForm';
 import Modal from '../../components/instructor/assignments/Modal';
+import Swal from 'sweetalert2';
 
 const AssignmentsPage = () => {
     const [assignments, setAssignments] = useState([]);
@@ -50,6 +51,13 @@ const AssignmentsPage = () => {
     const handleSubmitSuccess = (newOrUpdatedAssignment) => {
         setIsModalOpen(false);
         fetchAssignments(); // Refresh the list
+        Swal.fire({
+            icon: 'success',
+            title: editingAssignment ? 'Chỉnh sửa thành công!' : 'Tạo bài tập thành công!',
+            text: editingAssignment 
+                ? 'Thông tin bài tập đã được cập nhật.' 
+                : 'Bài tập mới đã được thêm vào danh sách.',
+        });
     };
 
     return (
