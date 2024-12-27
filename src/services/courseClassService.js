@@ -91,3 +91,17 @@ export const deleteClass = async(id) => {
         throw error;
     }
 }
+
+
+export const getClassByCourse = async (courseId) => {
+    try {
+        const response = await api.get(`/classes/student/select`, {
+            params: {
+                courseId: courseId
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

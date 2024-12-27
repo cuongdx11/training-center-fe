@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Clock, CheckCircle } from 'lucide-react';
+import { FileText, Clock, CheckCircle, BookOpen, AlertCircle } from 'lucide-react';
 import { getAssignmentsOfStudent } from '../services/assignmentService';
-import Sidebar from '../components/Sidebar';
-import { useAuth } from '../context/AuthContext';
-import userService from '../services/userService';
 
 const AssignmentListPage = () => {
     const [assignments, setAssignments] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
-    const { user } = useAuth();
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            if (!user?.id) return;
-
-            try {
-                const data = await userService.getProfileUser();
-                setUserInfo(data);
-            } catch (error) {
-                console.error('Error fetching user info:', error);
-            }
-        };
-
         const fetchAssignments = async () => {
             try {
                 setIsLoading(true);
@@ -38,69 +22,98 @@ const AssignmentListPage = () => {
             }
         };
 
-        fetchUserInfo();
         fetchAssignments();
-    }, [user?.id]);
+    }, []);
 
     const getStatusColor = (deadline) => {
         const deadlineDate = new Date(deadline);
         const now = new Date();
-        return deadlineDate < now ? 'text-red-600' : 'text-green-600';
+        const diffDays = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
+        
+        if (deadlineDate < now) return 'text-red-600';
+        if (diffDays <= 3) return 'text-orange-500';
+        return 'text-green-600';
     };
 
+    const EmptyState = () => (
+        <div className="text-center py-12">
+            <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-4 text-lg font-medium text-gray-900">Chưa có bài tập nào</h3>
+            <p className="mt-2 text-sm text-gray-500">
+                Hiện tại chưa có bài tập nào được giao. Vui lòng kiểm tra lại sau.
+            </p>
+        </div>
+    );
+
+    const LoadingState = () => (
+        <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">Đang tải bài tập...</span>
+        </div>
+    );
+
+    const ErrorState = ({ message }) => (
+        <div className="flex items-center p-4 bg-red-50 rounded-lg">
+            <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
+            <p className="text-sm text-red-600">{message}</p>
+        </div>
+    );
+
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            <Sidebar 
-                userName={userInfo?.fullName} 
-                userImage={userInfo?.profilePicture} 
-            />
-            <div className="flex-1 p-8">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+            <div className="container mx-auto px-4 py-8">
                 <div className="max-w-4xl mx-auto">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-                        Danh sách bài tập
-                    </h1>
+                    <div className="text-center mb-12">
+                        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                            Danh sách bài tập
+                        </h1>
+                        <p className="text-gray-600">
+                            Quản lý và theo dõi các bài tập của bạn
+                        </p>
+                    </div>
 
                     {isLoading ? (
-                        <div className="text-center text-gray-500 py-6">Đang tải bài tập...</div>
+                        <LoadingState />
                     ) : error ? (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                            {error}
-                        </div>
+                        <ErrorState message={error} />
+                    ) : assignments.length === 0 ? (
+                        <EmptyState />
                     ) : (
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {assignments.map((assignment) => (
-                                <div 
-                                    key={assignment.id} 
-                                    className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                                <div
+                                    key={assignment.id}
+                                    className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100"
                                 >
                                     <div className="p-6">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <h2 className="text-xl font-semibold text-gray-800">
+                                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
+                                            <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                                                <FileText className="mr-2 h-5 w-5 text-blue-600" />
                                                 {assignment.title}
                                             </h2>
-                                            <span 
-                                                className={`font-medium ${getStatusColor(assignment.dueDate)}`}
+                                            <span
+                                                className={`flex items-center font-medium ${getStatusColor(assignment.dueDate)}`}
                                             >
-                                                <Clock className="inline-block mr-2" size={18} />
-                                                Hạn nộp: {new Date(assignment.dueDate).toLocaleDateString()}
+                                                <Clock className="mr-2 h-5 w-5" />
+                                                Hạn nộp: {new Date(assignment.dueDate).toLocaleDateString('vi-VN')}
                                             </span>
                                         </div>
 
-                                        <p className="text-gray-600 mb-4">
+                                        <p className="text-gray-600 mb-6 line-clamp-2">
                                             {assignment.description}
                                         </p>
 
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center space-x-2 text-gray-600">
-                                                <FileText size={18} />
+                                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                            <div className="flex items-center px-3 py-1 bg-gray-50 rounded-full text-sm text-gray-600">
+                                                <FileText className="mr-2 h-4 w-4" />
                                                 <span>{assignment.fileType || 'Tất cả định dạng'}</span>
                                             </div>
 
-                                            <Link 
+                                            <Link
                                                 to={`/assignments/${assignment.id}/submissions`}
-                                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
+                                                className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors duration-200 flex items-center justify-center gap-2 font-medium"
                                             >
-                                                <CheckCircle className="mr-2" size={18} />
+                                                <CheckCircle className="h-5 w-5" />
                                                 Xem chi tiết & Nộp bài
                                             </Link>
                                         </div>

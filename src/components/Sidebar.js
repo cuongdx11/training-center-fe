@@ -4,22 +4,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ userName, userImage }) => {
-  const [image, setImage] = useState(userImage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { logout: authLogout } = useAuth();
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleLogout = () => {
     authLogout();
@@ -49,19 +38,13 @@ const Sidebar = ({ userName, userImage }) => {
       <div className="flex flex-col items-center p-6">
         <div className="relative mb-3">
           <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-            {image ? (
-              <img src={image} alt="User Avatar" className="w-full h-full object-cover" />
+            {userImage ? (
+              <img src={userImage} alt="User Avatar" className="w-full h-full object-cover" />
             ) : (
               <UserCircle2 size={64} className="text-gray-400" />
             )}
           </div>
-          <input 
-            type="file" 
-            accept="image/*"
-            onChange={handleImageChange}
-            className="absolute bottom-0 right-0 opacity-0 cursor-pointer w-full h-full"
-            id="file-input" 
-          />
+    
          
         </div>
         <h2 className="text-lg font-medium">{userName}</h2>

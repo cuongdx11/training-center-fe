@@ -6,6 +6,8 @@ import { orderService } from '../../../services/orderService';
 import { paymentService } from '../../../services/paymentService';
 import userService from '../../../services/userService';
 import { getAllCourses } from '../../../services/coursesService';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateOrderPage = () => {
     const navigate = useNavigate();
@@ -95,15 +97,19 @@ const CreateOrderPage = () => {
         try {
             const newOrder = await orderService.createOrder(formData);
             if (newOrder?.paymentUrl) {
+                toast.success('Đơn hàng đã được tạo thành công! Đang chuyển hướng đến trang thanh toán...');
                 window.location.href = newOrder.paymentUrl;
-            }
-            else {
-                alert(`Bạn đã tạo và thanh toán thành công đơn hàng`);
+            } else {
+                toast.success('Bạn đã tạo và thanh toán thành công đơn hàng!');
                 navigate('/admin/orders');
             }
-            
         } catch (error) {
             console.error('Failed to create order:', error);
+            if (error.response && error.response.status === 403) {
+                toast.error(error.response.data.message || 'Một số khóa học đã được đăng ký trước đó.');
+            } else {
+                toast.error('Đã xảy ra lỗi trong quá trình tạo đơn hàng. Vui lòng thử lại sau.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -111,6 +117,7 @@ const CreateOrderPage = () => {
 
     return (
         <div className="container mx-auto p-6">
+            <ToastContainer position="top-right" autoClose={3000} />
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center mb-6">

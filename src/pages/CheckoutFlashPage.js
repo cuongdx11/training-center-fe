@@ -59,26 +59,49 @@ const CheckoutFlashPage = () => {
   
     try {
       const response = await orderService.checkoutNow(selectedPaymentMethod, course.id);
+    
+      // Kiểm tra xem có paymentUrl không
       if (response?.paymentUrl) {
-        window.location.href = response.paymentUrl;
+        window.location.href = response.paymentUrl; // Chuyển hướng tới trang thanh toán
       } else {
         Swal.fire({
           icon: 'success',
           title: 'Đăng kí thành công!',
           text: `Vui lòng Thanh toán để kích hoạt khóa học`,
         });
-        navigate('/');
+        navigate('/'); // Điều hướng về trang chủ
       }
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Đăng kí thất bại',
-        text: 'Lỗi khi xử lý Đăng kí. Vui lòng thử lại.',
-      });
+      if (error.response) {
+        // Kiểm tra lỗi khi đã đăng ký khóa học
+        if (error.response.status === 403) {
+          const errorMessage = error.response.data.message || 'Bạn đã đăng ký khóa học này rồi.';
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi Thanh toán',
+            text: errorMessage,
+          });
+        } else {
+          // Xử lý các lỗi khác từ server
+          Swal.fire({
+            icon: 'error',
+            title: 'Thanh toán thất bại',
+            text: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
+          });
+        }
+      } else {
+        // Nếu không phải lỗi từ server, thông báo lỗi chung
+        Swal.fire({
+          icon: 'error',
+          title: 'Thanh toán thất bại',
+          text: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
+        });
+      }
       console.error('Lỗi thanh toán:', error);
     } finally {
       setLoading(false);
     }
+    
   };
 
   if (loading) {

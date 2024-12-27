@@ -25,3 +25,18 @@ export const statisticsEnrollment = async () => {
         throw error; 
     }
 }
+
+export const getUserEnrollments = async ({ status, courseName, page = 0, size = 5 }) => {
+    try {
+        const params = new URLSearchParams();
+        if (status) params.append("status", status);
+        if (courseName) params.append("courseName", courseName);
+        params.append("page", page);
+        params.append("size", size);
+
+        const response = await axios.get(`/enrollments/user?${params.toString()}`);
+        return response.data; // Trả về PagedResponse từ backend
+    } catch (error) {
+        throw error;
+    }
+};
