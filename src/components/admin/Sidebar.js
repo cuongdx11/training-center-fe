@@ -77,7 +77,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       ]
     },
     {
-      title: 'Review',
+      title: 'Đánh Giá Khóa Học',
       icon: <ClipboardCheck className="w-5 h-5" />,
       submenu: [
         { title: 'Danh Sách', icon: <List className="w-5 h-5" />, path: '/admin/reviews' },
@@ -129,6 +129,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       title: 'Học Viên',
       icon: <User className="w-5 h-5" />,
       submenu: [
+        // { title: 'Tiến Độ Học Tập', icon: <ListChecks className="w-5 h-5" />, path: '/instructor/student-process' },
         { title: 'Điểm Danh', icon: <ClipboardCheck className="w-5 h-5" />, path: '/instructor/attendance' },
         { title: 'Gửi thông báo', icon: <Bell className="w-5 h-5" />, path: '/instructor/send-notification' },
         { title: 'Bài tập', icon: <BookText className="w-5 h-5" />, path: '/instructor/assignments' }

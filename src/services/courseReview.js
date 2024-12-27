@@ -32,3 +32,21 @@ export const deleteReview = async (id) => {
         throw error;
     }
 }
+
+
+export const getAll = async (courseId, rating, keyword, page = 0, size = 5) => {
+    try {
+        const response = await api.get('/review', {
+            params: {
+                courseId,  
+                rating,   
+                keyword,  
+                page,    
+                size     
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

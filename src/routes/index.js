@@ -193,7 +193,7 @@ const publicRoutes = [
     {
         path: '/assignments/:assignmentId/submissions',
         component: AssignmentDetailPage,
-        layout: MainLayout,
+        layout: ProfileLayout,
         protected: true,
     },
     {
