@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { UserPlusIcon } from 'lucide-react';
 import Modal from '../../components/admin/users/Modal';
 import UserForm from '../../components/admin/users/UserForm';
@@ -41,20 +41,7 @@ const UserManagementPage = () => {
     sortDirection: 'desc'
   });
 
-  useEffect(() => {
-    fetchUsers();
-  }, [pagination.page, pagination.size, filters, sortConfig]);
-
-  useEffect(() => {
-    if (!showModal.show) {
-      setTimeout(() => {
-        setFormData(initialFormData);
-        setSelectedUser(null);
-      }, 300);
-    }
-  }, [showModal.show]);
-
-  const buildCriteria = () => {
+  const buildCriteria = useCallback(() => {
     const criteriaArray = [];
     
     if (filters.fullName) {
@@ -73,9 +60,9 @@ const UserManagementPage = () => {
     }
 
     return criteriaArray.join(';');
-  };
+  }, [filters]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const criteria = buildCriteria();
@@ -98,22 +85,32 @@ const UserManagementPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [buildCriteria, pagination.page, pagination.size, sortConfig.sortBy, sortConfig.sortDirection]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    if (!showModal.show) {
+      setTimeout(() => {
+        setFormData(initialFormData);
+        setSelectedUser(null);
+      }, 300);
+    }
+  }, [showModal.show]);
 
   const handlePageChange = (newPage, newSize) => {
-    
     setPagination(prev => ({
       ...prev,
       page: newPage,
       size: newSize
     }));
-    
   };
-  
 
   const handleFiltersChange = (newFilters) => {
     setFilters(newFilters);
-    setPagination(prev => ({ ...prev, page: 0 })); // Reset to first page
+    setPagination(prev => ({ ...prev, page: 0 }));
   };
 
   const handleSortChange = (field) => {
@@ -128,47 +125,41 @@ const UserManagementPage = () => {
     try {
       setLoading(true);
       if (selectedUser) {
-        // Update user
         await userService.updateUser(selectedUser.id, formData);
         toast.success('Cập nhật người dùng thành công!');
       } else {
-        // Add new user
         await userService.addUser(formData);
         toast.success('Thêm người dùng mới thành công!');
       }
   
-      await fetchUsers(); // Tải lại danh sách người dùng
+      await fetchUsers();
       setShowModal({ show: false, type: null });
     } catch (error) {
       console.error("Error saving user:", error);
       toast.error('Đã xảy ra lỗi khi lưu thông tin người dùng.');
-      // Thêm thông báo lỗi nếu cần
     } finally {
       setLoading(false);
     }
   };
-  
 
   const handleDelete = async (userId) => {
     if (window.confirm('Bạn muốn xóa user này không?')) {
       try {
         setLoading(true);
         const response = await userService.deleteUser(userId);
-        console.log(response);
         if (response === true) {
           await fetchUsers();
-          // Show success toast notification
           toast.success('Xóa người dùng thành công!');
         }
       } catch (error) {
         console.error('Error deleting user:', error);
-        // Show error toast notification
         toast.error('Đã xảy ra lỗi khi xóa người dùng.');
       } finally {
         setLoading(false);
       }
     }
   };
+
   const handleToggleLock = async (user) => {
     try {
       setLoading(true);
@@ -176,7 +167,7 @@ const UserManagementPage = () => {
         userId: user.id,
         blocked: !user.isLocked 
       };
-      const response = await userService.blockUser(blockUserRequest); // Gọi API block user
+      const response = await userService.blockUser(blockUserRequest);
       if (response) {
         await fetchUsers();
         toast.success(user.isLocked ? 'Mở khóa người dùng thành công!' : 'Khóa người dùng thành công!');
@@ -191,8 +182,6 @@ const UserManagementPage = () => {
       setLoading(false);
     }
   };
-  
-  
 
   const handleEdit = (user) => {
     setSelectedUser(user);

@@ -142,10 +142,10 @@ const PersonalInfo = ({ userInfo, onUpdateSuccess, onAvatarUpdate }) => {
               src={userInfo.profilePicture || '/default-avatar.png'}
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/default-avatar.png';
-              }}
+              // onError={(e) => {
+              //   e.target.onerror = null;
+              //   e.target.src = '/default-avatar.png';
+              // }}
             />
             <label className="absolute bottom-0 right-0 bg-blue-600 p-2 rounded-full cursor-pointer hover:bg-blue-700 transition">
               {uploadingAvatar ? (

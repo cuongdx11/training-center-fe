@@ -45,9 +45,9 @@ const CourseClassesPage = () => {
               Swal.fire({
                 icon: 'warning',
                 title: message,
-                text: 'Vui kích hoạt khóa học này trước',
+                text: 'Vui lòng kiểm tra lại lớp họchọc',
               });
-              navigate(`/my-courses`); 
+              navigate(`/classes`); 
             }
             // Các mã lỗi khác
             else {

@@ -40,3 +40,16 @@ export const getUserEnrollments = async ({ status, courseName, page = 0, size = 
         throw error;
     }
 };
+
+export const checkCourseEnrollment = async (courseId) => {
+    try {
+      const response = await axios.get(`/enrollments/check`, {
+        params: {
+          courseId: courseId
+        }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to check enrollment status');
+    }
+  };

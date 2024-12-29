@@ -112,7 +112,7 @@ const ClassList = () => {
                   <div className="flex items-center text-gray-600">
                     <Users className="w-4 h-4 mr-3 text-blue-500" />
                     <div className="flex items-center gap-2 flex-1">
-                      <span>{classItem.currentStudentCount}/{classItem.maxStudents} học viên</span>
+                      <span>{classItem.currentStudentCount} học viên</span>
                       <div className="w-full bg-gray-200 rounded-full h-1.5">
                         <div 
                           className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"

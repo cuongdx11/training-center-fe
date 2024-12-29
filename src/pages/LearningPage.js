@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getCourseById } from '../services/coursesService';
+import { checkCourseEnrollment } from '../services/enrollmentService';
 import { ChevronLeft, ChevronDown, Clock, PlayCircle } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const LearningPage = () => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState(null);
@@ -12,23 +15,54 @@ const LearningPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
-    const fetchCourse = async () => {
+    const checkEnrollmentAndFetchCourse = async () => {
       try {
+        setLoading(true);
+        // Kiểm tra xem người dùng đã đăng ký khóa học chưa
+        const enrollmentStatus = await checkCourseEnrollment(courseId);
+        
+        if (!enrollmentStatus.isEnrolled) {
+          const result = await Swal.fire({
+            title: 'Bạn chưa đăng ký khóa học này',
+            text: 'Vui lòng đăng ký khóa học để có thể truy cập nội dung học tập.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#4b5563',
+            confirmButtonText: 'Đăng ký ngay',
+            cancelButtonText: 'Xem khóa học khác'
+          });
+
+          if (result.isConfirmed) {
+            navigate(`/courses/${courseId}`);
+          } else {
+            navigate('/courses');
+          }
+          return;
+        }
+
         const response = await getCourseById(courseId);
         setCourse(response.data);
         if (response.data.sectionList[0]?.lessonList[0]) {
           setCurrentLesson(response.data.sectionList[0].lessonList[0]);
         }
       } catch (error) {
-        console.error('Lỗi khi lấy thông tin khóa học:', error);
+        console.error('Lỗi khi kiểm tra đăng ký khóa học:', error);
+        Swal.fire({
+          title: 'Có lỗi xảy ra',
+          text: 'Không thể tải thông tin khóa học. Vui lòng thử lại sau.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444'
+        });
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCourse();
-  }, [courseId]);
+    checkEnrollmentAndFetchCourse();
+  }, [courseId, navigate]);
 
+  // Rest of the code remains the same...
   const getYouTubeVideoId = (url) => {
     if (!url) return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -69,7 +103,10 @@ const LearningPage = () => {
     <div className="h-screen bg-gray-900 text-white overflow-hidden">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 h-16 bg-gray-800/95 backdrop-blur-sm flex items-center px-4 z-20 border-b border-gray-700">
-        <button className="flex items-center text-white hover:text-red-400 transition-colors duration-300">
+        <button 
+          onClick={() => navigate('/courses')}
+          className="flex items-center text-white hover:text-red-400 transition-colors duration-300"
+        >
           <ChevronLeft className="w-5 h-5" />
           <span className="ml-2">Quay lại</span>
         </button>

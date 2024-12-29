@@ -49,4 +49,13 @@ export const paymentService = {
       throw error;
     }
   },
+  async verifyPayment(paymentData) {
+    try {
+      const response = await api.post('/payments/verify', paymentData);
+      return response.data;
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      throw error;
+    }
+  },
 };
