@@ -83,6 +83,7 @@ const CourseClassesPage = () => {
     setLoading(true);
     try {
       await addUserToClass({ classId: selectedClassId });
+  
       Swal.fire({
         icon: 'success',
         title: 'Thành công',
@@ -90,11 +91,24 @@ const CourseClassesPage = () => {
         confirmButtonText: 'Xem khóa học',
       }).then(() => navigate('/courses'));
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Thất bại',
-        text: 'Đã xảy ra lỗi khi đăng ký lớp học.',
-      });
+      if(error.response) {
+        if(error.response.status === 409) {
+          const message = error.response.data?.message
+          Swal.fire({
+            icon: 'error',
+            title: 'Thất bại',
+            text: message,
+          });
+        }
+      }
+      else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Thất bại',
+          text: 'Đã xảy ra lỗi khi đăng ký lớp học.',
+        });
+      }
+      
     } finally {
       setLoading(false);
     }

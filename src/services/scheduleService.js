@@ -13,7 +13,7 @@ export const getAllSchedule = () => {
 export const addRecurringSchedule = async(data) => {
     try {
         const response = await axios.post(`/schedule/recurring`, data);
-        return response;
+        return response.data;
     }
     catch (error){
         throw error;

@@ -19,6 +19,11 @@ const Login = () => {
 
         try {
             const response = await loginService({ email, password });
+            const roles = response.data.roles;
+            if (!roles.includes('ROLE_STUDENT')) {
+                setError('Tài khoản của bạn không được phép truy cập hệ thống.');
+                return;
+            }
             const userData = {
                 id: response.data.userId,
                 email: email,

@@ -5,6 +5,8 @@ import { vi } from "date-fns/locale";
 import { getAllCourses } from "../../../services/coursesService";
 import { getClassByCourseId } from "../../../services/courseClassService";
 import { addRecurringSchedule } from "../../../services/scheduleService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RecurringScheduleForm = () => {
   const [courses, setCourses] = useState([]);
@@ -159,15 +161,16 @@ const RecurringScheduleForm = () => {
     e.preventDefault();
     try {
       const response = await addRecurringSchedule(scheduleData);
-
-      if (response.ok) {
-        alert("Tạo lịch học thành công!");
+    
+      if (response.statusCode === 201) {
+        toast.success(response.message);
       } else {
-        throw new Error("Có lỗi xảy ra");
+        throw new Error("Có lỗi xảy ra (status: " + response.status + ")");
       }
     } catch (error) {
-      alert("Không thể tạo lịch học: " + error.message);
+      toast.error("Không thể tạo lịch học: " + error.message);
     }
+    
   };
 
   if (loading) {
@@ -505,6 +508,7 @@ const RecurringScheduleForm = () => {
           </div>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
     </div>
   );
 };

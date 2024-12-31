@@ -82,7 +82,7 @@ export const deleteCourse = (courseId) => {
 export const getCourseByType = async (type) => {
   try {
     const response = await axios.get(
-      `/courses?key=category.type&operation==&value=${type}`
+      `/courses?keys=category.type&operations==&values=${type}`
     );
     return response.data.data;
   } catch (error) {

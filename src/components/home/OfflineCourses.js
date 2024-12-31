@@ -19,7 +19,7 @@ const OfflineCourses = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const data = await getCourseByType('offline')
+                const data = await getCourseByType('OFFLINE')
                 setCoursesData(data);
                 setLoading(false);
             } catch (err) {
@@ -118,7 +118,7 @@ const OfflineCourses = () => {
                                         {new Intl.NumberFormat('vi-VN', {
                                             style: 'currency',
                                             currency: 'VND'
-                                        }).format(course.price * 23000)} {/* Giả sử price đang ở USD, chuyển đổi sang VND */}
+                                        }).format(course.price)} {/* Giả sử price đang ở USD, chuyển đổi sang VND */}
                                     </p>
                                     <button className="px-3 py-1 bg-blue-500 text-white text-xs rounded-full hover:bg-blue-600 transition-colors">
                                         Đăng ký
