@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import Slider from "../components/home/Slider";
 import FeaturedCourses from "../components/home/FeaturedCourses";
 import AboutCenter from "../components/home/AboutCenter";
-import UpcomingCourses from "../components/home/UpcomingCourses";
+// import UpcomingCourses from "../components/home/UpcomingCourses";
 import LearningPath from "../components/home/LearningPath";
 import OfflineCourses from "../components/home/OfflineCourses";
 import "react-toastify/dist/ReactToastify.css";
@@ -50,14 +50,18 @@ const HomePage = () => {
             </div>
 
             {/* Learning Journey Section */}
-            <div className="grid gap-8 lg:grid-cols-2">
+            {/* <div className="grid gap-8 lg:grid-cols-2">
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <LearningPath />
               </div>
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <UpcomingCourses />
               </div>
+            </div> */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <LearningPath />
             </div>
+
           </section>
 
           <section className="py-16">

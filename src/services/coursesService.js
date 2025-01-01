@@ -108,3 +108,19 @@ export const searchCourse = async (searchQuery) => {
     throw error;
   }
 };
+
+
+export const getCoursesWithParams = async (params = {}) => {
+  try {
+    const response = await axios.get(`/courses`, { params });
+    return response.data.data; 
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Error fetching courses');
+    } else if (error.request) {
+      throw new Error('No response from server. Please check your connection.');
+    } else {
+      throw new Error('Error setting up the request');
+    }
+  }
+};

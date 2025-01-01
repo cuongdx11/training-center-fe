@@ -19,6 +19,8 @@ import {
 import { createReview, listReviewByCourse } from "../services/courseReview";
 import cartService from "../services/cartService";
 import Swal from "sweetalert2";
+import VideoPopup from './VideoPopup'
+import ConsultationForm  from './ConsultationForm'
 
 const CourseDetail = ({ course }) => {
   const formatDate = (dateString) => {
@@ -52,6 +54,9 @@ const CourseDetail = ({ course }) => {
     review: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [isConsultFormOpen, setIsConsultFormOpen] = useState(false);
+  const videoLink = course.sectionList?.[0]?.lessonList?.[0]?.videoLink;
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -112,6 +117,13 @@ const CourseDetail = ({ course }) => {
       });
     }
   };
+  const handleOpenPopup = () => {
+    setIsPopupVisible(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupVisible(false);
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -143,6 +155,7 @@ const CourseDetail = ({ course }) => {
 
     return stars;
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -157,10 +170,15 @@ const CourseDetail = ({ course }) => {
               <h1 className="text-4xl font-bold mb-4">{course.title}</h1>
               <p className="text-blue-100 mb-6">{course.description}</p>
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="flex items-center">
-                  <Clock className="w-5 h-5 mr-2" />
-                  <span>{course.duration} giờ</span>
-                </div>
+              <div className="flex items-center">
+                <Clock className="w-5 h-5 mr-2" />
+                <span>
+                  {course.type === "VIDEO"
+                    ? `${course.duration} giờ`
+                    : `${course.duration} tuần`}
+                </span>
+              </div>
+
                 <div className="flex items-center">
                   <Users className="w-5 h-5 mr-2" />
                   <span>{course.studentCount} học viên</span>
@@ -175,13 +193,13 @@ const CourseDetail = ({ course }) => {
                 </div>
               </div>
               <div className="flex gap-4">
-                <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300">
+                <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300" onClick={() => setIsConsultFormOpen(true)}>
                   Nhận tư vấn
                 </button>
-                <button className="bg-blue-500/20 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-500/30 transition duration-300 flex items-center">
+                <button className="bg-blue-500/20 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-500/30 transition duration-300 flex items-center" onClick={handleOpenPopup}>
                   <PlayCircle className="w-5 h-5 mr-2" />
                   Xem giới thiệu
-                </button>
+                </button>  
               </div>
             </div>
             <div className="hidden md:block">
@@ -532,6 +550,15 @@ const CourseDetail = ({ course }) => {
               </div>
             </div>
           </div>
+          <VideoPopup 
+            isVisible={isPopupVisible} 
+            onClose={handleClosePopup}
+            videoLink={videoLink}
+          />
+          <ConsultationForm 
+            isOpen={isConsultFormOpen}
+            onClose={() => setIsConsultFormOpen(false)}
+          />
         </div>
       </div>
     </div>
