@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format, subDays } from 'date-fns';
+import { format, startOfDay, endOfDay, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
 import { Calendar, TrendingUp, ChevronDown } from 'lucide-react';
 
 import { getMonthlyRevenue } from '../../../services/statisticsService';
@@ -11,22 +11,47 @@ const RevenueStats = () => {
     const [loading, setLoading] = useState(true);
 
     const periodOptions = [
-        { value: 'day', label: 'Ngày', days: 1 },
-        { value: 'month', label: 'Tháng', days: 30 },
-        { value: 'year', label: 'Năm', days: 365 }
+        { value: 'day', label: 'Ngày' },
+        { value: 'month', label: 'Tháng' },
+        { value: 'year', label: 'Năm' }
     ];
+
+    // Hàm helper để lấy khoảng thời gian dựa trên period
+    const getDateRange = (periodType) => {
+        const now = new Date();
+        
+        switch (periodType) {
+            case 'day':
+                return {
+                    from: format(startOfDay(now), 'yyyy-MM-dd'),
+                    to: format(endOfDay(now), 'yyyy-MM-dd')
+                };
+            case 'month':
+                return {
+                    from: format(startOfMonth(now), 'yyyy-MM-dd'),
+                    to: format(endOfMonth(now), 'yyyy-MM-dd')
+                };
+            case 'year':
+                return {
+                    from: format(startOfYear(now), 'yyyy-MM-dd'),
+                    to: format(endOfYear(now), 'yyyy-MM-dd')
+                };
+            default:
+                return {
+                    from: format(startOfMonth(now), 'yyyy-MM-dd'),
+                    to: format(endOfMonth(now), 'yyyy-MM-dd')
+                };
+        }
+    };
 
     useEffect(() => {
         const fetchRevenueData = async () => {
             setLoading(true);
             try {
-                const selectedPeriod = periodOptions.find(p => p.value === period);
-                const toDate = new Date();
-                const fromDate = subDays(toDate, selectedPeriod.days);
-
+                const dateRange = getDateRange(period);
                 const response = await getMonthlyRevenue(
-                    format(fromDate, 'yyyy-MM-dd'), 
-                    format(toDate, 'yyyy-MM-dd')
+                    dateRange.from,
+                    dateRange.to
                 );
 
                 setRevenue(response.data.revenue);
@@ -39,7 +64,7 @@ const RevenueStats = () => {
         };
 
         fetchRevenueData();
-    }, [period]);
+    }, [period]); // period là dependency duy nhất cần thiết
 
     const selectedPeriodLabel = periodOptions.find(p => p.value === period)?.label;
 

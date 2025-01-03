@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Calendar, TrendingUp, X } from 'lucide-react';
 import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
-import {getRevenueByCourse} from '../../../services/statisticsService'
+import { getRevenueByCourse } from '../../../services/statisticsService'
 
 const CourseRevenueStats = () => {
     const [revenueData, setRevenueData] = useState([]);
@@ -15,7 +14,7 @@ const CourseRevenueStats = () => {
     });
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
-    const fetchRevenueData = async () => {
+    const fetchRevenueData = useCallback(async () => {
         try {
             setLoading(true);
             const fromDate = format(dateRange.from, 'yyyy-MM-dd');
@@ -31,12 +30,13 @@ const CourseRevenueStats = () => {
             setError(err);
             setLoading(false);
         }
-    };
+    }, [dateRange]);
 
     useEffect(() => {
         fetchRevenueData();
-    }, [dateRange]);
+    }, [fetchRevenueData]);
 
+    // Rest of the component remains the same...
     const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
@@ -69,7 +69,6 @@ const CourseRevenueStats = () => {
                     <X className="w-5 h-5" />
                 </button>
             </div>
-            {/* Simplified date selection - you might want to replace with a more robust date picker */}
             <div className="grid grid-cols-2 gap-2">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Từ ngày</label>

@@ -9,6 +9,8 @@ import {
   Camera,
   UserCircle
 } from 'lucide-react';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import userService from '../../services/userService';
 
@@ -16,12 +18,15 @@ const AdminProfile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProfile, setEditedProfile] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await userService.getProfileUser();
         setProfile(response);
+        setEditedProfile(response);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -31,6 +36,53 @@ const AdminProfile = () => {
 
     fetchProfile();
   }, []);
+
+  const handleAvatarUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      await userService.uploadAvatar(formData);
+      const response = await userService.getProfileUser();
+      setProfile(response);
+      toast.success("Cập nhật ảnh đại diện thành công!");
+    } catch (err) {
+      setError('Không thể tải lên ảnh đại diện');
+      toast.error("Không thể tải lên ảnh đại diện");
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setEditedProfile(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      const profileData = {
+        fullName: editedProfile.fullName,
+        email: editedProfile.email,
+        gender: editedProfile.gender || null,
+        birthDate: editedProfile.birthDate ? new Date(editedProfile.birthDate).toISOString().split('T')[0] : null,
+        phoneNumber: editedProfile.phoneNumber || null,
+        address: editedProfile.address || null,
+        bio: editedProfile.bio || null
+      };
+
+      await userService.updateProfileUser(profileData);
+      const response = await userService.getProfileUser();
+      setProfile(response);
+      setIsEditing(false);
+      toast.success("Cập nhật thông tin thành công!");
+    } catch (err) {
+      setError('Không thể cập nhật thông tin');
+      toast.error("Không thể cập nhật thông tin");
+    }
+  };
 
   if (loading) {
     return (
@@ -48,16 +100,67 @@ const AdminProfile = () => {
     );
   }
 
+  const renderValue = (isEditing, field, type = 'text') => {
+    if (!isEditing) return profile[field] || 'Chưa cập nhật';
+
+    const value = editedProfile[field] || '';
+    
+    if (type === 'gender') {
+      return (
+        <select
+          value={value}
+          onChange={(e) => handleInputChange(field, e.target.value)}
+          className="w-full border rounded-md px-2 py-1"
+        >
+          <option value="">Chọn giới tính</option>
+          <option value="MALE">Nam</option>
+          <option value="FEMALE">Nữ</option>
+        </select>
+      );
+    }
+
+    if (type === 'date') {
+      return (
+        <input
+          type="date"
+          value={value ? new Date(value).toISOString().split('T')[0] : ''}
+          onChange={(e) => handleInputChange(field, e.target.value)}
+          className="w-full border rounded-md px-2 py-1"
+        />
+      );
+    }
+
+    return (
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => handleInputChange(field, e.target.value)}
+        className="w-full border rounded-md px-2 py-1"
+      />
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="max-w-4xl mx-auto">
         {/* Header Card */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* Cover Image */}
           <div className="h-48 bg-gradient-to-r from-blue-500 to-blue-600 relative">
-            <button className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-lg">
+            {/* <button className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-lg">
               <Camera className="w-5 h-5 text-gray-600" />
-            </button>
+            </button> */}
           </div>
           
           {/* Profile Info */}
@@ -76,9 +179,15 @@ const AdminProfile = () => {
                     <UserCircle className="w-20 h-20 text-gray-400" />
                   </div>
                 )}
-                <button className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md">
+                <label className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer">
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                  />
                   <Camera className="w-4 h-4 text-gray-600" />
-                </button>
+                </label>
               </div>
             </div>
             
@@ -87,12 +196,42 @@ const AdminProfile = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">{profile.fullName}</h1>
-                  <p className="text-gray-600">{profile.bio}</p>
+                  {isEditing ? (
+                    <textarea
+                      value={editedProfile.bio || ''}
+                      onChange={(e) => handleInputChange('bio', e.target.value)}
+                      className="w-full mt-2 border rounded-md px-2 py-1"
+                      rows="2"
+                    />
+                  ) : (
+                    <p className="text-gray-600">{profile.bio}</p>
+                  )}
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                  <Edit className="w-4 h-4" />
-                  Chỉnh sửa
-                </button>
+                {isEditing ? (
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setIsEditing(false)} 
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                    >
+                      Hủy
+                    </button>
+                    <button 
+                      onClick={handleSaveProfile}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Lưu
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Chỉnh sửa
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -107,7 +246,9 @@ const AdminProfile = () => {
                 <User className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Họ và tên</p>
-                  <p className="text-gray-900">{profile.fullName}</p>
+                  <div className="text-gray-900">
+                    {renderValue(isEditing, 'fullName')}
+                  </div>
                 </div>
               </div>
               
@@ -123,7 +264,9 @@ const AdminProfile = () => {
                 <Phone className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Số điện thoại</p>
-                  <p className="text-gray-900">{profile.phoneNumber || 'Chưa cập nhật'}</p>
+                  <div className="text-gray-900">
+                    {renderValue(isEditing, 'phoneNumber', 'tel')}
+                  </div>
                 </div>
               </div>
 
@@ -131,7 +274,9 @@ const AdminProfile = () => {
                 <MapPin className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Địa chỉ</p>
-                  <p className="text-gray-900">{profile.address || 'Chưa cập nhật'}</p>
+                  <div className="text-gray-900">
+                    {renderValue(isEditing, 'address')}
+                  </div>
                 </div>
               </div>
 
@@ -139,9 +284,15 @@ const AdminProfile = () => {
                 <Cake className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Ngày sinh</p>
-                  <p className="text-gray-900">
-                    {profile.birthDate ? new Date(profile.birthDate).toLocaleDateString('vi-VN') : 'Chưa cập nhật'}
-                  </p>
+                  <div className="text-gray-900">
+                    {isEditing ? (
+                      renderValue(isEditing, 'birthDate', 'date')
+                    ) : (
+                      profile.birthDate ? 
+                        new Date(profile.birthDate).toLocaleDateString('vi-VN') : 
+                        'Chưa cập nhật'
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -149,7 +300,15 @@ const AdminProfile = () => {
                 <User className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Giới tính</p>
-                  <p className="text-gray-900">{profile.gender || 'Chưa cập nhật'}</p>
+                  <div className="text-gray-900">
+                    {isEditing ? (
+                      renderValue(isEditing, 'gender', 'gender')
+                    ) : (
+                      profile.gender === 'MALE' ? 'Nam' : 
+                      profile.gender === 'FEMALE' ? 'Nữ' : 
+                      'Chưa cập nhật'
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
