@@ -221,10 +221,10 @@ const Header = () => {
                 src={user.profilePicture}
                 alt="User Avatar"
                 className="w-10 h-10 rounded-full border-2 border-white"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/default-avatar.png";
-                }}
+                // onError={(e) => {
+                //   e.target.onerror = null;
+                //   e.target.src = "/default-avatar.png";
+                // }}
               />
             </div>
           ) : (
