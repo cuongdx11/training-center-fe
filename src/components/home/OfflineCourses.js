@@ -14,7 +14,26 @@ const OfflineCourses = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const itemsToShow = 4;
+    const [itemsToShow, setItemsToShow] = useState(4);
+
+    // Update items to show based on screen size
+    useEffect(() => {
+        const updateItemsToShow = () => {
+            if (window.innerWidth < 640) { // mobile
+                setItemsToShow(1);
+            } else if (window.innerWidth < 768) { // small tablet
+                setItemsToShow(2);
+            } else if (window.innerWidth < 1024) { // tablet
+                setItemsToShow(3);
+            } else { // desktop
+                setItemsToShow(4);
+            }
+        };
+
+        updateItemsToShow();
+        window.addEventListener('resize', updateItemsToShow);
+        return () => window.removeEventListener('resize', updateItemsToShow);
+    }, []);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -82,7 +101,6 @@ const OfflineCourses = () => {
         );
     }, [coursesData.content.length]);
 
-    // Helper function to get visible items with circular array
     const getVisibleItems = () => {
         if (!coursesData.content.length) return [];
         const items = [];
@@ -106,48 +124,51 @@ const OfflineCourses = () => {
         <div className="text-center text-red-500 py-6 text-sm">{error}</div>
     );
 
+    const slideWidth = 100 / itemsToShow;
+
     return (
-        <section className="py-12 px-4 bg-white">
+        <section className="py-8 md:py-12 px-4 bg-white">
             <div className="max-w-6xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex justify-between items-center mb-6 md:mb-8">
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-1">Khóa Học Offline</h2>
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">Khóa Học Offline</h2>
                     </div>
                 </div>
 
                 <div className="relative">
+                    {/* Navigation buttons - Hidden on mobile */}
                     <button 
                         onClick={prevSlide}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-all"
+                        className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-all"
                     >
                         <ChevronLeft className="w-6 h-6 text-gray-600" />
                     </button>
                     <button 
                         onClick={nextSlide}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-all"
+                        className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-all"
                     >
                         <ChevronRight className="w-6 h-6 text-gray-600" />
                     </button>
 
                     <div className="overflow-hidden relative">
-                        <div className="relative h-[420px]">
+                        <div className="relative h-[400px] md:h-[420px]">
                             {getVisibleItems().map((course) => (
                                 <div 
                                     key={`${course.id}-${course.offset}`}
-                                    className="absolute w-1/4 transition-all duration-500"
+                                    className="absolute w-full sm:w-1/2 md:w-1/3 lg:w-1/4 transition-all duration-500"
                                     style={{
-                                        left: `${course.offset * 25}%`,
+                                        left: `${course.offset * slideWidth}%`,
                                         opacity: 1,
                                         transform: 'translateX(0)'
                                     }}
                                 >
-                                    <div className="mx-3">
+                                    <div className="mx-2 md:mx-3">
                                         <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
                                             <div className="relative">
                                                 <img 
                                                     src={course.thumbnail || "/api/placeholder/300/200"} 
                                                     alt={course.title}
-                                                    className="w-full h-36 object-cover rounded-t-lg"
+                                                    className="w-full h-32 sm:h-36 object-cover rounded-t-lg"
                                                 />
                                                 <div className="absolute top-2 right-2 bg-blue-500 bg-opacity-90 text-white px-2 py-0.5 rounded-full text-xs">
                                                     {course.category.name}
@@ -157,8 +178,8 @@ const OfflineCourses = () => {
                                                 </div>
                                             </div>
                                             
-                                            <div className="p-4">
-                                                <h3 className="text-base font-medium text-gray-800 mb-2 line-clamp-2 min-h-[40px]">
+                                            <div className="p-3 md:p-4">
+                                                <h3 className="text-sm md:text-base font-medium text-gray-800 mb-2 line-clamp-2 min-h-[40px]">
                                                     {course.title}
                                                 </h3>
                                                 
@@ -178,13 +199,13 @@ const OfflineCourses = () => {
                                                 </div>
 
                                                 <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                                                    <p className="text-base font-bold text-blue-500">
+                                                    <p className="text-sm md:text-base font-bold text-blue-500">
                                                         {new Intl.NumberFormat('vi-VN', {
                                                             style: 'currency',
                                                             currency: 'VND'
                                                         }).format(course.price)}
                                                     </p>
-                                                    <button className="px-3 py-1 bg-blue-500 text-white text-xs rounded-full hover:bg-blue-600 transition-colors">
+                                                    <button className="px-2 md:px-3 py-1 bg-blue-500 text-white text-xs rounded-full hover:bg-blue-600 transition-colors">
                                                         Đăng ký
                                                     </button>
                                                 </div>
@@ -196,7 +217,8 @@ const OfflineCourses = () => {
                         </div>
                     </div>
 
-                    <div className="flex justify-center mt-6 space-x-2">
+                    {/* Indicators */}
+                    <div className="flex justify-center mt-4 md:mt-6 space-x-2">
                         {coursesData.content.map((_, index) => (
                             <button
                                 key={index}

@@ -43,7 +43,7 @@ const InstructorSection = () => {
   return (
     <section className="bg-gradient-to-b from-gray-50 to-white py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Enhanced Header */}
+        {/* Original Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             <span className="relative inline-block">
@@ -58,8 +58,8 @@ const InstructorSection = () => {
           </p>
         </div>
 
-        {/* Improved Instructors Slider */}
-        <div className="relative px-4">
+        {/* Improved Sliding Container */}
+        <div className="relative overflow-hidden">
           <div 
             className="flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -69,13 +69,13 @@ const InstructorSection = () => {
                 key={instructor.email}
                 className="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-4"
               >
-                <div className="group bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl h-full">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden h-full group transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
                   {/* Fixed aspect ratio container for image */}
-                  <div className="relative pt-[100%]">
+                  <div className="relative aspect-square">
                     <img
                       src={instructor.profilePicture}
                       alt={instructor.fullName}
-                      className="absolute inset-0 w-full h-full object-cover object-center transform transition-transform duration-500 group-hover:scale-110"
+                      className="absolute inset-0 w-full h-full object-cover object-center"
                       onError={(e) => {
                         e.target.src = '/images/default-avatar.png';
                       }}
@@ -83,17 +83,15 @@ const InstructorSection = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
 
-                  {/* Enhanced Info Section */}
-                  <div className="p-6 bg-white">
+                  <div className="p-6">
                     <h3 className="text-2xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
                       {instructor.fullName}
                     </h3>
                     <p className="text-blue-600 mb-4 font-medium">{instructor.email}</p>
                     <p className="text-gray-600 line-clamp-3 text-sm leading-relaxed">
-                      {instructor.bio}
+                      {instructor.bio || 'Giảng viên'}
                     </p>
 
-                    {/* Improved Social Links */}
                     <div className="mt-6 flex space-x-4 justify-center">
                       {['Twitter', 'GitHub', 'LinkedIn'].map((platform) => (
                         <button
@@ -126,7 +124,7 @@ const InstructorSection = () => {
             ))}
           </div>
 
-          {/* Enhanced Navigation Dots */}
+          {/* Navigation Dots */}
           <div className="flex justify-center mt-8 space-x-3">
             {Array.from({ length: Math.ceil(instructors.length / 3) }).map((_, index) => (
               <button
