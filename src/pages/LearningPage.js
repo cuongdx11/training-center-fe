@@ -21,7 +21,7 @@ const LearningPage = () => {
         // Kiểm tra xem người dùng đã đăng ký khóa học chưa
         const enrollmentStatus = await checkCourseEnrollment(courseId);
         
-        if (!enrollmentStatus.isEnrolled) {
+        if (!enrollmentStatus) {
           const result = await Swal.fire({
             title: 'Bạn chưa đăng ký khóa học này',
             text: 'Vui lòng đăng ký khóa học để có thể truy cập nội dung học tập.',

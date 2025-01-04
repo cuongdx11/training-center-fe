@@ -9,13 +9,19 @@ import {
 } from 'lucide-react';
 import { deleteAssignment } from '../../../services/assignmentService';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const AssignmentTable = ({ 
     assignments, 
     onEditAssignment, 
     refreshAssignments 
 }) => {
-    const handleDeleteAssignment = async (assignmentId) => {
+    const navigate = useNavigate();
+
+    const handleDeleteAssignment = async (assignmentId, e) => {
+        // Ngăn chặn sự kiện click lan truyền lên phần tử cha
+        e.stopPropagation();
+        
         try {
             const result = await Swal.fire({
                 title: 'Bạn có chắc chắn?',
@@ -27,11 +33,9 @@ const AssignmentTable = ({
             });
     
             if (result.isConfirmed) {
-                // Thực hiện xóa bài tập
                 await deleteAssignment(assignmentId);
-                refreshAssignments(); // Làm mới danh sách bài tập
+                refreshAssignments();
     
-                // Thông báo thành công
                 Swal.fire({
                     title: 'Đã xóa!',
                     text: 'Bài tập đã được xóa thành công.',
@@ -41,7 +45,6 @@ const AssignmentTable = ({
                 });
             }
         } catch (error) {
-            // Thông báo lỗi
             Swal.fire({
                 title: 'Lỗi!',
                 text: 'Không thể xóa bài tập. Vui lòng thử lại.',
@@ -50,6 +53,15 @@ const AssignmentTable = ({
                 showConfirmButton: false,
             });
         }
+    };
+
+    const handleEditClick = (assignment, e) => {
+        e.stopPropagation();
+        onEditAssignment(assignment);
+    };
+
+    const handleRowClick = (assignmentId) => {
+        navigate(`/instructor/assignments/${assignmentId}/submissions`);
     };
 
     const renderAssignmentTypeTag = (type) => {
@@ -91,7 +103,8 @@ const AssignmentTable = ({
                     {assignments.map((assignment) => (
                         <tr 
                             key={assignment.id} 
-                            className="hover:bg-gray-50 relative"
+                            className="hover:bg-gray-50 relative cursor-pointer"
+                            onClick={() => handleRowClick(assignment.id)}
                         >
                             <td className="p-3">
                                 <div className="flex items-center">
@@ -117,7 +130,7 @@ const AssignmentTable = ({
                             </td>
                             <td className="p-3 flex items-center space-x-2">
                                 <button 
-                                    onClick={() => onEditAssignment(assignment)}
+                                    onClick={(e) => handleEditClick(assignment, e)}
                                     className="text-gray-500 hover:text-blue-600"
                                     title="Edit Assignment"
                                 >
@@ -131,13 +144,14 @@ const AssignmentTable = ({
                                         rel="noopener noreferrer"
                                         className="text-gray-500 hover:text-green-600"
                                         title="View File"
+                                        onClick={(e) => e.stopPropagation()}
                                     >
-                                        <File  size={18} />
+                                        <File size={18} />
                                     </a>
                                 )}
                                 
                                 <button
-                                    onClick={() => handleDeleteAssignment(assignment.id)}
+                                    onClick={(e) => handleDeleteAssignment(assignment.id, e)}
                                     className="text-gray-500 hover:text-red-600"
                                     title="Delete Assignment"
                                 >

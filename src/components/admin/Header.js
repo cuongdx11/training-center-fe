@@ -39,10 +39,10 @@ const Header = () => {
                     src={user.profilePicture || "/default-avatar.png"}
                     alt="User Avatar"
                     className="w-8 h-8 rounded-full hover:ring-2 hover:ring-blue-500 transition-all"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/default-avatar.png";
-                    }}
+                    // onError={(e) => {
+                    //   e.target.onerror = null;
+                    //   e.target.src = "/default-avatar.png";
+                    // }}
                   />
                 </button>
 

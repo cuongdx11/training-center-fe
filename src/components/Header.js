@@ -126,9 +126,10 @@ const Header = () => {
                 <FaClock className="text-gray-400 group-hover:text-blue-500 transition" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-800 mb-1">
-                  {notification.creator.name}
-                </p>
+              <p className="text-sm font-semibold text-gray-800 mb-1">
+                {notification.type === "SYSTEM" ? "Hệ thống" : notification.creator.name}
+              </p>
+
                 <p className="text-sm font-semibold text-gray-800 mb-1">
                   Tiêu đề: {notification.title}
                 </p>

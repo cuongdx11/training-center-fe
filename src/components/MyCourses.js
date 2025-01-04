@@ -181,7 +181,11 @@ const MyCourses = ({ courses }) => {
                           path = `/courses/${course.course.id}/activate`;
                           break;
                         case "STUDYING":
-                          path = `/courses/${course.course.id}/continue`;
+                          if (course.course.category.type === "VIDEO") {
+                            path = `/learning/${course.course.id}`;
+                          } else if (course.course.category.type === "ONLINE" || course.course.category.type === "OFFLINE") {
+                            path = `/calendar`;
+                          }
                           break;
                         case "ACTIVE":
                           path = `/courses/${course.course.id}/classes`;

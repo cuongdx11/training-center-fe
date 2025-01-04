@@ -24,7 +24,7 @@ const InstructorClasses = () => {
   };
 
   const handleClassClick = (classId) => {
-    navigate(`/instructor/classes/${classId}/students`);
+    navigate(`/instructor/classes/${classId}`);
   };
 
   const formatDate = (dateString) => {

@@ -65,6 +65,8 @@ import CreateOrderPage from '../pages/admin/order/CreateOrderPage';
 import TopicManagement from '../components/admin/topics/TopicManagement';
 import TopicCoursesPage from '../pages/TopicCoursesPage';
 import ProfileLayout from '../layouts/ProfileLayout';
+import TopicCoursesList from '../components/TopicCoursesList';
+import InstructorClassesDetail from '../components/instructor/InstructorClassesDetail';
 
 const publicRoutes = [
     {
@@ -220,6 +222,11 @@ const publicRoutes = [
         protected: true,
     },
     {
+        path: '/topic/:topicId/courses',
+        component: TopicCoursesList,
+        layout: MainLayout,
+    },
+    {
         path: '/admin/login',
         component: AdminLogin,
         layout: AdminAuthLayout,
@@ -283,6 +290,7 @@ const publicRoutes = [
           { path: "assignments", component: AssignmentsPage },
           { path: "assignments/:assignmentId/submissions", component: SubmissionsPage },
           { path: "classes", component: InstructorClasses },
+          { path: "classes/:id", component: InstructorClassesDetail },
           
         ]
           
