@@ -154,7 +154,7 @@ const MyCourses = ({ courses }) => {
                   <>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-600">
-                        Tiến độ: {course.progress}%
+                        Tiến độ: {course.progress*100}%
                       </span>
                       {course.progress === 100 && (
                         <span className="flex items-center text-green-600 text-sm">
@@ -165,7 +165,7 @@ const MyCourses = ({ courses }) => {
                     <div className="w-full bg-gray-100 rounded-full h-2">
                       <div
                         className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${course.progress}%` }}
+                        style={{ width: `${course.progress*100}%` }}
                       ></div>
                     </div>
                   </>
@@ -190,6 +190,9 @@ const MyCourses = ({ courses }) => {
                         case "ACTIVE":
                           path = `/courses/${course.course.id}/classes`;
                           break;
+                        case "COMPLETED":
+                          path = `/courses/${course.course.id}`;
+                          break;
                         default:
                           path = `/courses/${course.course.id}`;
                       }
@@ -200,6 +203,8 @@ const MyCourses = ({ courses }) => {
                       ? "Kích hoạt"
                       : course.status === "STUDYING"
                       ? "Tiếp tục học"
+                      : course.status === "COMPLETED"
+                      ? "Đánh giá"
                       : "Chọn lớp học"}
                   </button>
                 </div>

@@ -81,16 +81,33 @@ const CourseDetail = ({ course }) => {
     setError("");
 
     try {
+      setIsSubmitting(true);
       await createReview({
         courseId: course.id,
-        rating: newReview.rating,
+        rating: newReview.rating, 
         review: newReview.review,
       });
-
+    
       await fetchReviews();
       setNewReview({ rating: 5, review: "" });
+      
+      // Thông báo thành công
+      Swal.fire({
+        icon: 'success',
+        title: 'Thành công!',
+        text: 'Đánh giá của bạn đã được gửi thành công',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    
     } catch (error) {
-      setError(error.response?.data?.message || "Error submitting review");
+      // Thông báo lỗi
+      Swal.fire({
+        icon: 'error',
+        title: 'Có lỗi xảy ra!',
+        text: error.response?.data?.message || "Không thể gửi đánh giá"
+      });
+      // setError(error.response?.data?.message || "Không thể gửi đánh giá");
     } finally {
       setIsSubmitting(false);
     }
