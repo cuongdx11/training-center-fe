@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Calendar } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Search } from 'lucide-react';
 import PaymentForm from '../../components/admin/payments/PaymentForm';
 import PaymentTable from '../../components/admin/payments/PaymentTable';
 import { paymentService } from '../../services/paymentService';
@@ -12,23 +12,21 @@ const PaymentManagementPage = () => {
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [viewMode, setViewMode] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [orders, setOrders] = useState([]);
-    const [paymentMethods, setPaymentMethods] = useState([]);
     
     // Pagination state
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize] = useState(5);
     
-    // Filter states
     const [filters, setFilters] = useState({
         status: '',
         orderId: '',
+        customerName: '', 
         fromDate: '',
         toDate: '',
     });
 
-    const fetchPayments = async () => {
+    const fetchPayments = useCallback(async () => {
         setLoading(true);
         try {
             const response = await paymentService.getFilteredPayments({
@@ -44,20 +42,19 @@ const PaymentManagementPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, pageSize, filters]);
 
     useEffect(() => {
         fetchPayments();
-    }, [page, pageSize, filters]);
+    }, [fetchPayments]);
 
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const ordersResponse = await orderService.getOrders();
-                setOrders(ordersResponse);
-
-                const paymentMethodsResponse = await paymentService.getPaymentMethods();
-                setPaymentMethods(paymentMethodsResponse);
+                await Promise.all([
+                    orderService.getOrders(),
+                    paymentService.getPaymentMethods()
+                ]);
             } catch (error) {
                 console.error('Failed to fetch initial data:', error);
                 toast.error('Có lỗi xảy ra khi tải dữ liệu ban đầu');
@@ -89,6 +86,7 @@ const PaymentManagementPage = () => {
         setFilters({
             status: '',
             orderId: '',
+            customerName: '', 
             fromDate: '',
             toDate: '',
         });
@@ -115,23 +113,6 @@ const PaymentManagementPage = () => {
                 console.error('Failed to delete payment:', error);
                 toast.error('Có lỗi xảy ra khi xóa giao dịch');
             }
-        }
-    };
-
-    const handleSubmit = async (formData) => {
-        try {
-            if (selectedPayment) {
-                await paymentService.updatePaymentStatus(selectedPayment.id, {
-                    status: formData.status
-                });
-                toast.success('Cập nhật trạng thái thanh toán thành công');
-                fetchPayments();
-            }
-            setViewMode(null);
-            setSelectedPayment(null);
-        } catch (error) {
-            console.error('Failed to submit payment:', error);
-            toast.error('Có lỗi xảy ra khi cập nhật trạng thái thanh toán');
         }
     };
 
@@ -176,11 +157,11 @@ const PaymentManagementPage = () => {
                 <h1 className="text-2xl font-bold text-gray-800">Quản lý Thanh Toán</h1>
             </div>
 
-            {/* Filters Section */}
+            {/* Filters Section - Updated to single row */}
             <div className="bg-white rounded-lg shadow p-6 mb-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="flex flex-wrap gap-4 items-center">
                     {/* Order ID Search */}
-                    <div className="relative">
+                    <div className="relative flex-1 min-w-[200px]">
                         <input
                             type="text"
                             name="orderId"
@@ -192,8 +173,21 @@ const PaymentManagementPage = () => {
                         <Search className="absolute right-3 top-2.5 text-gray-400" size={20} />
                     </div>
 
+                    {/* Customer Name Search */}
+                    <div className="relative flex-1 min-w-[200px]">
+                        <input
+                            type="text"
+                            name="customerName"
+                            value={filters.customerName}
+                            onChange={handleFilterChange}
+                            placeholder="Tìm theo tên khách hàng"
+                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <Search className="absolute right-3 top-2.5 text-gray-400" size={20} />
+                    </div>
+
                     {/* Status Filter */}
-                    <div>
+                    <div className="flex-1 min-w-[150px]">
                         <select
                             name="status"
                             value={filters.status}
@@ -208,7 +202,7 @@ const PaymentManagementPage = () => {
                     </div>
 
                     {/* Date Filters */}
-                    <div className="relative">
+                    <div className="flex-1 min-w-[150px]">
                         <input
                             type="date"
                             name="fromDate"
@@ -216,10 +210,9 @@ const PaymentManagementPage = () => {
                             onChange={handleDateChange}
                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
-                        {/* <Calendar className="absolute right-3 top-2.5 text-gray-400" size={20} /> */}
                     </div>
 
-                    <div className="relative">
+                    <div className="flex-1 min-w-[150px]">
                         <input
                             type="date"
                             name="toDate"
@@ -227,11 +220,9 @@ const PaymentManagementPage = () => {
                             onChange={handleDateChange}
                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
-                        {/* <Calendar className="absolute right-3 top-2.5 text-gray-400" size={20} /> */}
                     </div>
-                </div>
 
-                <div className="flex justify-end mt-4">
+                    {/* Reset Button */}
                     <button
                         onClick={handleResetFilters}
                         className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-200"
@@ -262,7 +253,7 @@ const PaymentManagementPage = () => {
                             onChange={(e) => setPageSize(Number(e.target.value))}
                             className="px-3 py-2 border rounded-lg"
                         >
-                             <option value={5}>5 mỗi trang</option>
+                            <option value={5}>5 mỗi trang</option>
                             <option value={10}>10 mỗi trang</option>
                             <option value={20}>20 mỗi trang</option>
                             <option value={50}>50 mỗi trang</option>

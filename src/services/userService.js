@@ -29,6 +29,16 @@ const userService = {
     const response = await api.get(`/users/instructors`);
     return response.data;
   },
+  getStudents: async () => {
+    try {
+      const response = await api.get(`/users/students`);
+      return response.data;
+    }
+    catch (error) {
+      throw error;
+    }
+    
+  },
   getAllUsers: async () => {
     try {
       const response = await api.get(`/users`);

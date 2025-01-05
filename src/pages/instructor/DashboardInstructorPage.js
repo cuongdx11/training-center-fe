@@ -3,6 +3,7 @@ import { ChevronRight, GraduationCap, FileText, CalendarDays } from 'lucide-reac
 import { getInstructorStatistics } from '../../services/statisticsService';
 import { getClassOfInstructor } from '../../services/courseClassService';
 import { getAssignmentsOfInstructor } from '../../services/assignmentService';
+import { Link } from 'react-router-dom';
 
 const DashboardInstructorPage = () => {
   const [stats, setStats] = useState({
@@ -113,9 +114,11 @@ const DashboardInstructorPage = () => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">Lớp Học Đang Dạy</h2>
             <button className="text-blue-600 hover:text-blue-700 flex items-center">
+            <Link to="/instructor/classes" className="flex items-center">
               Xem tất cả
               <ChevronRight className="h-4 w-4 ml-1" />
-            </button>
+            </Link>
+          </button>
           </div>
           <div className="space-y-4">
             {recentClasses.map(course => (
@@ -138,9 +141,11 @@ const DashboardInstructorPage = () => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">Bài Tập Gần Đây</h2>
             <button className="text-blue-600 hover:text-blue-700 flex items-center">
+            <Link to="/instructor/assignments" className="flex items-center">
               Xem tất cả
               <ChevronRight className="h-4 w-4 ml-1" />
-            </button>
+            </Link>
+          </button>
           </div>
           <div className="space-y-4">
             {recentAssignments.map(assignment => (
@@ -155,7 +160,12 @@ const DashboardInstructorPage = () => {
                       {assignment.dueDate} • {assignment.courseClass.name}
                     </p>
                   </div>
-                  <button className="text-blue-600 hover:text-blue-700 text-sm">Chi tiết</button>
+                  <button className="text-blue-600 hover:text-blue-700 text-sm">
+                    <Link to={`/instructor/assignments/${assignment.id}/submissions`} className="text-blue-600 hover:text-blue-700">
+                      Chi tiết
+                    </Link>
+                  </button>
+
                 </div>
               </div>
             ))}

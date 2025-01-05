@@ -17,26 +17,27 @@ export const paymentService = {
       throw error;
     }
   },
-  async getFilteredPayments({ page = 0, size = 5, status, orderId, fromDate, toDate }) {
+  async getFilteredPayments({ page = 0, size = 5, status, orderId, customerName, fromDate, toDate }) {
     try {
-      // Chuẩn bị query parameters
-      const params = {
-        page,
-        size,
-        ...(status && { status }),
-        ...(orderId && { orderId }),
-        ...(fromDate && { fromDate }),
-        ...(toDate && { toDate }),
-      };
+        // Chuẩn bị query parameters
+        const params = {
+            page,
+            size,
+            ...(status && { status }),
+            ...(orderId && { orderId }),
+            ...(customerName && { customerName }),
+            ...(fromDate && { fromDate }),
+            ...(toDate && { toDate }),
+        };
 
-      // Gửi request đến server
-      const response = await api.get('/payments/all', { params });
-      return response.data;
+        // Gửi request đến server
+        const response = await api.get('/payments/all', { params });
+        return response.data;
     } catch (error) {
-      console.error('Error fetching filtered payments:', error);
-      throw error;
+        console.error('Error fetching filtered payments:', error);
+        throw error;
     }
-  },
+},
   async updatePaymentStatus(paymentId, isSuccess) {
     try {
       // Gửi request để cập nhật trạng thái thanh toán

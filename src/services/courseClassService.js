@@ -105,3 +105,20 @@ export const getClassByCourse = async (courseId) => {
         throw error;
     }
 };
+
+export const getClassesWithFilters = async (filters) => {
+    try {
+        const response = await api.get('/classes/all', {
+            params: {
+                className: filters.className || '',
+                courseId: filters.courseId || '',
+                instructorId: filters.instructorId || '',
+                page: filters.page || 0,
+                size: filters.size || 10,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

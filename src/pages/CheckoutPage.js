@@ -5,6 +5,7 @@ import { orderService } from '../services/orderService';
 import cartService from '../services/cartService';
 import { paymentService } from '../services/paymentService';
 import Swal from 'sweetalert2';
+import PaymentQRModal from '../components/PaymentQRModal'
 
 const CheckoutPage = () => {
   const [cart, setCart] = useState(null);
@@ -14,17 +15,22 @@ const CheckoutPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   // const { user } = useAuth();
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [qrModalData, setQRModalData] = useState({
+    isOpen: false,
+    amount: 0,
+    orderCode: ''
+  });
 
   useEffect(() => {
     fetchInitialData();
   }, []);
 
   const fetchInitialData = async () => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    const userId = userData.id;
+  
     try {
       const [cartData, paymentMethodsData] = await Promise.all([
-        cartService.getCart(userId),
+        cartService.getCart(),
         paymentService.getPaymentMethods()
       ]);
       
@@ -55,12 +61,43 @@ const CheckoutPage = () => {
   
     try {
       const response = await orderService.checkout(selectedPaymentMethod);
-      Swal.fire({
-        icon: 'success',
-        title: 'Đăng kí thành công',
-        text: `Đơn hàng đã được đặt thành công, Vui lòng thanh toán để kích hoạt`,
-      });
-      navigate(`/orders/${response.order.id}`);
+      
+      // Handle different payment methods
+      switch (response.paymentMethodCode) {
+        case 'VNPAY':
+          // Redirect to VNPAY payment URL
+          window.location.href = response.paymentUrl;
+          break;
+          
+        case 'QRCODE':
+          // Show QR code modal
+          setShowQRModal(true); 
+          setQRModalData({ 
+            isOpen: true,
+            amount: response.order.totalAmount,
+            orderCode: response.order.id
+          });
+          break;
+          
+        case 'TTTT':
+          // Show direct payment notification
+          Swal.fire({
+            icon: 'success',
+            title: 'Đăng kí thành công',
+            text: 'Vui lòng đến cơ sở để thanh toán trực tiếp',
+          });
+          navigate(`/orders/${response.order.id}`);
+          break;
+          
+        default:
+          // Default success message for other payment methods
+          Swal.fire({
+            icon: 'success',
+            title: 'Đăng kí thành công',
+            text: 'Đơn hàng đã được đặt thành công, Vui lòng thanh toán để kích hoạt',
+          });
+          navigate(`/orders/${response.order.id}`);
+      }
     } catch (error) {
       if (error.response && error.response.status === 403) {
         // Kiểm tra thông điệp lỗi chi tiết
@@ -170,6 +207,17 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
+      {showQRModal && (
+  <PaymentQRModal
+    isOpen={qrModalData.isOpen}
+    onClose={() => {
+      setShowQRModal(false);
+      setQRModalData({ isOpen: false, amount: 0, orderCode: '' });
+    }}
+    amount={qrModalData.amount}
+    orderCode={qrModalData.orderCode}
+  />
+)}
     </div>
   );
 };
