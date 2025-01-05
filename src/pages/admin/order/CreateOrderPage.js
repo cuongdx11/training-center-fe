@@ -8,6 +8,7 @@ import userService from '../../../services/userService';
 import { getAllCourses } from '../../../services/coursesService';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PaymentQRModal from '../../../components/admin/payments/PaymentQRModal'
 
 const CreateOrderPage = () => {
     const navigate = useNavigate();
@@ -24,6 +25,11 @@ const CreateOrderPage = () => {
     const [users, setUsers] = useState([]);
     const [courses, setCourses] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0); // Tổng giá tiền
+    const [showQRModal, setShowQRModal] = useState(false);
+    const [qrPaymentInfo, setQrPaymentInfo] = useState({
+      amount: 0,
+      orderCode: ''
+    });
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -31,7 +37,7 @@ const CreateOrderPage = () => {
                 const paymentMethodsResponse = await paymentService.getPaymentMethods();
                 setPaymentMethods(paymentMethodsResponse);
 
-                const usersResponse = await userService.getAllUsers();
+                const usersResponse = await userService.getStudents();
                 setUsers(usersResponse);
 
                 const coursesResponse = await getAllCourses();
@@ -90,29 +96,71 @@ const CreateOrderPage = () => {
             items: newItems
         }));
     };
+    const handleCloseQRModal = () => {
+        setShowQRModal(false);
+        setQrPaymentInfo(null);
+      };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         try {
             const newOrder = await orderService.createOrder(formData);
-            if (newOrder?.paymentUrl) {
-                toast.success('Đơn hàng đã được tạo thành công! Đang chuyển hướng đến trang thanh toán...');
-                window.location.href = newOrder.paymentUrl;
-            } else {
+            
+            switch (newOrder.paymentMethodCode) {
+              case 'VNPAY':
+                if (newOrder?.paymentUrl) {
+                  toast.success('Đơn hàng đã được tạo thành công! Đang chuyển hướng đến trang thanh toán...');
+                  window.location.href = newOrder.paymentUrl;
+                } else {
+                  throw new Error('Missing payment URL for VNPAY payment');
+                }
+                break;
+          
+              case 'QRCODE':
+                setQrPaymentInfo({
+                  amount: newOrder.order.totalAmount,
+                  orderCode: newOrder.order.id || `ORDER_${Date.now()}`
+                });
+                toast.success('Đơn hàng đã được tạo thành công!');
+                setShowQRModal(true);
+                break;
+          
+              case 'TTTT':
+                toast.success('Đơn hàng đã được tạo thành công! Vui lòng đến cơ sở để thanh toán trực tiếp');
+                navigate('/admin/orders');
+                break;
+          
+              default:
                 toast.success('Bạn đã tạo và thanh toán thành công đơn hàng!');
                 navigate('/admin/orders');
             }
-        } catch (error) {
+          } catch (error) {
             console.error('Failed to create order:', error);
-            if (error.response && error.response.status === 403) {
-                toast.error(error.response.data.message || 'Một số khóa học đã được đăng ký trước đó.');
+            
+            if (error.response) {
+              switch (error.response.status) {
+                case 403:
+                  toast.error(error.response.data.message || 'Một số khóa học đã được đăng ký trước đó.');
+                  break;
+                case 400:
+                  toast.error('Dữ liệu đơn hàng không hợp lệ. Vui lòng kiểm tra lại.');
+                  break;
+                case 401:
+                  toast.error('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.');
+                  // Có thể thêm xử lý logout hoặc refresh token ở đây
+                  break;
+                default:
+                  toast.error('Đã xảy ra lỗi trong quá trình tạo đơn hàng. Vui lòng thử lại sau.');
+              }
+            } else if (error.request) {
+              toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.');
             } else {
-                toast.error('Đã xảy ra lỗi trong quá trình tạo đơn hàng. Vui lòng thử lại sau.');
+              toast.error('Đã xảy ra lỗi trong quá trình tạo đơn hàng. Vui lòng thử lại sau.');
             }
-        } finally {
+          } finally {
             setIsLoading(false);
-        }
+          }
     };
 
     return (
@@ -249,6 +297,15 @@ const CreateOrderPage = () => {
                     </div>
                 </form>
             </div>
+            {/* QR Payment Modal */}
+       {showQRModal && qrPaymentInfo && (
+        <PaymentQRModal
+          isOpen={showQRModal}
+          onClose={handleCloseQRModal}
+          amount={qrPaymentInfo.amount}
+          orderCode={qrPaymentInfo.orderCode}
+        />
+      )}
         </div>
     );
 };

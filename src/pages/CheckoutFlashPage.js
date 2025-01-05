@@ -4,6 +4,7 @@ import { getCourseById } from '../services/coursesService';
 import { orderService } from '../services/orderService';
 import { paymentService } from '../services/paymentService';
 import Swal from 'sweetalert2';
+import PaymentQRModal from '../components/PaymentQRModal';
 
 const CheckoutFlashPage = () => {
   const { id } = useParams();
@@ -12,8 +13,11 @@ const CheckoutFlashPage = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [qrPaymentInfo, setQrPaymentInfo] = useState(null);
   const navigate = useNavigate();
 
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -59,49 +63,56 @@ const CheckoutFlashPage = () => {
   
     try {
       const response = await orderService.checkoutNow(selectedPaymentMethod, course.id);
-    
-      // Kiểm tra xem có paymentUrl không
-      if (response?.paymentUrl) {
-        window.location.href = response.paymentUrl; // Chuyển hướng tới trang thanh toán
-      } else {
-        Swal.fire({
-          icon: 'success',
-          title: 'Đăng kí thành công!',
-          text: `Vui lòng Thanh toán để kích hoạt khóa học`,
-        });
-        navigate('/'); // Điều hướng về trang chủ
+      
+      switch (response.paymentMethodCode) {
+        case 'QRCODE':
+          setQrPaymentInfo({
+            amount: course.price,
+            orderCode: response.order.id || `ORDER_${Date.now()}`
+          });
+          setShowQRModal(true);
+          break;
+          
+        case 'VNPAY':
+          if (response?.paymentUrl) {
+            window.location.href = response.paymentUrl;
+          } else {
+            throw new Error('Payment URL not provided for VNPAY payment');
+          }
+          break;
+          
+        case 'TTTT':
+          Swal.fire({
+            icon: 'success',
+            title: 'Đăng kí thành công!',
+            text: 'Vui lòng đến cơ sở để thanh toán trực tiếp',
+          });
+          navigate('/orders');
+          break;
+          
+        default:
+          Swal.fire({
+            icon: 'success',
+            title: 'Đăng kí thành công!',
+            text: 'Vui lòng Thanh toán để kích hoạt khóa học',
+          });
+          navigate('/');
       }
     } catch (error) {
-      if (error.response) {
-        // Kiểm tra lỗi khi đã đăng ký khóa học
-        if (error.response.status === 403) {
-          const errorMessage = error.response.data.message || 'Bạn đã đăng ký khóa học này rồi.';
-          Swal.fire({
-            icon: 'error',
-            title: 'Lỗi Thanh toán',
-            text: errorMessage,
-          });
-        } else {
-          // Xử lý các lỗi khác từ server
-          Swal.fire({
-            icon: 'error',
-            title: 'Thanh toán thất bại',
-            text: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
-          });
-        }
-      } else {
-        // Nếu không phải lỗi từ server, thông báo lỗi chung
-        Swal.fire({
-          icon: 'error',
-          title: 'Thanh toán thất bại',
-          text: 'Lỗi khi xử lý thanh toán. Vui lòng thử lại.',
-        });
-      }
-      console.error('Lỗi thanh toán:', error);
+      console.error('Checkout error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi Thanh toán',
+        text: 'Không thể xử lý thanh toán. Vui lòng thử lại.',
+      });
     } finally {
       setLoading(false);
     }
     
+  };
+  const handleCloseQRModal = () => {
+    setShowQRModal(false);
+    setQrPaymentInfo(null);
   };
 
   if (loading) {
@@ -266,6 +277,15 @@ const CheckoutFlashPage = () => {
           </div>
         </div>
       </div>
+       {/* QR Payment Modal */}
+       {showQRModal && qrPaymentInfo && (
+        <PaymentQRModal
+          isOpen={showQRModal}
+          onClose={handleCloseQRModal}
+          amount={qrPaymentInfo.amount}
+          orderCode={qrPaymentInfo.orderCode}
+        />
+      )}
     </div>
   );
 };
