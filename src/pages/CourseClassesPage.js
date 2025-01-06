@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, MapPin, AlertCircle } from 'lucide-react';
+import { Calendar, Users, MapPin, AlertCircle,Clock } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getClassByCourse } from '../services/courseClassService';
 import {getCourseById} from '../services/coursesService';
@@ -114,6 +114,9 @@ const CourseClassesPage = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('vi-VN');
+  };
   if (!course) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -153,18 +156,24 @@ const CourseClassesPage = () => {
                 <h2 className="text-xl font-semibold mb-3">{cls.name}</h2>
                 
                 <div className="space-y-2 text-gray-600 text-sm">
-                  <div className="flex items-center">
-                    <Calendar size={16} className="mr-2 text-indigo-500" />
-                    <span>{cls.schedule}</span>
-                  </div>
+                <div className="flex items-center">
+                      <Calendar size={16} className="mr-2 text-indigo-500" />
+                      <span>
+                        {formatDate(cls.startDate)} - {formatDate(cls.endDate)}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock size={16} className="mr-2 text-indigo-500" />
+                      <span>{cls.studyTime} - {cls.studyDays}</span>
+                    </div>
                   <div className="flex items-center">
                     <MapPin size={16} className="mr-2 text-indigo-500" />
-                    <span>{cls.location || "Online"}</span>
+                    <span>{course.category.type || "Online"}</span>
                   </div>
                   <div className="flex items-center">
                     <Users size={16} className="mr-2 text-indigo-500" />
                     <span>
-                      Còn trống: {cls.availableSeats}/{cls.totalSeats} học viên
+                      Còn trống: {cls.maxStudents - cls.currentStudentCount}/{cls.maxStudents} học viên
                     </span>
                   </div>
                 </div>

@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
-
+import { getAllTopics } from '../services/courseTopicService'; 
 const Footer = () => {
+    const [topics, setTopics] = useState([]);
+
+    useEffect(() => {
+        const fetchTopics = async () => {
+            try {
+                const topicsData = await getAllTopics();
+                setTopics(topicsData);
+            } catch (error) {
+                console.error('Error fetching topics:', error);
+                // You might want to handle the error appropriately
+            }
+        };
+
+        fetchTopics();
+    }, []);
+
     return (
         <footer className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
             <div className="container mx-auto px-4 py-8">
@@ -23,14 +39,20 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Khóa học */}
+                    {/* Chủ đề */}
                     <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Khóa Học</h3>
+                        <h3 className="text-lg font-semibold">Chủ đề</h3>
                         <ul className="space-y-2">
-                            <li><a href="/courses/frontend" className="hover:text-blue-300 transition-colors">Lập Trình Web Frontend</a></li>
-                            <li><a href="/courses/backend" className="hover:text-blue-300 transition-colors">Lập Trình Web Backend</a></li>
-                            <li><a href="/courses/mobile" className="hover:text-blue-300 transition-colors">Lập Trình Mobile</a></li>
-                            <li><a href="/courses/devops" className="hover:text-blue-300 transition-colors">DevOps</a></li>
+                            {topics.map((topic) => (
+                                <li key={topic.id}>
+                                    <a 
+                                        href={`/topic/${topic.id}/courses`}
+                                        className="hover:text-blue-300 transition-colors"
+                                    >
+                                        {topic.name}
+                                    </a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 

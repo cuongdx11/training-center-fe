@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, X, Clock } from 'lucide-react';
-import {checkIn} from '../../services/attendanceService'
+import { checkIn } from '../../services/attendanceService';
 
 const CheckinPage = () => {
   const location = useLocation();
@@ -13,7 +13,6 @@ const CheckinPage = () => {
   });
 
   useEffect(() => {
-    // Trích xuất sessionId từ URL
     const searchParams = new URLSearchParams(location.search);
     const sessionId = searchParams.get('sessionId');
 
@@ -26,27 +25,36 @@ const CheckinPage = () => {
       return;
     }
 
-    // Thực hiện điểm danh
     const performCheckIn = async () => {
       try {
-        // const response = await axios.post('/api/attendance/checkin', null, {
-        //   params: { sessionId },
-        //   headers: {
-        //     'Authorization': `Bearer ${localStorage.getItem('token')}` // Giả sử bạn lưu token như này
-        //   }
-        // });
-        const response = await checkIn(sessionId);
-
+        await checkIn(sessionId);
         setCheckInStatus({
           loading: false,
           success: true,
-          message: response.data
+          message: 'Điểm danh thành công'
         });
       } catch (error) {
+        let errorMessage = 'Điểm danh thất bại';
+        
+        // Handle specific error cases from backend
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message?.includes('AttendanceSession Not Found')) {
+          errorMessage = 'Không tìm thấy phiên điểm danh';
+        } else if (error.message?.includes('User Not Found')) {
+          errorMessage = 'Không tìm thấy thông tin sinh viên';
+        } else if (error.message?.includes('CourseClass Not Found')) {
+          errorMessage = 'Không tìm thấy thông tin lớp học';
+        } else if (error.message?.includes('Phiên điểm danh đã hết hạn')) {
+          errorMessage = 'Phiên điểm danh đã hết hạn';
+        } else if (error.message?.includes('Bạn đã điểm danh rồi')) {
+          errorMessage = 'Bạn đã điểm danh cho phiên này rồi';
+        }
+
         setCheckInStatus({
           loading: false,
           success: false,
-          message: error.response?.data || 'Điểm danh thất bại'
+          message: errorMessage
         });
       }
     };
@@ -54,24 +62,22 @@ const CheckinPage = () => {
     performCheckIn();
   }, [location.search]);
 
-  // Render loading state
   if (checkInStatus.loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Clock className="mx-auto mb-4 animate-spin text-blue-500" size={64} />
-          <p className="text-xl text-gray-700">Đang xác thực điểm danh...</p>
+          <p className="text-xl text-gray-700">Đang xử lý điểm danh...</p>
         </div>
       </div>
     );
   }
 
-  // Render kết quả điểm danh
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden">
         <div className={`
-          py-4 px-6 flex items-center 
+          py-4 px-6 flex items-center justify-center
           ${checkInStatus.success ? 'bg-green-600' : 'bg-red-600'} 
           text-white
         `}>
@@ -85,21 +91,21 @@ const CheckinPage = () => {
           </h2>
         </div>
         
-        <div className="p-6 text-center">
+        <div className="p-6">
           <div className={`
-            rounded-lg p-4 
+            rounded-lg p-4 text-center
             ${checkInStatus.success 
-              ? 'bg-green-100 border-green-300 text-green-800' 
-              : 'bg-red-100 border-red-300 text-red-800'
+              ? 'bg-green-50 text-green-800 border border-green-200' 
+              : 'bg-red-50 text-red-800 border border-red-200'
             }
           `}>
-            <p className="text-lg font-semibold">{checkInStatus.message}</p>
+            <p className="text-lg font-medium">{checkInStatus.message}</p>
           </div>
 
           <div className="mt-6">
             <button 
               onClick={() => navigate('/')}
-              className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
             >
               Quay Về Trang Chủ
             </button>

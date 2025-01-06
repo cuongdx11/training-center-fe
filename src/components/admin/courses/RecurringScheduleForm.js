@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Calendar, Clock, Search, X } from "lucide-react";
-import { format, eachDayOfInterval, getDay } from "date-fns";
+import { format, eachDayOfInterval, getDay, addMinutes } from "date-fns";
 import { vi } from "date-fns/locale";
 import { getAllCourses } from "../../../services/coursesService";
 import { getClassByCourseId } from "../../../services/courseClassService";
@@ -45,7 +45,6 @@ const RecurringScheduleForm = () => {
   const sessionTypes = [
     { value: "ONLINE", label: "Trực tuyến" },
     { value: "OFFLINE", label: "Tại lớp" },
-    { value: "VIDEO", label: "Video" },
   ];
 
   useEffect(() => {
@@ -86,14 +85,19 @@ const RecurringScheduleForm = () => {
   );
 
   const calculateEndTime = (startTime, duration) => {
+    // Convert start time to date object for easier manipulation
     const [hours, minutes] = startTime.split(":").map(Number);
-    const totalMinutes = hours * 60 + minutes + duration;
-    const newHours = Math.floor(totalMinutes / 60);
-    const newMinutes = totalMinutes % 60;
-    return `${String(newHours).padStart(2, "0")}:${String(newMinutes).padStart(
-      2,
-      "0"
-    )}`;
+    const startDate = new Date();
+    startDate.setHours(hours, minutes, 0);
+    
+    // Add duration minutes
+    const endDate = addMinutes(startDate, duration);
+    
+    // Format the end time
+    const endHours = String(endDate.getHours()).padStart(2, "0");
+    const endMinutes = String(endDate.getMinutes()).padStart(2, "0");
+    
+    return `${endHours}:${endMinutes}`;
   };
 
   const previewDates = useMemo(() => {
@@ -445,15 +449,14 @@ const RecurringScheduleForm = () => {
               </div>
             )}
 
-            {scheduleData.startTime && (
-              <div className="flex items-center space-x-2 text-gray-600">
-                <Clock size={18} />
-                <span>
-                  {scheduleData.startTime} -{" "}
-                  {calculateEndTime(scheduleData.startTime, scheduleData.duration)}
-                </span>
-              </div>
-            )}
+          {scheduleData.startTime && (
+                  <div className="flex items-center space-x-2 text-gray-600">
+                    <Clock size={18} />
+                    <span>
+                      {scheduleData.startTime} - {calculateEndTime(scheduleData.startTime, scheduleData.duration)}
+                    </span>
+                  </div>
+                )}
 
             {/* Selected Days */}
             {scheduleData.daysOfWeek.length > 0 && (

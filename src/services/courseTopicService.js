@@ -83,3 +83,13 @@ export const getCoursesOfTopic = async (topicId) => {
         throw error;
     }
 }
+
+
+export const getAllTopics = async () => {
+    try {
+        const response = await api.get(`/topics`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

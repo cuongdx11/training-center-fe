@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Clock, GraduationCap, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getCourseByType } from '../../services/coursesService';
+import { useNavigate } from 'react-router-dom';
 
 const OfflineCourses = () => {
+    const navigate = useNavigate();
     const [coursesData, setCoursesData] = useState({
         content: [],
         page: 0,
@@ -164,7 +166,10 @@ const OfflineCourses = () => {
                                 >
                                     <div className="mx-2 md:mx-3">
                                         <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-                                            <div className="relative">
+                                            <div 
+                                                className="relative cursor-pointer" 
+                                                onClick={() => navigate(`/courses/${course.id}`)}
+                                            >
                                                 <img 
                                                     src={course.thumbnail || "/api/placeholder/300/200"} 
                                                     alt={course.title}
@@ -178,8 +183,11 @@ const OfflineCourses = () => {
                                                 </div>
                                             </div>
                                             
-                                            <div className="p-3 md:p-4">
-                                                <h3 className="text-sm md:text-base font-medium text-gray-800 mb-2 line-clamp-2 min-h-[40px]">
+                                            <div className="p-4">
+                                                <h3 
+                                                    className="text-base font-medium text-gray-800 mb-2 line-clamp-2 min-h-[40px] cursor-pointer hover:text-blue-600"
+                                                    onClick={() => navigate(`/courses/${course.id}`)}
+                                                >
                                                     {course.title}
                                                 </h3>
                                                 
@@ -205,7 +213,10 @@ const OfflineCourses = () => {
                                                             currency: 'VND'
                                                         }).format(course.price)}
                                                     </p>
-                                                    <button className="px-2 md:px-3 py-1 bg-blue-500 text-white text-xs rounded-full hover:bg-blue-600 transition-colors">
+                                                    <button
+                                                        onClick={() => navigate(`/checkout/${course.id}`)}
+                                                        className="px-4 py-1.5 bg-blue-600 text-white text-xs rounded-full hover:bg-blue-700 transition-colors"
+                                                    >
                                                         Đăng ký
                                                     </button>
                                                 </div>
