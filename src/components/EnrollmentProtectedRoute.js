@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { checkEnrollment } from '../services/enrollmentService'; // Đường dẫn đến service bạn đã tạo
+import { checkEnrollment } from '../services/enrollmentService'; // Đường dẫn đến service đã tạo
 
 const EnrollmentProtectedRoute = ({ children, courseId }) => {
     const [isEnrolled, setIsEnrolled] = useState(null); // Trạng thái đăng ký
