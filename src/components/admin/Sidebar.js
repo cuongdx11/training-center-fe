@@ -23,7 +23,10 @@ import {
   CalendarPlus,
   ClipboardList,
   BookOpenCheck,
-  Banknote 
+  Banknote ,
+  Headset,
+  Scale,
+  Shapes 
 } from 'lucide-react';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
@@ -58,7 +61,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       icon: <Users className="w-5 h-5" />,
       submenu: [
         { title: 'Thông Tin', icon: <List className="w-5 h-5" />, path: '/admin/users' },
-        { title: 'Phân Quyền, Vai Trò', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' }
+        { title: 'Phân Quyền', icon: <Shapes className="w-5 h-5" />, path: '/admin/user-role' }
       ]
     },
     {
@@ -102,10 +105,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       title: 'Hệ Thống',
       icon: <Settings className="w-5 h-5" />,
       submenu: [
-        { title: 'Phân Quyền', icon: <List className="w-5 h-5" />, path: '/admin/user-role' },
-        { title: 'Quyền Và Vai Trò', icon: <Clock className="w-5 h-5" />, path: '/admin/roles' },
+        // { title: 'Phân Quyền', icon: <List className="w-5 h-5" />, path: '/admin/user-role' },
+        { title: 'Quyền Và Vai Trò', icon: <Scale className="w-5 h-5" />, path: '/admin/roles' },
         { title: 'Gửi thông báo', icon: <Bell className="w-5 h-5" />, path: '/admin/create-notification' },
-        { title: 'Tư vấn', icon: <Bell className="w-5 h-5" />, path: '/admin/consults' }
+        { title: 'Tư vấn', icon: <Headset className="w-5 h-5" />, path: '/admin/consults' }
       ]
     }
   ];

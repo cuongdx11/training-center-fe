@@ -173,7 +173,7 @@ const CourseClassesPage = () => {
                   <div className="flex items-center">
                     <Users size={16} className="mr-2 text-indigo-500" />
                     <span>
-                      Còn trống: {cls.availableSeats}/{cls.totalSeats} học viên
+                      Còn trống: {cls.maxStudents - cls.currentStudentCount}/{cls.maxStudents} học viên
                     </span>
                   </div>
                 </div>
