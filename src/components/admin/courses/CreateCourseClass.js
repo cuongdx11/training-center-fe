@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import { addClass, updateClass } from '../../../services/courseClassService';
-import { getAllCourses } from '../../../services/coursesService';
+import { getCoursesByCategoryTypes } from '../../../services/coursesService';
 import userService from '../../../services/userService';
 
 const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false }) => {
@@ -10,8 +10,8 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
     courseId: '',
     startDate: '',
     endDate: '',
-    studyTime: '',
-    studyDays: '',
+    // studyTime: '',
+    // studyDays: '',
     status: 'ACTIVE',
     instructorId: ''
   });
@@ -29,8 +29,8 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
         courseId: initialData.courseId || '',
         startDate: initialData.startDate || '',
         endDate: initialData.endDate || '',
-        studyTime: initialData.studyTime || '',
-        studyDays: initialData.studyDays || '',
+        // studyTime: initialData.studyTime || '',
+        // studyDays: initialData.studyDays || '',
         status: initialData.status || 'ACTIVE',
         instructorId: initialData.instructorId || ''
       });
@@ -41,7 +41,7 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
     const fetchData = async () => {
       try {
         const [coursesData, instructorsData] = await Promise.all([
-          getAllCourses(),
+          getCoursesByCategoryTypes(),
           userService.getInstructors()
         ]);
         setCourses(coursesData);
@@ -85,8 +85,8 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
           courseId: '',
           startDate: '',
           endDate: '',
-          studyTime: '',
-          studyDays: '',
+          // studyTime: '',
+          // studyDays: '',
           status: 'ACTIVE',
           instructorId: ''
         });
@@ -214,7 +214,7 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Thời Gian Học
             </label>
@@ -227,9 +227,9 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
-          </div>
+          </div> */}
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Các Ngày Học
             </label>
@@ -242,7 +242,7 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">

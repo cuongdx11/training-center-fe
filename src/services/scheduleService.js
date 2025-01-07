@@ -39,3 +39,14 @@ export const getScheduleByInstructor = async () => {
     }
 };
 
+export const getScheduleByClass= async(classId) => {
+    try {
+        const response = await axios.get(`/schedule/courses/${classId}`);
+        return response.data;
+    }
+    catch(error){ 
+        throw error;
+    }
+}
+
+

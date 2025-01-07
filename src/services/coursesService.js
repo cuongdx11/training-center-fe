@@ -124,3 +124,21 @@ export const getCoursesWithParams = async (params = {}) => {
     }
   }
 };
+
+export const getCoursesByCategoryTypes = async (types = ['ONLINE', 'OFFLINE']) => {
+  try {
+    const response = await axios.get(`/courses/all/filter`, {
+      params: { types: types.join(',') }, // Truyền các loại category qua params
+    });
+    return response.data; // Trả về dữ liệu khóa học
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Error fetching courses by category types');
+    } else if (error.request) {
+      throw new Error('No response from server. Please check your connection.');
+    } else {
+      throw new Error('Error setting up the request');
+    }
+  }
+};
+

@@ -305,7 +305,9 @@ const RecurringScheduleForm = () => {
                 placeholder="Mô tả buổi học..."
                 rows={3}
               />
-
+               <label className="block text-sm font-medium text-gray-700 mb-1">
+               Thời lượng buổi học (Phút)
+              </label>
               <input
                 type="number"
                 name="duration"
@@ -319,7 +321,11 @@ const RecurringScheduleForm = () => {
             </div>
 
             {/* Dates and Time */}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+               Thời gian bắt đầu và kết thúc
+              </label>
             <div className="grid grid-cols-2 gap-4">
+           
               <div>
                 <input
                   type="date"
@@ -339,7 +345,9 @@ const RecurringScheduleForm = () => {
                 />
               </div>
             </div>
-
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+               Thời gian bắt đầu buổi học
+              </label>
             <input
               type="time"
               name="startTime"
