@@ -68,6 +68,7 @@ import ProfileLayout from '../layouts/ProfileLayout';
 import TopicCoursesList from '../components/TopicCoursesList';
 import InstructorClassesDetail from '../components/instructor/InstructorClassesDetail';
 import CheckoutNowPage from '../pages/CheckoutNowPage';
+import AccountActivationAdminPage from '../pages/admin/AccountActivationAdminPage';
 
 const publicRoutes = [
     {
@@ -232,6 +233,7 @@ const publicRoutes = [
         component: AdminLogin,
         layout: AdminAuthLayout,
     },
+    { path :"/admin/activate-account" , component: AccountActivationAdminPage ,layout:AdminAuthLayout },
     { path: "attendance-qr", component: AttendanceQRPage,layout: (props) => <MainLayout showHeaderFooter={false} {...props} />, },
     { path: "checkin", component: CheckinPage,layout: (props) => <MainLayout showHeaderFooter={false} {...props} />, },
     {
@@ -263,6 +265,7 @@ const publicRoutes = [
           { path: "consults/:id", component: ConsultDetail },
           { path :"enrollments" , component: StudentProgressManagementPage},
           { path :"courses/topics" , component: TopicManagement},
+          
 
           
         ]
