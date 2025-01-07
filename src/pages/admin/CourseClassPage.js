@@ -124,7 +124,7 @@ const CourseClassPage = () => {
 
   const handleEditSuccess = () => {
     setShowEditModal(false);
-    alert('Lớp học đã được cập nhật thành công!');
+    toast.success('Lớp học đã được cập nhật thành công!');
     fetchClassesData();
   };
 
@@ -138,10 +138,10 @@ const CourseClassPage = () => {
       try {
         await deleteClass(classId);
         fetchClassesData();
-        alert('Lớp học đã được xóa!');
+        toast.success('Lớp học đã được xóa!');
       } catch (err) {
         console.error('Error deleting class:', err);
-        alert('Không thể xóa lớp học. Vui lòng thử lại!');
+        toast.error('Không thể xóa lớp học. Vui lòng thử lại!');
       }
     }
   };

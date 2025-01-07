@@ -57,7 +57,7 @@ const UserCalendar = ({ schedules }) => {
         <div
           key={index}
           className="bg-indigo-600 text-white text-xs rounded-md px-2 py-1 mt-1 truncate hover:bg-indigo-700 transition-colors"
-          title={schedule.description}
+          title={schedule.courseClass.name}
         >
           {schedule.courseClassName}
         </div>
@@ -136,17 +136,19 @@ const UserCalendar = ({ schedules }) => {
                     <h4 className="text-lg font-semibold text-indigo-600 mb-2">
                       {schedule.courseClassName}
                     </h4>
-                    <p className="text-gray-700 mb-2">{schedule.description}</p>
+                    <p className="text-gray-700 mb-2">Lớp: {schedule.courseClass.name}</p>
                     
                     <div className="flex items-center text-gray-600 mb-2">
                       <Clock className="mr-2 w-4 h-4" />
-                      <span>{format(schedule.startTime, "HH:mm", { locale: vi })} - {format(schedule.endTime, "HH:mm", { locale: vi })}</span>
+                      Giờ học: 
+                      <span className="ml-2">{format(schedule.startTime, "HH:mm", { locale: vi })} - {format(schedule.endTime, "HH:mm", { locale: vi })}</span>
                     </div>
                     
                     {schedule.location && (
-                      <div className="flex items-center text-gray-600 mb-2">
+                      <div className="flex items-center text-gray-600 mb-2">      
                         <MapPin className="mr-2 w-4 h-4" />
-                        <span>{schedule.location}</span>
+                         Phòng học: 
+                        <span className="ml-2">{schedule.location}</span>
                       </div>
                     )}
                     

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import { addClass, updateClass } from '../../../services/courseClassService';
 import { getCoursesByCategoryTypes } from '../../../services/coursesService';
-import userService from '../../../services/userService';
+// import userService from '../../../services/userService';
 
 const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false }) => {
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
   });
   
   const [courses, setCourses] = useState([]);
-  const [instructors, setInstructors] = useState([]);
+  // const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -40,12 +40,12 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [coursesData, instructorsData] = await Promise.all([
+        const [coursesData] = await Promise.all([
           getCoursesByCategoryTypes(),
-          userService.getInstructors()
+          // userService.getInstructors()
         ]);
         setCourses(coursesData);
-        setInstructors(instructorsData);
+        // setInstructors(instructorsData);
       } catch (err) {
         setError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
       }
@@ -87,7 +87,7 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
           // endDate: '',
           // studyTime: '',
           // studyDays: '',
-          status: 'ACTIVE',
+          status: 'PENDING',
           instructorId: ''
         });
       }
@@ -176,11 +176,13 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
               required
             >
               <option value="">Chọn giảng viên</option>
-              {instructors.map((instructor) => (
-                <option key={instructor.id} value={instructor.id}>
-                  {instructor.fullName}
-                </option>
-              ))}
+              {courses
+                .find((course) => course.id === formData.courseId)?.instructors
+                .map((instructor) => (
+                  <option key={instructor.id} value={instructor.id}>
+                    {instructor.fullName}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -252,22 +254,24 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
             </>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Trạng Thái
-            </label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="ACTIVE">Đang Hoạt Động</option>
-              <option value="COMPLETED">Đã Hoàn Thành</option>
-              <option value="CANCELLED">Đã Hủy</option>
-              <option value="PENDING">Chờ đợi</option>
-            </select>
-          </div>
+          {isEditing && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Trạng Thái
+              </label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="ACTIVE">Đang Hoạt Động</option>
+                <option value="COMPLETED">Đã Hoàn Thành</option>
+                <option value="CANCELLED">Đã Hủy</option>
+                <option value="PENDING">Chờ đợi</option>
+              </select>
+            </div>
+          )}
 
           <div className="flex justify-end space-x-4 mt-6">
             <button

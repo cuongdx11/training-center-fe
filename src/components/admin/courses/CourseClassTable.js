@@ -129,13 +129,18 @@ const CourseClassTable = ({
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <button 
-                      className="p-1 hover:bg-gray-100 rounded-lg"
-                      onClick={() => onEditSchedule(c)}
-                    >
-                      <Calendar className="w-4 h-4 text-gray-500" />
-                    </button>
+                  <div className="flex items-center justify-center gap-2">
+                    {c.status !== "PENDING" && (
+                      <button 
+                        className="p-1 hover:bg-gray-100 rounded-lg flex justify-center items-center"
+                        onClick={() => onEditSchedule(c)}
+                      >
+                        <Calendar className="w-4 h-4 text-gray-500" />
+                      </button>
+                    )}
+                    {c.status === "PENDING" && (
+                      <span className="text-gray-400 italic">Chưa có lịch học</span>
+                    )}
                   </div>
                 </td>
 

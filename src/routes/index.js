@@ -15,7 +15,7 @@ import StudentProgressManagementPage from '../pages/admin/StudentProgressManagem
 import UserManagementPage from '../pages/admin/UserManagementPage';
 import UserRoleManagementPage from '../pages/admin/UserRoleManagementPage';
 import CartPage from '../pages/CartPage';
-import CheckoutFlashPage from '../pages/CheckoutFlashPage';
+// import CheckoutFlashPage from '../pages/CheckoutFlashPage';
 import CheckoutPage from '../pages/CheckoutPage';
 import CourseDetailPage from '../pages/CourseDetailPage';
 import CourseSchedulePage from '../pages/CourseSchedulePage';
@@ -67,6 +67,7 @@ import TopicCoursesPage from '../pages/TopicCoursesPage';
 import ProfileLayout from '../layouts/ProfileLayout';
 import TopicCoursesList from '../components/TopicCoursesList';
 import InstructorClassesDetail from '../components/instructor/InstructorClassesDetail';
+import CheckoutNowPage from '../pages/CheckoutNowPage';
 
 const publicRoutes = [
     {
@@ -163,7 +164,7 @@ const publicRoutes = [
     },
     {
         path: '/checkout/:id',
-        component: CheckoutFlashPage,
+        component: CheckoutNowPage,
         layout: MainLayout,
     },
     {

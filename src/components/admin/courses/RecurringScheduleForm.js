@@ -225,8 +225,12 @@ const RecurringScheduleForm = ({scheduleDataOfClass, isEditing, onClose, onSucce
     } catch (error) {
       // Xử lý lỗi ngoại lệ
       console.error("Error during schedule submission:", error);
-      const userFriendlyMessage = error.message || "Có lỗi xảy ra. Vui lòng thử lại sau.";
-      toast.error(userFriendlyMessage);
+      if (error.response && error.response.status === 409) {
+        toast.error(error.response.data.message);
+      } else {
+        const userFriendlyMessage = error.message || "Có lỗi xảy ra. Vui lòng thử lại sau.";
+        toast.error(userFriendlyMessage);
+      }
     }
   };
   
@@ -336,7 +340,7 @@ const RecurringScheduleForm = ({scheduleDataOfClass, isEditing, onClose, onSucce
               </div>
             </div>
 
-            {/* Class Selection */}
+            {/* Chọn lớp học */}
             {selectedCourse && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -353,12 +357,14 @@ const RecurringScheduleForm = ({scheduleDataOfClass, isEditing, onClose, onSucce
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={isEditing} // Vô hiệu hóa nếu đang chỉnh sửa
                 >
-                  {!isEditing && <option value="">Chọn lớp học</option>}
-                  {courseClasses.map((courseClass) => (
-                    <option key={courseClass.id} value={courseClass.id}>
-                      {courseClass.name}
-                    </option>
-                  ))}
+                  {!isEditing && <option value="">Chọn lớp chưa có lịch học</option>}
+                  {courseClasses
+                    .filter((courseClass) => courseClass.status === "PENDING") // chỉ hiện lớp chưa có lịch
+                    .map((courseClass) => (
+                      <option key={courseClass.id} value={courseClass.id}>
+                        {courseClass.name}
+                      </option>
+                    ))}
                 </select>
               </div>
             )}
