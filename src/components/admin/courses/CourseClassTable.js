@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Pencil, Trash2, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Pencil, Trash2, ChevronDown, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 
 const CourseClassTable = ({ 
   courseClasses = [], 
   onEdit = () => {}, 
   onDelete = () => {},
+  onEditSchedule = () => {},
   currentPage = 0,
   totalPages = 0,
   onPageChange = () => {},
@@ -85,9 +86,10 @@ const CourseClassTable = ({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên khóa học</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên lớp</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giảng viên</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời gian học</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày học</th>
+              {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời gian học</th> */}
+              {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày học</th> */}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Xem lịch học</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
             </tr>
           </thead>
@@ -115,8 +117,8 @@ const CourseClassTable = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">{c?.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{c?.instructor?.fullName}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{c?.studyTime}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{c?.studyDays}</td>
+                {/* <td className="px-6 py-4 whitespace-nowrap">{c?.studyTime}</td> */}
+                {/* <td className="px-6 py-4 whitespace-nowrap">{c?.studyDays}</td> */}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 py-1 text-xs rounded-full ${
                     c?.status === 'ACTIVE' 
@@ -126,6 +128,17 @@ const CourseClassTable = ({
                     {c?.status === 'ACTIVE' ? 'Đang hoạt động' : 'Không hoạt động'}
                   </span>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <button 
+                      className="p-1 hover:bg-gray-100 rounded-lg"
+                      onClick={() => onEditSchedule(c)}
+                    >
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                    </button>
+                  </div>
+                </td>
+
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <button 
@@ -185,10 +198,10 @@ const CourseClassTable = ({
                   <div>{c?.course?.level || 'Chưa xác định'}</div>
                   <div className="text-gray-500">Giảng viên:</div>
                   <div>{c?.instructor?.fullName}</div>
-                  <div className="text-gray-500">Thời gian:</div>
-                  <div>{c?.studyTime}</div>
-                  <div className="text-gray-500">Ngày học:</div>
-                  <div>{c?.studyDays}</div>
+                  {/* <div className="text-gray-500">Thời gian:</div>
+                  <div>{c?.studyTime}</div> */}
+                  {/* <div className="text-gray-500">Ngày học:</div>
+                  <div>{c?.studyDays}</div> */}
                   <div className="text-gray-500">Trạng thái:</div>
                   <div>
                     <span className={`px-2 py-1 text-xs rounded-full ${

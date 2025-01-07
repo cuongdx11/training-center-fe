@@ -8,6 +8,9 @@ import { getClassesWithFilters, deleteClass } from '../../services/courseClassSe
 import { getAllCourses } from '../../services/coursesService';
 import userService from '../../services/userService';
 import FilterClass from '../../components/admin/courses/FilterClass';
+import RecurringScheduleForm from '../../components/admin/courses/RecurringScheduleForm';
+import { getScheduleByClass } from '../../services/scheduleService';
+import { toast, ToastContainer } from "react-toastify";
 
 const CourseClassPage = () => {
   const [courseClasses, setCourseClasses] = useState({ content: [], totalElements: 0, totalPages: 0 });
@@ -18,6 +21,9 @@ const CourseClassPage = () => {
   const [courses, setCourses] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const navigate = useNavigate();
+  // State cho modal lịch học
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [scheduleData, setScheduleData] = useState(null)
   
   const [filters, setFilters] = useState({
     className: '',
@@ -94,6 +100,18 @@ const CourseClassPage = () => {
     }));
   };
 
+  const handleEditScheduleClick = async (classData) => {
+    try {
+      setSelectedClass(classData); // Lưu lớp học được chọn
+      const schedule = await getScheduleByClass(classData.id); // Gọi API để lấy lịch học
+      setScheduleData(schedule); // Lưu lịch học vào state
+      setShowScheduleModal(true); // Hiển thị modal chỉnh sửa lịch học
+    } catch (err) {
+      console.error('Error fetching schedule:', err);
+      toast.error('Không thể tải lịch học! Vui lòng thử lại sau.');
+    }
+  };
+  
   const handleEditClick = (classData) => {
     setSelectedClass({
       ...classData,
@@ -150,6 +168,7 @@ const CourseClassPage = () => {
 
   return (
     <div className="bg-white rounded-lg shadow">
+      <ToastContainer/>
       <div className="flex justify-between items-center p-6 border-b">
         <h1 className="text-2xl font-bold text-gray-800">Quản lý Lớp học</h1>
         <button 
@@ -171,6 +190,7 @@ const CourseClassPage = () => {
         courseClasses={courseClasses.content}
         onEdit={handleEditClick}
         onDelete={handleDeleteClass}
+        onEditSchedule={handleEditScheduleClick}
         currentPage={filters.page}
         totalPages={courseClasses.totalPages}
         onPageChange={handlePageChange}
@@ -183,6 +203,18 @@ const CourseClassPage = () => {
           onSuccess={handleEditSuccess}
           onCancel={handleCloseModal}
           isEditing={true}
+        />
+      </Modal>
+
+      <Modal open={showScheduleModal} onClose={() => setShowScheduleModal(false)}>
+        <RecurringScheduleForm
+          scheduleDataOfClass={scheduleData} // Truyền dữ liệu lịch học
+          isEditing={true}
+          onClose={() => setShowScheduleModal(false)}
+          onSuccess={() => {
+            setShowScheduleModal(false);
+            fetchClassesData(); // Làm mới danh sách lớp học sau khi cập nhật lịch học
+          }}
         />
       </Modal>
     </div>

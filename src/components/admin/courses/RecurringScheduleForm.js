@@ -3,12 +3,12 @@ import { Calendar, Clock, Search, X } from "lucide-react";
 import { format, eachDayOfInterval, getDay, addMinutes } from "date-fns";
 import { vi } from "date-fns/locale";
 import { getAllCourses } from "../../../services/coursesService";
-import { getClassByCourseId } from "../../../services/courseClassService";
-import { addRecurringSchedule } from "../../../services/scheduleService";
+import { getClassByCourseId, getClassById } from "../../../services/courseClassService";
+import { addRecurringSchedule, updateSchedule } from "../../../services/scheduleService";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const RecurringScheduleForm = () => {
+const RecurringScheduleForm = ({scheduleDataOfClass, isEditing, onClose, onSuccess}) => {
   const [courses, setCourses] = useState([]);
   const [courseClasses, setCourseClasses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +46,45 @@ const RecurringScheduleForm = () => {
     { value: "ONLINE", label: "Trực tuyến" },
     { value: "OFFLINE", label: "Tại lớp" },
   ];
+
+  useEffect(() => {
+    if (scheduleDataOfClass) {
+  
+      const days = scheduleDataOfClass.scheduleList.map(item => {
+        const startDate = new Date(item.startTime);
+        const dayIndex = startDate.getDay();
+        return dayIndex === 0 ? 7 : dayIndex;
+      });
+  
+      const uniqueDayIds = [...new Set(days)];
+  
+      setScheduleData({
+        courseClassId: scheduleDataOfClass.courseClass.id || '',
+        description: scheduleDataOfClass.scheduleList[0].description || '',
+        duration: scheduleDataOfClass.scheduleList[0].duration || '',
+        startDate: format(new Date(scheduleDataOfClass.courseClass.startDate), 'yyyy-MM-dd') || '',
+        endDate: format(new Date(scheduleDataOfClass.courseClass.endDate), 'yyyy-MM-dd') || '',
+        startTime: format(new Date(scheduleDataOfClass.scheduleList[0].startTime), 'HH:mm') || '',
+        daysOfWeek: uniqueDayIds, 
+        sessionType: scheduleDataOfClass.scheduleList[0].sessionType || '',
+        onlineLink: scheduleDataOfClass.scheduleList[0].onlineLink || '',
+        location: scheduleDataOfClass.scheduleList[0].location || '',
+      });
+  
+      if (isEditing) {
+        const fecthCourseClass = async () => {
+          try {
+            const response = await getClassById(scheduleDataOfClass.courseClass.id);
+            setSelectedClass(response);
+            setSelectedCourse(response.course);
+          } catch (error) {
+            throw error;
+          }
+        }
+        fecthCourseClass();
+      }
+    }
+  }, [scheduleDataOfClass, isEditing]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -164,18 +203,41 @@ const RecurringScheduleForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await addRecurringSchedule(scheduleData);
-    
-      if (response.statusCode === 201) {
-        toast.success(response.message);
+      let response;
+      if (isEditing) {
+        // Cập nhật lịch học
+        response = await updateSchedule(scheduleData);
       } else {
-        throw new Error("Có lỗi xảy ra (status: " + response.status + ")");
+        // Tạo lịch học mới
+        response = await addRecurringSchedule(scheduleData);
+      }
+  
+      if (response.statusCode === 201 || response.statusCode === 200) {
+        toast.success(response.message);
+        if (onSuccess) {
+          onSuccess();
+        }
+      } else {
+        // Xử lý khi API trả về mã trạng thái lỗi
+        const errorMessage = response.message || "Đã xảy ra lỗi không xác định.";
+        throw new Error(`Lỗi ${response.statusCode}: ${errorMessage}`);
       }
     } catch (error) {
-      toast.error("Không thể tạo lịch học: " + error.message);
+      // Xử lý lỗi ngoại lệ
+      console.error("Error during schedule submission:", error);
+      const userFriendlyMessage = error.message || "Có lỗi xảy ra. Vui lòng thử lại sau.";
+      toast.error(userFriendlyMessage);
     }
-    
   };
+  
+
+  const handleCancle = (e) => {
+    e.preventDefault();
+    if (onClose) {
+      onClose();
+    }
+  }
+  
 
   if (loading) {
     return (
@@ -207,7 +269,7 @@ const RecurringScheduleForm = () => {
         {/* Form Section */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">
-            Tạo Lịch Học
+            {isEditing? 'Cập Nhật lịch học':'Tạo lịch học'}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -231,6 +293,7 @@ const RecurringScheduleForm = () => {
                         }));
                       }}
                       className="text-gray-400 hover:text-gray-600"
+                      disabled = {isEditing}
                     >
                       <X size={16} />
                     </button>
@@ -247,6 +310,7 @@ const RecurringScheduleForm = () => {
                       onFocus={() => setShowCourseDropdown(true)}
                       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Tìm khóa học..."
+                      disabled={isEditing}
                     />
                     <Search
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -254,6 +318,7 @@ const RecurringScheduleForm = () => {
                     />
                   </div>
                 )}
+                
                 {showCourseDropdown && filteredCourses.length > 0 && (
                   <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto">
                     {filteredCourses.map((course) => (
@@ -261,6 +326,7 @@ const RecurringScheduleForm = () => {
                         key={course.id}
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         onClick={() => handleCourseSelect(course)}
+                        disabled={isEditing}
                       >
                         {course.title}
                       </div>
@@ -277,6 +343,7 @@ const RecurringScheduleForm = () => {
                   Lớp học
                 </label>
                 <select
+                  value={isEditing && selectedClass ? selectedClass.id : ""}
                   onChange={(e) => {
                     const selectedClass = courseClasses.find(
                       (c) => c.id === e.target.value
@@ -284,8 +351,9 @@ const RecurringScheduleForm = () => {
                     handleClassSelect(selectedClass);
                   }}
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isEditing} // Vô hiệu hóa nếu đang chỉnh sửa
                 >
-                  <option value="">Chọn lớp học</option>
+                  {!isEditing && <option value="">Chọn lớp học</option>}
                   {courseClasses.map((courseClass) => (
                     <option key={courseClass.id} value={courseClass.id}>
                       {courseClass.name}
@@ -295,7 +363,11 @@ const RecurringScheduleForm = () => {
               </div>
             )}
 
+
             {/* Basic Info */}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mô tả buổi học
+            </label>
             <div className="space-y-4">
               <textarea
                 name="description"
@@ -356,6 +428,9 @@ const RecurringScheduleForm = () => {
               className="w-full px-3 py-2 border rounded-md"
             />
 
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+               Chọn ngày học
+              </label>
             {/* Days Selection */}
             <div className="flex flex-wrap gap-2">
               {daysOfWeek.map((day) => (
@@ -413,12 +488,25 @@ const RecurringScheduleForm = () => {
             </div>
 
             {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
-            >
-              Tạo lịch học
-            </button>
+            <div className="flex justify-between items-center mt-6">
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              >
+                {scheduleData.courseClassId ? "Cập nhật Lịch Học" : "Tạo Lịch Học"}
+              </button>
+
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={handleCancle}
+                  className="ml-4 px-6 py-2 text-gray-700 font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                >
+                  Hủy
+                </button>
+              )}
+            </div>
+
           </form>
         </div>
 

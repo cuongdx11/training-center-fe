@@ -41,7 +41,7 @@ export const getScheduleByInstructor = async () => {
 
 export const getScheduleByClass= async(classId) => {
     try {
-        const response = await axios.get(`/schedule/courses/${classId}`);
+        const response = await axios.get(`/schedule/course-class/${classId}`);
         return response.data;
     }
     catch(error){ 
@@ -49,4 +49,12 @@ export const getScheduleByClass= async(classId) => {
     }
 }
 
-
+export const updateSchedule = async(scheduleData) => {
+    try {
+        const response = await axios.put(`/schedule/recurring`, scheduleData);
+        return response.data;
+    }
+    catch(error){ 
+        throw error;
+    }
+}

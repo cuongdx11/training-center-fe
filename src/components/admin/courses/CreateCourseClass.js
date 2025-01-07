@@ -8,11 +8,11 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
   const [formData, setFormData] = useState({
     name: '',
     courseId: '',
-    startDate: '',
-    endDate: '',
+    // startDate: '',
+    // endDate: '',
     // studyTime: '',
     // studyDays: '',
-    status: 'ACTIVE',
+    status: 'PENDING',
     instructorId: ''
   });
   
@@ -29,9 +29,9 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
         courseId: initialData.courseId || '',
         startDate: initialData.startDate || '',
         endDate: initialData.endDate || '',
-        // studyTime: initialData.studyTime || '',
-        // studyDays: initialData.studyDays || '',
-        status: initialData.status || 'ACTIVE',
+        studyTime: initialData.studyTime || '',
+        studyDays: initialData.studyDays || '',
+        status: initialData.status || 'PENDING',
         instructorId: initialData.instructorId || ''
       });
     }
@@ -83,8 +83,8 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
         setFormData({
           name: '',
           courseId: '',
-          startDate: '',
-          endDate: '',
+          // startDate: '',
+          // endDate: '',
           // studyTime: '',
           // studyDays: '',
           status: 'ACTIVE',
@@ -184,65 +184,73 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Ngày Bắt Đầu
-              </label>
-              <input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
+          {isEditing && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ngày Bắt Đầu
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled // Khóa trường này lại không cho chỉnh sửa
+                    required
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Ngày Kết Thúc
-              </label>
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-          </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ngày Kết Thúc
+                  </label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled // Khóa trường này lại không cho chỉnh sửa
+                    required
+                  />
+                </div>
+              </div>
 
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Thời Gian Học
-            </label>
-            <input
-              type="text"
-              name="studyTime"
-              value={formData.studyTime}
-              onChange={handleChange}
-              placeholder="Ví dụ: 19:00 - 21:00"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
-          </div> */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Thời Gian Học
+                </label>
+                <input
+                  type="text"
+                  name="studyTime"
+                  value={formData.studyTime}
+                  onChange={handleChange}
+                  placeholder="Ví dụ: 19:00 - 21:00"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  disabled // Khóa trường này lại không cho chỉnh sửa
+                  required
+                />
+              </div>
 
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Các Ngày Học
-            </label>
-            <input
-              type="text"
-              name="studyDays"
-              value={formData.studyDays}
-              onChange={handleChange}
-              placeholder="Ví dụ: Thứ 2, 4, 6"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
-          </div> */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Các Ngày Học
+                </label>
+                <input
+                  type="text"
+                  name="studyDays"
+                  value={formData.studyDays}
+                  onChange={handleChange}
+                  placeholder="Ví dụ: Thứ 2, 4, 6"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  disabled // Khóa trường này lại không cho chỉnh sửa
+                  required
+                />
+              </div>
+            </>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -257,6 +265,7 @@ const CreateCourseClass = ({ initialData, onSuccess, onCancel, isEditing = false
               <option value="ACTIVE">Đang Hoạt Động</option>
               <option value="COMPLETED">Đã Hoàn Thành</option>
               <option value="CANCELLED">Đã Hủy</option>
+              <option value="PENDING">Chờ đợi</option>
             </select>
           </div>
 
