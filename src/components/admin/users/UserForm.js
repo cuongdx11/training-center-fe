@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, X } from 'lucide-react';
+import { Camera, X, Loader2 } from 'lucide-react';
 import { roleService } from '../../../services/roleService';
 
 const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) => {
   const [roles, setRoles] = useState([]);
   const fileInputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const initializeForm = () => {
@@ -60,8 +61,18 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
     setFormData({ ...formData, roleIds: updatedRoles });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await onSubmit(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <form onSubmit={onSubmit} className="p-6 max-w-5xl mx-auto">
+    <form onSubmit={handleSubmit} className="p-6 max-w-5xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Basic Information */}
         <div className="space-y-6 lg:col-span-2">
@@ -245,7 +256,14 @@ const UserForm = ({ formData, setFormData, onSubmit, onCancel, selectedUser }) =
           type="submit"
           className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
         >
-          {selectedUser ? 'Update' : 'Create'} User
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Đang xử lý...</span>
+            </>
+          ) : (
+            <span>{selectedUser ? 'Update' : 'Create'} User</span>
+          )}
         </button>
       </div>
     </form>

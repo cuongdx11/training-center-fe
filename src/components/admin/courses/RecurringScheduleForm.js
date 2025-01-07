@@ -347,7 +347,7 @@ const RecurringScheduleForm = ({scheduleDataOfClass, isEditing, onClose, onSucce
                   Lớp học
                 </label>
                 <select
-                  value={isEditing && selectedClass ? selectedClass.id : ""}
+                  value={selectedClass ? selectedClass.id : ""}
                   onChange={(e) => {
                     const selectedClass = courseClasses.find(
                       (c) => c.id === e.target.value
@@ -357,14 +357,19 @@ const RecurringScheduleForm = ({scheduleDataOfClass, isEditing, onClose, onSucce
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={isEditing} // Vô hiệu hóa nếu đang chỉnh sửa
                 >
-                  {!isEditing && <option value="">Chọn lớp chưa có lịch học</option>}
+                  {!isEditing && <option value="" disabled selected>Chọn lớp chưa có lịch học</option>}
                   {courseClasses
-                    .filter((courseClass) => courseClass.status === "PENDING") // chỉ hiện lớp chưa có lịch
-                    .map((courseClass) => (
-                      <option key={courseClass.id} value={courseClass.id}>
-                        {courseClass.name}
-                      </option>
-                    ))}
+                  .filter((courseClass) => {
+                    // Nếu đang edit thì hiện tất cả các lớp
+                    if (isEditing) return true;
+                    // Nếu đang tạo mới thì chỉ hiện lớp PENDING
+                    return courseClass.status === "PENDING";
+                  })
+                  .map((courseClass) => (
+                    <option key={courseClass.id} value={courseClass.id}>
+                      {courseClass.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}
@@ -499,7 +504,7 @@ const RecurringScheduleForm = ({scheduleDataOfClass, isEditing, onClose, onSucce
                 type="submit"
                 className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               >
-                {scheduleData.courseClassId ? "Cập nhật Lịch Học" : "Tạo Lịch Học"}
+                {isEditing ? "Cập nhật Lịch Học" : "Tạo Lịch Học"}
               </button>
 
               {isEditing && (
